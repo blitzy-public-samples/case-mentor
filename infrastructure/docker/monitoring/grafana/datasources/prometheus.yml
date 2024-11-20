@@ -1,0 +1,48 @@
+# Grafana Datasource Configuration v9.5.0
+# Human Tasks:
+# 1. Verify network connectivity between Grafana and Prometheus containers
+# 2. Ensure Prometheus container is accessible at http://prometheus:9090
+# 3. Validate Tempo tracing backend is configured if using exemplar trace linking
+# 4. Confirm Prometheus retention settings match visualization requirements
+
+# Requirement: Monitoring & Observability - Configure Prometheus datasource for containerized metrics collection
+apiVersion: 1
+
+# Datasources configuration array
+datasources:
+  - name: Prometheus
+    type: prometheus
+    # Requirement: System Performance - Enable monitoring of API response times
+    # Access mode 'proxy' ensures Grafana queries Prometheus server directly
+    access: proxy
+    # URL matches the Prometheus container service name and default port
+    url: http://prometheus:9090
+    isDefault: true
+    version: 1
+    editable: true
+    
+    # Advanced JSON configuration options
+    jsonData:
+      # Requirement: Platform Stability - Support tracking of 99.9% uptime
+      # Matches scrape_interval from Prometheus configuration
+      timeInterval: "15s"
+      queryTimeout: "60s"
+      httpMethod: "POST"
+      manageAlerts: true
+      prometheusType: "Prometheus"
+      # Must match Prometheus server version
+      prometheusVersion: "2.45.0"
+      
+      # Trace linking configuration for distributed tracing
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: tempo
+      
+      # Matches global settings from Prometheus configuration
+      scrapeInterval: "15s"
+      evaluationInterval: "15s"
+      scrapeTimeout: "10s"
+    
+    # Secure headers configuration
+    secureJsonData:
+      httpHeaderName1: "X-Scope-OrgID"
