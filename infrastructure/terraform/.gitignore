@@ -1,0 +1,37 @@
+# Terraform State Files
+# REQ: Infrastructure Management - Prevents exposure of sensitive infrastructure state
+# REQ: Security Controls - Protects infrastructure configuration data
+*.tfstate
+*.tfstate.*
+
+# Crash Logs
+# REQ: Security Controls - Prevents exposure of debug information that may contain sensitive data
+crash.log
+crash.*.log
+
+# Sensitive Variable Files
+# REQ: Data Classification - Protects Restricted category data including secrets and credentials
+# REQ: Security Controls - Prevents exposure of sensitive configuration
+*.tfvars
+*.tfvars.json
+
+# Local Provider & Module Cache
+# REQ: Infrastructure Management - Excludes downloaded dependencies and local artifacts
+.terraform/
+
+# Provider Lock File
+# REQ: Infrastructure Management - Excludes provider version specifications
+.terraform.lock.hcl
+
+# Override Files
+# REQ: Security Controls - Prevents exposure of environment-specific configurations
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI Configuration
+# REQ: Data Classification - Protects provider credentials and sensitive CLI settings
+# REQ: Security Controls - Prevents exposure of authentication data
+.terraformrc
+terraform.rc
