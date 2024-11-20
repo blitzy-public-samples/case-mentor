@@ -1,0 +1,148 @@
+/* 
+ * Human Tasks:
+ * 1. Verify color contrast ratios meet WCAG 2.1 AA standards for all component states
+ * 2. Test responsive behavior of components across all breakpoints
+ * 3. Validate component animations with reduced motion preferences
+ * 4. Ensure proper integration with shadcn/ui component library
+ */
+
+/* Import base styles and animations */
+@import './tailwind.css';
+@import './animations.css';
+
+/* Requirement: Design System Specifications - Component-specific styles */
+@layer components {
+  /* Navigation Components */
+  .navbar {
+    @apply h-16 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50;
+  }
+
+  .sidebar {
+    @apply w-64 border-r bg-gray-50 h-screen;
+  }
+
+  .nav-link {
+    @apply text-sm font-medium text-gray-700 hover:text-primary transition-colors animate-fade-in;
+  }
+
+  .nav-link-active {
+    @apply text-primary font-semibold;
+  }
+
+  /* Form Components - WCAG 2.1 AA compliant */
+  .form-group {
+    @apply space-y-2 mb-4;
+  }
+
+  .form-label {
+    @apply text-sm font-medium text-gray-700 block;
+  }
+
+  .input-field {
+    @apply w-full rounded-md border-gray-300 focus:border-primary focus:ring-primary focus-ring;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-white hover:bg-primary-dark focus:ring-primary-light focus-ring;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary-light focus-ring;
+  }
+
+  /* Feedback Components with Animations */
+  .feedback-card {
+    @apply bg-gray-50 p-4 rounded-lg border-l-4 border-primary animate-slide-in;
+  }
+
+  .alert-success {
+    @apply bg-green-50 text-green-800 border-l-4 border-green-500 p-4 rounded animate-slide-in;
+  }
+
+  .alert-error {
+    @apply bg-red-50 text-red-800 border-l-4 border-red-500 p-4 rounded animate-slide-in;
+  }
+
+  .progress-bar {
+    @apply h-2 rounded-full bg-primary;
+  }
+
+  /* Content Components with Responsive Design */
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-12 animate-fade-in;
+  }
+
+  .card-drill {
+    @apply p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow animate-scale-in;
+  }
+
+  /* Interactive Components */
+  .simulation-canvas {
+    @apply w-full aspect-video rounded-lg border border-gray-200;
+  }
+
+  .tooltip {
+    @apply px-2 py-1 text-xs text-white bg-gray-900 rounded shadow-sm animate-fade-in;
+  }
+}
+
+/* Requirement: Accessibility Requirements - Focus and Interactive States */
+@layer utilities {
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+
+  .interactive-hover {
+    @apply transition-all duration-200 ease-in-out;
+  }
+}
+
+/* Requirement: Design System Specifications - Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    @apply bg-gray-900/80 border-gray-800;
+  }
+
+  .sidebar {
+    @apply bg-gray-900 border-gray-800;
+  }
+
+  .nav-link {
+    @apply text-gray-300 hover:text-white;
+  }
+
+  .card-drill {
+    @apply bg-gray-800 hover:bg-gray-750;
+  }
+
+  .feedback-card {
+    @apply bg-gray-800 border-gray-700;
+  }
+}
+
+/* Requirement: Accessibility Requirements - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .card-drill,
+  .feedback-card,
+  .nav-link {
+    @apply transform-none transition-none animate-none;
+  }
+}
+
+/* Requirement: Design System Specifications - Print Styles */
+@media print {
+  .navbar,
+  .sidebar,
+  .tooltip {
+    display: none !important;
+  }
+
+  .card-drill,
+  .feedback-card {
+    @apply shadow-none border print:border-gray-300;
+  }
+}
