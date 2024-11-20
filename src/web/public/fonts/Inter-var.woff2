@@ -1,0 +1,17 @@
+Key specifications:
+- Format: WOFF2 with variable font technology
+- Weight Range: 100-900 (Thin to Black)
+- Unicode Range: Basic Latin, Currency Symbols, Common Punctuation
+- Font Display: swap
+- Font Style: normal
+- Named Instance: Regular
+
+The font file is used by:
+1. tailwind.css - Through the font-family configuration
+2. globals.css - Through the --font-sans CSS variable
+3. theme.ts - Through the fontFamily configuration
+
+The font file implements these requirements:
+1. Design System Typography - Primary font family
+2. Performance Optimization - Variable font technology
+3. Accessibility Requirements - Consistent typography rendering
