@@ -1,0 +1,142 @@
+/* 
+ * Human Tasks:
+ * 1. Verify all fonts (Inter, Roboto Mono) are properly loaded and available
+ * 2. Test color contrast ratios across all components for WCAG 2.1 AA compliance
+ * 3. Validate responsive layouts across specified breakpoints (mobile: 320px, tablet: 768px, desktop: 1024px)
+ * 4. Ensure proper configuration of PostCSS and Tailwind plugins in build pipeline
+ */
+
+/* Requirement: Design System Specifications - Core Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Requirement: Design System Specifications - Base typography configuration */
+@layer base {
+  html {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    @apply text-primary-base;
+  }
+
+  code, pre {
+    font-family: Roboto Mono, monospace;
+  }
+
+  /* Requirement: Accessibility Requirements - Focus states */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-base ring-offset-2;
+  }
+
+  /* Requirement: Accessibility Requirements - Interactive element states */
+  :disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+}
+
+/* Requirement: Component Library Support - Core component classes */
+@layer components {
+  /* Primary button styles */
+  .btn {
+    @apply rounded-md font-medium transition-colors 
+           focus-visible:outline-none focus-visible:ring-2 
+           focus-visible:ring-primary-base;
+  }
+
+  /* Card container styles */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+
+  /* Form input styles */
+  .input {
+    @apply rounded-md border border-input bg-background px-3 py-2 text-sm 
+           focus-visible:outline-none focus-visible:ring-2 
+           focus-visible:ring-primary-base;
+  }
+
+  /* Requirement: Component Library Support - shadcn/ui integration */
+  .dialog-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
+  }
+
+  .dialog-content {
+    @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+           rounded-lg bg-background p-6 shadow-lg;
+  }
+
+  .dropdown-content {
+    @apply rounded-md border bg-background p-2 shadow-md;
+  }
+
+  .tooltip {
+    @apply rounded bg-primary-base px-2 py-1 text-sm text-white shadow-sm;
+  }
+}
+
+/* Requirement: Design System Specifications - Custom utility classes */
+@layer utilities {
+  /* Text balance for improved readability */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbars while maintaining functionality */
+  .scrollbar-hide {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Consistent focus ring styling */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 
+           focus-visible:ring-primary-base focus-visible:ring-offset-2;
+  }
+
+  /* Requirement: Accessibility Requirements - Screen reader utilities */
+  .sr-only {
+    @apply absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
+  }
+
+  /* Requirement: Design System Specifications - Responsive utilities */
+  .container {
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
+    max-width: theme('screens.wide');
+  }
+
+  /* Requirement: Design System Specifications - Motion safe utilities */
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-safe {
+      @apply transition-all duration-200;
+    }
+  }
+
+  /* Requirement: Accessibility Requirements - High contrast mode utilities */
+  @media (forced-colors: active) {
+    .high-contrast-border {
+      @apply border-2;
+    }
+  }
+}
+
+/* Requirement: Design System Specifications - Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Ensure proper contrast for printed content */
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
