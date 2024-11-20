@@ -1,0 +1,59 @@
+# Grafana Datasource Configuration for Prometheus v9.5.0
+# Purpose: Configure Prometheus as the primary datasource for monitoring edge functions, 
+# Supabase database, and Redis cache metrics
+
+# HUMAN TASKS:
+# 1. Verify network connectivity between Grafana and Prometheus (default port 9090)
+# 2. Ensure proper DNS resolution for 'prometheus' hostname in the container network
+# 3. Validate Grafana service account has necessary permissions to access Prometheus
+# 4. Configure any required network security groups or firewall rules
+# 5. Verify X-Scope-OrgID header value matches your organization's requirements
+
+# Requirement: Monitoring & Observability - Configure Prometheus datasource
+apiVersion: 1
+
+# Datasource definition array
+datasources:
+  - name: Prometheus
+    type: prometheus
+    # Requirement: Platform Stability - Enable direct access to metrics
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    version: 1
+    editable: true
+    
+    # Requirement: System Performance - Configure optimal query settings
+    jsonData:
+      # Matches prometheus.yml scrape_interval
+      timeInterval: "15s"
+      # Adequate timeout for complex queries
+      queryTimeout: "60s"
+      # Use POST to handle large queries
+      httpMethod: "POST"
+      # Enable alert management
+      manageAlerts: true
+      prometheusType: "Prometheus"
+      # Match Prometheus version from prometheus.yml
+      prometheusVersion: "2.45.0"
+      # Match global scrape settings from prometheus.yml
+      scrapeInterval: "15s"
+      evaluationInterval: "15s"
+      # Enable exemplars for detailed tracing
+      exemplarTraceIdDestinations:
+        # Internal trace linking
+        - name: trace_id
+          datasourceUid: tempo
+
+    # Secure headers for authentication
+    secureJsonData:
+      httpHeaderName1: "X-Scope-OrgID"
+
+    # Health check settings
+    healthchecks:
+      # Requirement: Platform Stability - Verify datasource connectivity
+      - name: "HTTP"
+        type: "http"
+        target: "/-/healthy"
+        timeout: "5s"
+        interval: "30s"
