@@ -1,0 +1,56 @@
+{
+  // TypeScript Version: 5.0+ (REQ-4.1)
+  "compilerOptions": {
+    // Target latest Node.js LTS features (REQ-4.1)
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    
+    // Module configuration for Node.js compatibility
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    
+    // Base paths and output configuration
+    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
+    
+    // Path aliases for clean imports
+    "paths": {
+      "@/*": ["./*"],
+      "@config/*": ["./config/*"],
+      "@lib/*": ["./lib/*"],
+      "@models/*": ["./models/*"],
+      "@services/*": ["./services/*"],
+      "@utils/*": ["./utils/*"],
+      "@types/*": ["./types/*"]
+    },
+    
+    // Strict type checking for better maintainability (REQ-4.1)
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    
+    // NextJS and Edge Function specific options (REQ-2.0)
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "incremental": true
+  },
+  
+  // File inclusion/exclusion patterns
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".next",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}
