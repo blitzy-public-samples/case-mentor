@@ -49,3 +49,4 @@ terraform.tfvars
 
 # System Files
 .DS_Store
+*.tsbuildinfo

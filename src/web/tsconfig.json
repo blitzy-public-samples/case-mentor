@@ -94,6 +94,7 @@
   
   // Files to exclude from compilation
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests"
   ]
 }
