@@ -1,0 +1,130 @@
+/* 
+ * Human Tasks:
+ * 1. Test animations across different browsers for consistent behavior
+ * 2. Verify animation performance using browser dev tools to maintain 60fps
+ * 3. Test prefers-reduced-motion behavior with system settings
+ * 4. Validate WCAG 2.1 compliance for animation timing and flashing content
+ */
+
+/* Import base styles from tailwind */
+@import './tailwind.css';
+
+/* Requirement: Design System Specifications - Core animation keyframes */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Requirement: System Performance - Optimized animation durations */
+.animate-spin {
+  animation: spin 1s linear infinite;
+  /* Duration optimized for loading indicators to provide visual feedback within 200ms */
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+  /* Quick fade for immediate visual feedback while maintaining smooth transition */
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+  /* Balanced duration for natural-feeling entrance animations */
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s ease-out;
+  /* Snappy scaling for interactive elements while maintaining smoothness */
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+  /* Slower duration for ambient animations that don't impact core interactions */
+}
+
+/* Requirement: Accessibility Requirements - Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    /* Minimal durations ensure animations complete quickly while respecting user preferences */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Disable infinite animations for reduced motion */
+  .animate-spin,
+  .animate-float {
+    animation: none !important;
+  }
+}
+
+/* Requirement: Design System Specifications - Animation modifiers */
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Requirement: System Performance - Animation play states */
+.animation-paused {
+  animation-play-state: paused;
+}
+
+.animation-running {
+  animation-play-state: running;
+}
+
+/* Requirement: Design System Specifications - Animation timing functions */
+.ease-bounce {
+  animation-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.ease-smooth {
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Requirement: System Performance - Hardware acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
