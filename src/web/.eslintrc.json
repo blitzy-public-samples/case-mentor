@@ -1,0 +1,81 @@
+{
+  // ESLint configuration for TypeScript/React/NextJS frontend
+  // Requirements addressed:
+  // - Programming Languages: TypeScript 5.0+ code quality and style enforcement
+  // - Development Environment: ESLint configuration for code consistency
+  "root": true,
+  "env": {
+    "browser": true,
+    "es2022": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    // @version 13.5.0
+    "next/core-web-vitals",
+    "eslint:recommended",
+    // @version 6.6.0
+    "plugin:@typescript-eslint/recommended",
+    // @version 7.33.2
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime"
+  ],
+  // @version 6.6.0
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "react"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "rules": {
+    // Disable prop-types as we use TypeScript for type checking
+    "react/prop-types": "off",
+    // Allow flexible function return type inference
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    // Enforce strict typing - no any allowed
+    "@typescript-eslint/no-explicit-any": "error",
+    // Allow unused variables starting with underscore
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    // Restrict console usage except for warnings and errors
+    "no-console": [
+      "warn",
+      {
+        "allow": [
+          "warn",
+          "error"
+        ]
+      }
+    ],
+    // Not needed with new JSX transform in React 17+
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "coverage/",
+    "public/",
+    "**/*.js",
+    "**/*.d.ts"
+  ]
+}
