@@ -1,0 +1,36 @@
+# GitHub Issue Template Configuration
+# Addresses requirements:
+# - Development Process (4.5): Standardized issue management and template configuration
+# - Quality Assurance (2.0): Structured issue reporting for platform stability
+
+blank_issues_enabled: false
+
+# Template configurations for standardized issue reporting
+contact_links:
+  - name: Platform Documentation
+    url: https://docs.caseinterviewpractice.com
+    about: Check the documentation before creating an issue
+  
+  - name: Support Portal
+    url: https://support.caseinterviewpractice.com
+    about: Get help with subscription and account issues
+  
+  - name: Feature Roadmap
+    url: https://roadmap.caseinterviewpractice.com
+    about: View planned features and enhancements
+
+# Issue templates configuration
+# Templates are referenced relative to this config file
+templates:
+  - name: Bug Reports
+    filename: bug_report.md
+    description: Report platform bugs and issues affecting system stability and performance
+    labels:
+      - bug
+      - triage
+  
+  - name: Feature Requests
+    filename: feature_request.md
+    description: Suggest new features or improvements aligned with platform architecture
+    labels:
+      - enhancement
