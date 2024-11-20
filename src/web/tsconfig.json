@@ -1,0 +1,99 @@
+{
+  // TypeScript 5.0+ configuration for NextJS/React frontend
+  // Requirements addressed:
+  // - Frontend Technology Stack: TypeScript 5.0+ with strong typing
+  // - Core Frameworks: NextJS 13+ with React 18+ integration
+  // - Development Environment: TypeScript compilation settings for CI/CD
+  "compilerOptions": {
+    // Target ES2020 for modern browser compatibility
+    "target": "ES2020",
+    
+    // Include necessary type definitions for DOM and ESNext features
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    
+    // Allow JavaScript files to be compiled
+    "allowJs": true,
+    
+    // Skip type checking of declaration files for better build performance
+    "skipLibCheck": true,
+    
+    // Enable all strict type checking options
+    "strict": true,
+    
+    // Don't emit files (NextJS handles this)
+    "noEmit": true,
+    
+    // Enable interop between CommonJS and ES Modules
+    "esModuleInterop": true,
+    
+    // Use ESNext module system
+    "module": "esnext",
+    
+    // Use bundler mode for module resolution (NextJS requirement)
+    "moduleResolution": "bundler",
+    
+    // Allow importing JSON files as modules
+    "resolveJsonModule": true,
+    
+    // Ensure each file can be safely transpiled without relying on other imports
+    "isolatedModules": true,
+    
+    // Preserve JSX for NextJS processing
+    "jsx": "preserve",
+    
+    // Enable incremental compilation for faster builds
+    "incremental": true,
+    
+    // NextJS compiler plugin
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    
+    // Path aliases for clean imports
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@/components/*": [
+        "./components/*"
+      ],
+      "@/lib/*": [
+        "./lib/*"
+      ],
+      "@/hooks/*": [
+        "./hooks/*"
+      ],
+      "@/types/*": [
+        "./types/*"
+      ],
+      "@/styles/*": [
+        "./styles/*"
+      ],
+      "@/config/*": [
+        "./config/*"
+      ]
+    },
+    
+    // Base directory for resolving non-relative module names
+    "baseUrl": "."
+  },
+  
+  // Files to include in compilation
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  
+  // Files to exclude from compilation
+  "exclude": [
+    "node_modules"
+  ]
+}
