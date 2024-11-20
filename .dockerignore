@@ -1,0 +1,35 @@
+# Optimizing container builds by excluding unnecessary development files
+.git
+.github
+.vscode
+.husky
+
+# Security Controls [8.2 DATA SECURITY]
+# Preventing sensitive information from being included in container builds
+**/.env*
+**/*.log
+
+# Containerization Strategy [9.3 CONTAINERIZATION]
+# Excluding development and build artifacts to optimize container size
+**/node_modules
+**/dist
+**/coverage
+**/.next
+**/*.test.ts
+**/*.test.tsx
+**/jest.config.*
+**/tsconfig.json
+.eslintrc*
+.prettierrc*
+playwright-report
+
+# Infrastructure and deployment files
+infrastructure/terraform
+infrastructure/monitoring
+docker-compose*.yml
+.vercel
+
+# Documentation and metadata files not needed in runtime
+**/README.md
+**/*.md
+LICENSE
