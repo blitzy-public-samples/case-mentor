@@ -1,0 +1,159 @@
+/* 
+ * Human Tasks:
+ * 1. Verify all fonts (Inter, Roboto Mono) are properly loaded and available
+ * 2. Test color contrast ratios across all components for WCAG 2.1 AA compliance
+ * 3. Validate responsive layouts across specified breakpoints (mobile: 320px, tablet: 768px, desktop: 1024px)
+ * 4. Ensure proper configuration of PostCSS and Tailwind plugins in build pipeline
+ */
+
+/* Import core styles and utilities */
+@import '../styles/tailwind.css';
+@import '../styles/components.css';
+@import '../styles/animations.css';
+
+/* Requirement: Design System Specifications - Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+/* Requirement: Design System Specifications - CSS Custom Properties */
+:root {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
+  --primary: #0F172A;
+  --secondary: #3B82F6;
+  --accent: #22C55E;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  --background: #FFFFFF;
+  --foreground: #0F172A;
+}
+
+/* Requirement: Design System Specifications - Base HTML Elements */
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+/* Requirement: Design System Specifications - Body Styles */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+}
+
+/* Requirement: Accessibility Requirements - Selection Styles */
+::selection {
+  background-color: var(--secondary);
+  color: white;
+}
+
+/* Requirement: Accessibility Requirements - Focus States */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Requirement: Design System Specifications - Typography Reset */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+code, pre, kbd {
+  font-family: var(--font-mono);
+}
+
+/* Requirement: Accessibility Requirements - Link States */
+a {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: color-mix(in srgb, var(--secondary) 80%, black);
+}
+
+/* Requirement: Design System Specifications - Form Elements Reset */
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Requirement: Accessibility Requirements - Disabled States */
+[disabled] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Requirement: Design System Specifications - List Reset */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Requirement: Responsive Design - Image Handling */
+img, 
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Requirement: Design System Specifications - Print Styles */
+@media print {
+  body {
+    background: white;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}
+
+/* Requirement: Accessibility Requirements - Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0F172A;
+    --foreground: #FFFFFF;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+}
+
+/* Requirement: Accessibility Requirements - Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Requirement: Design System Specifications - High Contrast Mode */
+@media (forced-colors: active) {
+  :root {
+    --primary: CanvasText;
+    --secondary: LinkText;
+    --accent: Highlight;
+    --background: Canvas;
+    --foreground: CanvasText;
+  }
+}
