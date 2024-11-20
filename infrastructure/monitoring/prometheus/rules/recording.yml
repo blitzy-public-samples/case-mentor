@@ -1,0 +1,59 @@
+# Prometheus Recording Rules Configuration v2.45.0
+# Purpose: Pre-compute frequently used metrics for API performance, system health, and business KPIs
+
+groups:
+  # API Performance Metrics
+  # Requirement: System Performance - Monitor API response times to ensure <200ms for 95% of requests
+  - name: api_performance_rules
+    rules:
+      # 95th percentile of HTTP request duration over 5m window
+      - record: job:http_request_duration_seconds:p95
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))
+        labels:
+          slo_target: "0.2"  # 200ms target
+      
+      # Request rate by status code and endpoint for traffic analysis
+      - record: job:http_requests_total:rate5m
+        expr: sum(rate(http_requests_total[5m])) by (status_code, handler)
+      
+      # Error ratio over 5m to monitor platform stability
+      # Requirement: Platform Stability - Track platform uptime to maintain 99.9% availability
+      - record: job:http_errors_total:ratio5m
+        expr: sum(rate(http_requests_total{status_code=~"5..|4.."}[5m])) / sum(rate(http_requests_total[5m]))
+        labels:
+          slo_target: "0.001"  # 99.9% uptime target
+
+  # Drill Engagement Metrics
+  # Requirement: User Engagement - Track >80% completion rate for started drills
+  - name: drill_engagement_rules
+    rules:
+      # Drill completion ratio over 1h window
+      - record: job:drill_completion:ratio1h
+        expr: sum(rate(drill_completions_total[1h])) / sum(rate(drill_starts_total[1h]))
+        labels:
+          slo_target: "0.8"  # 80% completion target
+      
+      # Success ratio for completed drills over 1h
+      - record: job:drill_success:ratio1h
+        expr: sum(rate(drill_success_total[1h])) / sum(rate(drill_completions_total[1h]))
+
+  # System Health Metrics
+  - name: system_health_rules
+    rules:
+      # Edge function memory usage tracking
+      - record: job:edge_function_memory:bytes
+        expr: avg_over_time(process_resident_memory_bytes[5m])
+        labels:
+          component: "edge_functions"
+      
+      # Database connection monitoring
+      - record: job:database_connections:current
+        expr: sum(pg_stat_activity_count) by (datname)
+        labels:
+          component: "supabase_postgres"
+      
+      # Cache performance monitoring
+      - record: job:cache_hit_ratio:5m
+        expr: rate(redis_keyspace_hits_total[5m]) / (rate(redis_keyspace_hits_total[5m]) + rate(redis_keyspace_misses_total[5m]))
+        labels:
+          component: "redis_cache"
