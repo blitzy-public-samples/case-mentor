@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+Human Tasks:
+1. Verify the final logo design matches brand guidelines
+2. Test the logo rendering across specified browser versions
+3. Confirm color contrast ratio of 4.5:1 is met in actual usage contexts
+4. Validate WCAG 2.1 AA compliance with automated tools
+-->
+<svg 
+    xmlns="http://www.w3.org/2000/svg"
+    width="200"
+    height="32"
+    viewBox="0 0 200 32"
+    fill="none"
+    role="img"
+    aria-label="Case Interview Practice Platform Logo"
+    preserveAspectRatio="xMidYMid meet"
+>
+    <!-- Implements Design System Specifications (7.1.1) - Light theme color scheme -->
+    <style>
+        .primary { fill: #FFFFFF; }
+        .secondary { fill: #F8FAFC; }
+        @media (hover: hover) {
+            .logo-group:hover { opacity: 0.9; }
+            .logo-group:active { opacity: 0.8; }
+        }
+    </style>
+
+    <!-- Main logo group with hover/active states -->
+    <g class="logo-group">
+        <!-- Abstract case/briefcase shape representing professional consulting -->
+        <path 
+            class="primary"
+            d="M24 8h-4V6c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-10-2h4v2h-4V6z"
+        />
+
+        <!-- Stylized "C" for Case -->
+        <path 
+            class="secondary"
+            d="M40 8.5c-4.4 0-8 3.6-8 8s3.6 8 8 8c2.4 0 4.6-1.1 6-2.8l-2.5-1.8c-.8 1-2.1 1.6-3.5 1.6-2.5 0-4.5-2-4.5-4.5s2-4.5 4.5-4.5c1.4 0 2.7.6 3.5 1.6l2.5-1.8c-1.4-1.7-3.6-2.8-6-2.8z"
+        />
+
+        <!-- "IP" letters -->
+        <path 
+            class="primary"
+            d="M60 8v16h3.5V8H60zm12 0h-3.5v16H72c4.4 0 8-3.6 8-8s-3.6-8-8-8zm0 12.5h-3.5v-9H72c2.5 0 4.5 2 4.5 4.5s-2 4.5-4.5 4.5z"
+        />
+
+        <!-- Stylized practice icon -->
+        <path 
+            class="secondary"
+            d="M92 8c-4.4 0-8 3.6-8 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12h-2v-6h2v6zm0-8h-2v-2h2v2z"
+        />
+    </g>
+
+    <!-- Platform text -->
+    <text 
+        x="110" 
+        y="20" 
+        class="primary" 
+        style="font-family: Arial, sans-serif; font-size: 14px; font-weight: bold;"
+    >
+        PLATFORM
+    </text>
+</svg>
