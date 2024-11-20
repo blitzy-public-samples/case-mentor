@@ -1,0 +1,244 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "datasource": "Prometheus",
+        "enable": true,
+        "expr": "changes(process_start_time_seconds{job=\"edge-functions\"}[5m])",
+        "iconColor": "#2F73E0",
+        "name": "Deployments",
+        "tags": ["deployment"],
+        "title": "API Deployment"
+      }
+    ]
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "title": "Response Time Distribution",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "95th percentile",
+          "interval": "15s",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "value": 0.2,
+          "colorMode": "critical",
+          "op": "gt",
+          "fill": true,
+          "line": true,
+          "yaxis": "left"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "s",
+          "label": "Response Time",
+          "min": 0,
+          "show": true
+        },
+        {
+          "show": false
+        }
+      ],
+      "description": "Requirement: System Performance - Monitor API response times to ensure <200ms for 95% of requests",
+      "alert": {
+        "name": "High Latency Alert",
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [0.2],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": ["A", "5m", "now"]
+            },
+            "reducer": {
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "frequency": "1m",
+        "handler": 1
+      }
+    },
+    {
+      "title": "Request Rate",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[5m])) by (status_code)",
+          "legendFormat": "{{status_code}}",
+          "interval": "15s",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "reqps",
+          "label": "Requests/sec",
+          "min": 0,
+          "show": true
+        },
+        {
+          "show": false
+        }
+      ],
+      "description": "Requirement: Platform Stability - Track request volume for capacity planning"
+    },
+    {
+      "title": "Error Rate",
+      "type": "graph",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status_code=~\"5..|4..\"}[5m])) / sum(rate(http_requests_total[5m]))",
+          "legendFormat": "Error %",
+          "interval": "15s",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "value": 0.01,
+          "colorMode": "warning",
+          "op": "gt",
+          "fill": true,
+          "line": true
+        },
+        {
+          "value": 0.05,
+          "colorMode": "critical",
+          "op": "gt",
+          "fill": true,
+          "line": true
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "label": "Error Rate",
+          "min": 0,
+          "max": 1,
+          "show": true
+        },
+        {
+          "show": false
+        }
+      ],
+      "description": "Requirement: Platform Stability - Track 99.9% uptime during peak usage"
+    },
+    {
+      "title": "Endpoint Latency",
+      "type": "heatmap",
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_request_duration_seconds_bucket[5m])) by (handler, le)",
+          "format": "heatmap",
+          "interval": "15s",
+          "refId": "A"
+        }
+      ],
+      "cards": {
+        "cardPadding": null,
+        "cardRound": null
+      },
+      "color": {
+        "mode": "spectrum",
+        "cardColor": "#b4ff00",
+        "colorScale": "linear",
+        "exponent": 0.5,
+        "min": null,
+        "max": null
+      },
+      "dataFormat": "timeseries",
+      "yBucketBound": "auto",
+      "description": "Requirement: Monitoring & Observability - Configure comprehensive metrics visualization"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["api", "performance", "monitoring"],
+  "templating": {
+    "list": [
+      {
+        "name": "endpoint",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(http_requests_total, handler)",
+        "refresh": 2,
+        "sort": 1,
+        "multi": true
+      },
+      {
+        "name": "status",
+        "type": "custom",
+        "query": "2xx,3xx,4xx,5xx",
+        "multi": true,
+        "includeAll": true
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "API Performance Dashboard",
+  "uid": "api-performance",
+  "version": 1
+}
