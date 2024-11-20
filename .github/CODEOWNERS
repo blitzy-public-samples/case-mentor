@@ -1,0 +1,34 @@
+# Requirements addressed:
+# - System Security (8.1): Enforces mandatory code reviews for security-sensitive components
+# - Development Pipeline (4.5): Implements code review requirements in development workflow
+# - Security Protocols (8.3): Ensures security-critical changes are reviewed by security team
+
+# Global fallback ownership - all files will require project lead review if no other rule matches
+* @project-leads
+
+# Backend code including API routes, services, and database access
+/src/backend/** @backend-team @security-team
+
+# Frontend code including React components, pages, and client-side logic
+/src/web/** @frontend-team
+
+# Infrastructure and deployment configuration including Vercel and Supabase settings
+/infrastructure/** @devops-team @security-team
+
+# Test files including unit, integration, and E2E tests
+*.test.ts @qa-team
+
+# Backend configuration files including environment variables and security settings
+/src/backend/config/** @security-team
+
+# Database migration and seed files for Supabase PostgreSQL
+*.sql @database-team @security-team
+
+# Authentication and authorization code including JWT handling and session management
+/src/backend/lib/auth/** @security-team
+
+# CI/CD and configuration files including GitHub Actions and Vercel configs
+*.yml @devops-team
+
+# Dependency management files to prevent supply chain attacks
+package*.json @security-team @dependency-team
