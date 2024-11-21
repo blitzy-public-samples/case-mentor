@@ -79,7 +79,7 @@ export function SimulationProvider({ children }: SimulationProviderProps) {
         throw new Error(response.error?.message || 'Failed to add species');
       }
 
-      setSimulationState(response.data);
+      setSimulationState(response.data.data);
       toast.show({
         type: ToastType.SUCCESS,
         message: `Added species: ${species.name}`
@@ -132,7 +132,7 @@ export function SimulationProvider({ children }: SimulationProviderProps) {
         throw new Error(response.error?.message || 'Failed to update environment');
       }
 
-      setSimulationState(response.data);
+      setSimulationState(response.data.data);
       toast.show({
         type: ToastType.SUCCESS,
         message: 'Environment parameters updated'
@@ -165,7 +165,7 @@ export function SimulationProvider({ children }: SimulationProviderProps) {
         throw new Error(response.error?.message || 'Failed to start simulation');
       }
 
-      setSimulationState(response.data);
+      setSimulationState(response.data.data);
       toast.show({
         type: ToastType.SUCCESS,
         message: 'Simulation started'
