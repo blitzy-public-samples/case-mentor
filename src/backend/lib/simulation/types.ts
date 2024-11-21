@@ -3,7 +3,10 @@ import { z } from 'zod'; // ^3.22.0
 import { 
   Species,
   EnvironmentParameters,
-  SimulationState
+  SimulationState,
+  SpeciesType,
+  SimulationStatus,
+  SimulationResult
 } from '../../types/simulation';
 
 /**
@@ -12,6 +15,9 @@ import {
  * 2. Configure TypeScript to enable strict mode for proper type checking
  * 3. Update tsconfig.json to include this file's directory in compilation
  */
+
+// Re-export imported types
+export { Species, EnvironmentParameters, SimulationState, SpeciesType, SimulationStatus, SimulationResult };
 
 /**
  * @description Context for simulation execution including user and time constraints
