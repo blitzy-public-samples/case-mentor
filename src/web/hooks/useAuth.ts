@@ -59,7 +59,7 @@ export function useAuth() {
           user: session.user,
           session,
           profile,
-          expiresAt: new Date(session.expires_at).getTime()
+          expiresAt: new Date(session.expires_at || 0).getTime()
         };
 
         setState({
@@ -86,7 +86,7 @@ export function useAuth() {
           session: prev.session ? {
             ...prev.session,
             session,
-            expiresAt: new Date(session.expires_at).getTime()
+            expiresAt: new Date(session.expires_at || 0).getTime()
           } : null
         }));
       }
@@ -151,7 +151,7 @@ export function useAuth() {
         user,
         session,
         profile,
-        expiresAt: new Date(session.expires_at).getTime()
+        expiresAt: new Date(session.expires_at || 0).getTime()
       };
 
       return {
@@ -209,7 +209,7 @@ export function useAuth() {
         user,
         session,
         profile,
-        expiresAt: new Date(session.expires_at).getTime()
+        expiresAt: new Date(session.expires_at || 0).getTime()
       };
 
       return {
