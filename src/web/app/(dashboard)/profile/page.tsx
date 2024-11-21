@@ -3,11 +3,11 @@ import React from 'react'; // ^18.0.0
 import { Metadata } from 'next'; // ^13.0.0
 
 // Internal imports
-import { Avatar } from '../../components/shared/Avatar';
-import { Card } from '../../components/shared/Card';
-import { useAuth } from '../../hooks/useAuth';
-import { theme } from '../../config/theme';
-import { PROFILE_SECTIONS, SKILL_CATEGORIES } from '../../config/constants';
+import { Avatar } from '@/components/shared/Avatar';
+import { Card } from '@/components/shared/Card';
+import { useAuth } from '@/hooks/useAuth';
+import { theme } from '@/config/theme';
+import { PROFILE_SECTIONS, SKILL_CATEGORIES } from '@/config/constants';
 
 /**
  * Human Tasks:
