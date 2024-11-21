@@ -2,7 +2,6 @@
 import { z } from 'zod';
 import { DrillType } from './drills';
 import { SimulationStatus } from './simulation';
-import { UserRole } from './user';
 
 /**
  * Human Tasks:
