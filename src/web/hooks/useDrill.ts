@@ -51,7 +51,7 @@ export function useDrill(drillType: DrillType) {
       throw new Error(response.error?.message || 'Failed to fetch drills');
     }
 
-    return response.data as DrillPrompt[];
+    return response.data.data as DrillPrompt[];
   }, [drillType, userId]);
 
   /**
@@ -69,7 +69,7 @@ export function useDrill(drillType: DrillType) {
       throw new Error(response.error?.message || 'Failed to fetch progress');
     }
 
-    return response.data as DrillProgress;
+    return response.data.data as DrillProgress;
   }, [drillType, userId]);
 
   /**
