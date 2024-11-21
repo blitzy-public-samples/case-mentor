@@ -27,43 +27,15 @@ interface PlanCardProps {
 
 // Requirement: Design System Specifications - Plan card styling variants
 const planCardVariants = {
-  container: cn(
-    'relative flex flex-col p-6',
-    'transition-all duration-200',
-    'hover:shadow-md'
-  ),
-  header: cn(
-    'mb-4 space-y-2'
-  ),
-  title: cn(
-    'text-xl font-semibold tracking-tight',
-    'text-gray-900'
-  ),
-  price: cn(
-    'text-3xl font-bold',
-    'text-primary-600'
-  ),
-  description: cn(
-    'text-sm text-gray-500',
-    'mb-4'
-  ),
-  featureList: cn(
-    'space-y-3 mb-8'
-  ),
-  featureItem: cn(
-    'flex items-center text-sm',
-    'text-gray-600'
-  ),
-  checkIcon: cn(
-    'mr-3 h-4 w-4',
-    'text-green-500'
-  ),
-  selectedBadge: cn(
-    'absolute top-4 right-4',
-    'px-2 py-1 rounded-full',
-    'bg-green-100 text-green-800',
-    'text-xs font-medium'
-  )
+  container: 'relative flex flex-col p-6 transition-all duration-200 hover:shadow-md',
+  header: 'mb-4 space-y-2',
+  title: 'text-xl font-semibold tracking-tight text-gray-900',
+  price: 'text-3xl font-bold text-primary-600',
+  description: 'text-sm text-gray-500 mb-4',
+  featureList: 'space-y-3 mb-8',
+  featureItem: 'flex items-center text-sm text-gray-600',
+  checkIcon: 'mr-3 h-4 w-4 text-green-500',
+  selectedBadge: 'absolute top-4 right-4 px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium'
 };
 
 // Requirement: Subscription System - Plan card component implementation
