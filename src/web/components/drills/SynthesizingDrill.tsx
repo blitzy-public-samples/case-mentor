@@ -88,7 +88,7 @@ export const SynthesizingDrill: React.FC<SynthesizingDrillProps> = ({
       if (result.success) {
         onComplete();
       } else {
-        setFeedback(result.error ? result.error.message : 'Failed to submit response. Please try again.');
+        setFeedback(result.error || 'Failed to submit response. Please try again.');
       }
     } catch (error) {
       setFeedback('An unexpected error occurred. Please try again.');
