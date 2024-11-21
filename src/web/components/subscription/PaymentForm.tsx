@@ -2,7 +2,7 @@
 
 // External dependencies
 import * as React from 'react'; // ^18.0.0
-import { Elements, CardElement, useStripe } from '@stripe/stripe-react-components'; // ^2.0.0
+import { Elements, CardElement, useStripe } from '@stripe/react-stripe-js'; // ^2.0.0
 
 // Internal dependencies
 import { buttonVariants } from '../shared/Button';
