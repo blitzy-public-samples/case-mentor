@@ -90,14 +90,6 @@ export async function initializePool(config: DatabaseConfig = databaseConfig): P
                 params: {
                     eventsPerSecond: 10
                 }
-            },
-            pool: {
-                min: config.poolMin,
-                max: config.poolMax,
-                idleTimeoutMillis: 120000,
-                createTimeoutMillis: 5000,
-                acquireTimeoutMillis: 10000,
-                propagateCreateError: false
             }
         });
 
@@ -135,13 +127,13 @@ export async function executeQuery<T>(
 
     try {
         const queryPromise = supabaseInstance.rpc(query, params);
-        const result = await Promise.race([queryPromise, timeoutPromise]);
+        const result = await Promise.race([queryPromise, timeoutPromise]) as { data: T };
 
         if (options.singleRow && Array.isArray(result.data)) {
             return result.data[0] as T;
         }
 
-        return result.data as T;
+        return result.data;
     } catch (error: any) {
         throw new DatabaseError(
             'Query execution failed',
@@ -187,7 +179,7 @@ export async function withTransaction<T>(
 export function buildQuery<T>(
     table: string,
     filters: QueryFilters = {}
-): PostgrestFilterBuilder<T> {
+): PostgrestFilterBuilder<any, T, T> {
     if (!supabaseInstance) {
         throw new DatabaseError(
             'Database connection not initialized',
@@ -218,5 +210,5 @@ export function buildQuery<T>(
         );
     }
 
-    return query as PostgrestFilterBuilder<T>;
+    return query as PostgrestFilterBuilder<any, T, T>;
 }
