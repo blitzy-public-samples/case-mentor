@@ -76,7 +76,19 @@ export async function POST(
 
         return NextResponse.json(response, { status: 200 });
     } catch (error) {
-        // Use global error handler for standardized error responses
-        return handleError(error as Error, requestId);
+        // Create error response with the expected type
+        const errorResponse: APIResponse<{ received: boolean }> = {
+            success: false,
+            data: { received: false },
+            error: {
+                code: 'INTERNAL_ERROR',
+                message: error instanceof Error ? error.message : 'Unknown error occurred',
+                details: {},
+                timestamp: new Date().toISOString(),
+                requestId
+            },
+            metadata: {}
+        };
+        return NextResponse.json(errorResponse, { status: 500 });
     }
 }
