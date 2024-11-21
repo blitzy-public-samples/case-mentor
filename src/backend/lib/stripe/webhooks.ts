@@ -126,11 +126,11 @@ const handlePaymentFailed = async (event: Stripe.Event): Promise<void> => {
  * Requirement: Payment Processing - Webhook event handling
  */
 export const handleWebhook = async (
-  req: Request,
+  req: Request & { body: string },
   res: Response
 ): Promise<Response> => {
-  const signature = req.headers['stripe-signature'];
-  const payload = req.rawBody?.toString() || '';
+  const signature = req.headers['stripe-signature'] as string;
+  const payload = req.body;
 
   try {
     // Validate webhook signature
