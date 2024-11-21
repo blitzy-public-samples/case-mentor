@@ -23,24 +23,26 @@ import { APIError, APIErrorCode } from '../../../../types/api';
  */
 async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string }; user: User }
 ): Promise<NextResponse> {
   try {
     // Start performance timer
     const startTime = performance.now();
 
     // Validate user ID format
-    if (!params.id || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(params.id)) {
+    if (!context.params.id || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(context.params.id)) {
       throw {
         code: APIErrorCode.VALIDATION_ERROR,
         message: 'Invalid user ID format',
-        details: { id: params.id }
+        details: { id: context.params.id },
+        timestamp: new Date().toISOString(),
+        requestId: request.headers.get('x-request-id') || crypto.randomUUID()
       } as APIError;
     }
 
     // Initialize service and retrieve progress data
     const userService = new UserService();
-    const progress: UserProgress = await userService.getUserProgress(params.id);
+    const progress: UserProgress = await userService.getUserProgress(context.params.id);
 
     // Calculate response time
     const responseTime = performance.now() - startTime;
@@ -71,8 +73,9 @@ async function GET(
   } catch (error) {
     // Handle known errors
     if ((error as APIError).code) {
-      return NextResponse.json(error, {
-        status: error.code === APIErrorCode.VALIDATION_ERROR ? 400 : 500
+      const apiError = error as APIError;
+      return NextResponse.json(apiError, {
+        status: apiError.code === APIErrorCode.VALIDATION_ERROR ? 400 : 500
       });
     }
 
@@ -82,7 +85,9 @@ async function GET(
       message: 'Failed to retrieve user progress',
       details: {
         error: error instanceof Error ? error.message : 'Unknown error'
-      }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: request.headers.get('x-request-id') || crypto.randomUUID()
     } as APIError, { 
       status: 500 
     });
