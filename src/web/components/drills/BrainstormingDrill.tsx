@@ -160,6 +160,9 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
     }
   }, [ideas.length, handleSubmit]);
 
+  // Ensure timeLimit is a number, defaulting to 0 if undefined
+  const duration = (prompt.timeLimit || 0) * 60;
+
   return (
     <div className="space-y-6 p-4 bg-white rounded-lg shadow-md">
       {/* Drill prompt section */}
@@ -170,7 +173,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
 
       {/* Timer section */}
       <DrillTimer
-        duration={(prompt.timeLimit || 0) * 60} // Convert minutes to seconds, ensure non-null value
+        duration={duration}
         drillId={prompt.id}
         onTimeUp={handleTimeUp}
         autoStart={true}

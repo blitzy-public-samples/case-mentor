@@ -34,17 +34,13 @@ const cardElementStyles = {
     '::placeholder': {
       color: '#64748B',
     },
-    ':focus': {
-      outline: 'none',
-      boxShadow: '0 0 0 2px rgba(59, 130, 246, 0.5)',
-    },
+    backgroundColor: 'white',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
   },
   invalid: {
     color: '#EF4444',
-    ':focus': {
-      boxShadow: '0 0 0 2px rgba(239, 68, 68, 0.5)',
-    },
-  },
+    iconColor: '#EF4444'
+  }
 };
 
 // Initialize Stripe
