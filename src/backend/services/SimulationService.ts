@@ -45,6 +45,35 @@ export class SimulationService {
   }
 
   /**
+   * Retrieves the current state of a simulation by its ID
+   * Addresses requirement: Simulation Components - Real-time state management
+   */
+  public async getState(simulationId: string): Promise<SimulationState> {
+    if (!this.simulation || !this.currentAttempt) {
+      throw new APIError(
+        APIErrorCode.NOT_FOUND,
+        'Simulation not found'
+      );
+    }
+
+    if (this.currentAttempt.id !== simulationId) {
+      throw new APIError(
+        APIErrorCode.NOT_FOUND,
+        'Simulation ID mismatch'
+      );
+    }
+
+    return {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
+  }
+
+  /**
    * Starts a new simulation attempt for a user
    * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
    */
