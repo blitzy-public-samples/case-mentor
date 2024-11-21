@@ -11,11 +11,12 @@
 
 import { Stripe } from 'stripe';
 import { Subscription, isSubscription } from '../types/subscription';
+import { UserSubscriptionStatus } from '../types/user';
 import { executeQuery, withTransaction } from '../utils/database';
 
 // Initialize Stripe client
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
+  apiVersion: '2022-11-15',
   typescript: true,
 });
 
@@ -70,7 +71,7 @@ export class SubscriptionModel implements Subscription {
           stripeSubscriptionId: stripeSubscription.id,
           currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
           currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
-          status: stripeSubscription.status === 'active' ? 'ACTIVE' : 'PAST_DUE',
+          status: stripeSubscription.status === 'active' ? UserSubscriptionStatus.ACTIVE : UserSubscriptionStatus.PAST_DUE,
         };
 
         // Store in database
@@ -94,7 +95,7 @@ export class SubscriptionModel implements Subscription {
 
       return new SubscriptionModel(subscription);
     } catch (error) {
-      throw new Error(`Failed to create subscription: ${error.message}`);
+      throw new Error(`Failed to create subscription: ${(error as Error).message}`);
     }
   }
 
@@ -110,7 +111,7 @@ export class SubscriptionModel implements Subscription {
 
       return subscription ? new SubscriptionModel(subscription) : null;
     } catch (error) {
-      throw new Error(`Failed to find subscription: ${error.message}`);
+      throw new Error(`Failed to find subscription: ${(error as Error).message}`);
     }
   }
 
@@ -121,12 +122,12 @@ export class SubscriptionModel implements Subscription {
     try {
       const subscription = await executeQuery<Subscription | null>(
         'SELECT * FROM subscriptions WHERE user_id = $1 AND status = $2',
-        [userId, 'ACTIVE']
+        [userId, UserSubscriptionStatus.ACTIVE]
       );
 
       return subscription ? new SubscriptionModel(subscription) : null;
     } catch (error) {
-      throw new Error(`Failed to find user subscription: ${error.message}`);
+      throw new Error(`Failed to find user subscription: ${(error as Error).message}`);
     }
   }
 
@@ -161,7 +162,7 @@ export class SubscriptionModel implements Subscription {
 
       return new SubscriptionModel(updatedSubscription);
     } catch (error) {
-      throw new Error(`Failed to update subscription: ${error.message}`);
+      throw new Error(`Failed to update subscription: ${(error as Error).message}`);
     }
   }
 
@@ -184,11 +185,11 @@ export class SubscriptionModel implements Subscription {
         // Update database record
         await executeQuery(
           'UPDATE subscriptions SET status = $1, cancel_at_period_end = $2 WHERE id = $3',
-          [immediately ? 'CANCELED' : 'ACTIVE', !immediately, this.id]
+          [immediately ? UserSubscriptionStatus.CANCELED : UserSubscriptionStatus.ACTIVE, !immediately, this.id]
         );
       });
     } catch (error) {
-      throw new Error(`Failed to cancel subscription: ${error.message}`);
+      throw new Error(`Failed to cancel subscription: ${(error as Error).message}`);
     }
   }
 
@@ -210,7 +211,7 @@ export class SubscriptionModel implements Subscription {
 
       return usage.current_usage < limits.limit;
     } catch (error) {
-      throw new Error(`Failed to check usage: ${error.message}`);
+      throw new Error(`Failed to check usage: ${(error as Error).message}`);
     }
   }
 }
