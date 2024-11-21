@@ -116,7 +116,8 @@ export function useAuth() {
         setState(prev => ({
           ...prev,
           loading: false,
-          session: authSession
+          session: authSession,
+          user: authSession.user
         }));
       }
     } catch (error) {
