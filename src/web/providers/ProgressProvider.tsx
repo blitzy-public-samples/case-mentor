@@ -5,6 +5,7 @@ import React, { createContext, useContext, ReactNode, useEffect } from 'react'; 
 import { useProgress } from '../hooks/useProgress';
 import { useAuth } from '../hooks/useAuth';
 import { UserProgress } from '../types/user';
+import { APIError } from '../types/api';
 
 /**
  * Human Tasks:
@@ -21,7 +22,7 @@ export const PROGRESS_UPDATE_INTERVAL = 300000;
 interface ProgressContextValue {
   progress: UserProgress | null;
   isLoading: boolean;
-  error: Error | null;
+  error: APIError | null;
   updateProgress: () => Promise<void>;
 }
 
