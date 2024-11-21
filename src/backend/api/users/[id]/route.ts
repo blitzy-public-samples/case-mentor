@@ -25,19 +25,19 @@ export const GET = withAuth(async (
     context: { user: { id: string } }
 ) => {
     try {
-        const { params } = request;
+        const userId = request.url.split('/users/')[1].split('/')[0];
         // Verify requesting user has access to requested profile
-        if (context.user.id !== params.id) {
+        if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR',
+                'AUTHORIZATION_ERROR' as const,
                 'Unauthorized access to user profile',
-                { requestedUserId: params.id }
+                { requestedUserId: userId }
             );
         }
 
         // Initialize UserService and retrieve progress
         const userService = new UserService();
-        const userProgress = await userService.getUserProgress(params.id);
+        const userProgress = await userService.getUserProgress(userId);
 
         return NextResponse.json({
             success: true,
@@ -53,7 +53,7 @@ export const GET = withAuth(async (
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR',
+            'INTERNAL_ERROR' as const,
             'Failed to retrieve user data',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -71,13 +71,13 @@ export const PATCH = withAuth(async (
     context: { user: { id: string } }
 ) => {
     try {
-        const { params } = request;
+        const userId = request.url.split('/users/')[1].split('/')[0];
         // Verify requesting user owns the profile
-        if (context.user.id !== params.id) {
+        if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR',
+                'AUTHORIZATION_ERROR' as const,
                 'Unauthorized profile modification',
-                { requestedUserId: params.id }
+                { requestedUserId: userId }
             );
         }
 
@@ -85,7 +85,7 @@ export const PATCH = withAuth(async (
         const profileData = await request.json();
         if (!profileData) {
             throw new APIError(
-                'VALIDATION_ERROR',
+                'VALIDATION_ERROR' as const,
                 'Profile data is required',
                 { received: profileData }
             );
@@ -93,7 +93,7 @@ export const PATCH = withAuth(async (
 
         // Initialize UserService and update profile
         const userService = new UserService();
-        const updatedUser = await userService.updateProfile(params.id, profileData);
+        const updatedUser = await userService.updateProfile(userId, profileData);
 
         return NextResponse.json({
             success: true,
@@ -109,7 +109,7 @@ export const PATCH = withAuth(async (
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR',
+            'INTERNAL_ERROR' as const,
             'Failed to update user profile',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -127,19 +127,19 @@ export const DELETE = withAuth(async (
     context: { user: { id: string } }
 ) => {
     try {
-        const { params } = request;
+        const userId = request.url.split('/users/')[1].split('/')[0];
         // Verify requesting user owns the account
-        if (context.user.id !== params.id) {
+        if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR',
+                'AUTHORIZATION_ERROR' as const,
                 'Unauthorized account deletion',
-                { requestedUserId: params.id }
+                { requestedUserId: userId }
             );
         }
 
         // Initialize UserService and update subscription
         const userService = new UserService();
-        await userService.updateSubscription(params.id, {
+        await userService.updateSubscription(userId, {
             tier: UserSubscriptionTier.FREE,
             status: UserSubscriptionStatus.CANCELED
         });
@@ -158,7 +158,7 @@ export const DELETE = withAuth(async (
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR',
+            'INTERNAL_ERROR' as const,
             'Failed to deactivate account',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
