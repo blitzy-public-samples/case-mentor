@@ -128,13 +128,14 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
     setError(null);
 
     try {
+      const timeSpent = (prompt.timeLimit || 0) * 60; // Convert to seconds, default to 0 if undefined
       const attempt: Partial<DrillAttempt> = {
         promptId: prompt.id,
         response: JSON.stringify(ideas),
-        timeSpent: (prompt.timeLimit || 0) * 60 // Convert to seconds, default to 0 if undefined
+        timeSpent
       };
 
-      const result = await submitAttempt(prompt.id, attempt.response!, attempt.timeSpent);
+      const result = await submitAttempt(prompt.id, attempt.response!, timeSpent);
 
       if (result.success) {
         onComplete(result.data as DrillAttempt);
