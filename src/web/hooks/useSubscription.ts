@@ -1,3 +1,15 @@
+export enum ErrorCode {
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+  AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR',
+  RATE_LIMIT_ERROR = 'RATE_LIMIT_ERROR',
+  INTERNAL_ERROR = 'INTERNAL_ERROR'
+}
+```
+
+I'll fix this by using the correct ErrorCode.INTERNAL_ERROR value.
+
+# src/web/hooks/useSubscription.ts
+```typescript
 // Third-party imports
 import { useState, useEffect, useCallback } from 'react'; // ^18.0.0
 import { loadStripe } from '@stripe/stripe-js'; // ^2.0.0
@@ -122,7 +134,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'SUBSCRIPTION_ERROR',
+          code: 'INTERNAL_ERROR',
           message: error.message,
           details: {}
         },
@@ -172,7 +184,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'SUBSCRIPTION_ERROR',
+          code: 'INTERNAL_ERROR',
           message: error.message,
           details: {}
         },
