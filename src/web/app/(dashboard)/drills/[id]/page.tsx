@@ -93,7 +93,7 @@ const DrillPage = () => {
       );
 
       if (!result.success) {
-        throw new Error(result.error?.message || 'Failed to submit attempt');
+        throw new Error(result.error || 'Failed to submit attempt');
       }
 
       if (!result.data) {
