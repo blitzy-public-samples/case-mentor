@@ -2,9 +2,8 @@
 import { z } from 'zod'; // ^3.22.0
 import { 
   Species,
-  Environment,
-  SimulationState,
-  SimulationConfig
+  EnvironmentParameters,
+  SimulationState
 } from '../../types/simulation';
 
 /**
@@ -21,7 +20,7 @@ import {
 export interface SimulationExecutionContext {
   userId: string;
   timeLimit: number;
-  config: SimulationConfig;
+  config: Record<string, any>;
 }
 
 /**
@@ -51,7 +50,7 @@ export interface SpeciesInteraction {
  */
 export interface EcosystemState {
   species: Species[];
-  environment: Environment;
+  environment: EnvironmentParameters;
   interactions: SpeciesInteraction[];
   stabilityScore: number;
   timestamp: number;
