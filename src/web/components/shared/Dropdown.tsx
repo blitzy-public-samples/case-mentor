@@ -9,7 +9,7 @@
 // react v18.x
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { clsx } from 'clsx';
 // lucide-react v0.284.0
 import { ChevronDown } from 'lucide-react';
 import { colors, shadows } from '../../config/theme';
@@ -39,6 +39,9 @@ interface DropdownContextType {
   handleSelect: (value: string) => void;
 }
 
+// Utility function to replace cn from class-variance-authority
+const cn = (...inputs: (string | undefined | null | boolean | { [key: string]: boolean })[]) => clsx(inputs);
+
 // Requirement: Component Library - Create dropdown context
 const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
 
@@ -48,7 +51,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
-    const optionsRef = useRef<(HTMLLIElement | null)[]>([]);
+    const optionsRef = useRef<Array<HTMLLIElement | null>>([]);
 
     // Requirement: Accessibility Requirements - Handle click outside
     useEffect(() => {
@@ -221,7 +224,7 @@ const Dropdown = React.forwardRef<HTMLDivElement, DropdownProps>(
               {options.map((option, index) => (
                 <li
                   key={option.value}
-                  ref={el => optionsRef.current[index] = el}
+                  ref={(el) => { optionsRef.current[index] = el }}
                   role="option"
                   className={optionStyles(value === option.value, !!option.disabled)}
                   aria-selected={value === option.value}
