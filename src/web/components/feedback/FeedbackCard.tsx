@@ -1,12 +1,12 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { clsx } from 'class-variance-authority';
 // lucide-react v0.284.0
 import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 // Internal imports
-import Card from '../shared/Card';
+import { Card } from '../shared/Card';
 import { FeedbackType, FeedbackCategory, FeedbackSeverity, AIFeedback } from '../../types/feedback';
 import { useFeedback } from '../../hooks/useFeedback';
 
@@ -53,7 +53,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
 
   if (isLoading) {
     return (
-      <Card className={cn('animate-pulse', className)}>
+      <Card className={clsx('animate-pulse', className)}>
         <div className="space-y-4">
           <div className="h-4 bg-gray-200 rounded w-3/4"></div>
           <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -68,7 +68,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
   }
 
   return (
-    <Card className={cn('space-y-6', className)}>
+    <Card className={clsx('space-y-6', className)}>
       {/* Requirement: User Management - Overall score section */}
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold">Overall Performance</h3>
@@ -82,7 +82,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
       <div className="space-y-4">
         {Object.values(FeedbackCategory).map((category) => {
           const categoryFeedback = feedback.feedbackPoints.filter(
-            (point) => point.category === category
+            (point: { category: FeedbackCategory }) => point.category === category
           );
 
           if (categoryFeedback.length === 0) return null;
@@ -91,9 +91,14 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
             <div key={category} className="space-y-2">
               <h4 className="font-medium text-gray-700">{category}</h4>
               <div className="space-y-3">
-                {categoryFeedback.map((point) => (
+                {categoryFeedback.map((point: {
+                  id: string;
+                  severity: FeedbackSeverity;
+                  message: string;
+                  suggestion: string;
+                }) => (
                   <div key={point.id} className="flex items-start space-x-3">
-                    <div className={cn('flex-shrink-0 mt-1', getSeverityColor(point.severity))}>
+                    <div className={clsx('flex-shrink-0 mt-1', getSeverityColor(point.severity))}>
                       {getSeverityIcon(point.severity)}
                     </div>
                     <div className="space-y-1">
@@ -115,7 +120,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
         <div className="space-y-2">
           <h4 className="font-medium text-green-600">Strengths</h4>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {feedback.strengths.map((strength, index) => (
+            {feedback.strengths.map((strength: string, index: number) => (
               <li key={index}>{strength}</li>
             ))}
           </ul>
@@ -123,7 +128,7 @@ const FeedbackCard: React.FC<FeedbackCardProps> = ({ drillId, className }) => {
         <div className="space-y-2">
           <h4 className="font-medium text-yellow-600">Areas for Improvement</h4>
           <ul className="list-disc list-inside space-y-1 text-gray-700">
-            {feedback.improvements.map((improvement, index) => (
+            {feedback.improvements.map((improvement: string, index: number) => (
               <li key={index}>{improvement}</li>
             ))}
           </ul>
