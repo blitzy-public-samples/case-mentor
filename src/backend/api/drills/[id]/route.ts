@@ -5,6 +5,7 @@ import { DrillService } from '../../../services/DrillService';
 import { withAuth, requireSubscription } from '../../../lib/auth/middleware';
 import { DrillResponse, DrillPrompt, DrillAttempt, DrillEvaluation } from '../../../types/drills';
 import { APIErrorCode } from '../../../types/api';
+import { UserSubscriptionTier } from '../../../types/user';
 
 /**
  * Human Tasks:
@@ -14,11 +15,17 @@ import { APIErrorCode } from '../../../types/api';
  * 4. Review and adjust concurrent attempt limits based on usage patterns
  */
 
+// Declare global augmentations for supabase and redis
+declare global {
+  var supabase: any;
+  var redis: any;
+}
+
 // Requirement: Practice Drills - GET endpoint for retrieving drill by ID
 export const GET = withAuth(
   async (
-    request: NextRequest,
-    { params }: { params: { id: string } }
+    request: NextRequest & { user: any },
+    context: { params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillPrompt>>> => {
     try {
       // Initialize drill service
@@ -29,7 +36,7 @@ export const GET = withAuth(
       );
 
       // Retrieve drill by ID
-      const drill = await drillService.getDrillById(params.id);
+      const drill = await drillService.getDrillById(context.params.id);
 
       // Return successful response
       return NextResponse.json({
@@ -56,8 +63,8 @@ export const GET = withAuth(
 // Requirement: Practice Drills - POST endpoint for drill attempts and submissions
 export const POST = withAuth(
   async (
-    request: NextRequest,
-    { params }: { params: { id: string } }
+    request: NextRequest & { user: any },
+    context: { params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillAttempt | DrillEvaluation>>> => {
     try {
       // Parse request body
@@ -76,7 +83,7 @@ export const POST = withAuth(
           // Requirement: User Engagement - Start new drill attempt
           const attempt = await drillService.startDrillAttempt(
             request.user.id,
-            params.id
+            context.params.id
           );
 
           return NextResponse.json({
@@ -134,6 +141,6 @@ export const POST = withAuth(
 
 // Apply subscription tier validation to both endpoints
 export const { GET: AuthenticatedGET, POST: AuthenticatedPOST } = {
-  GET: requireSubscription(['BASIC', 'PREMIUM'])(GET),
-  POST: requireSubscription(['BASIC', 'PREMIUM'])(POST)
+  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null }),
+  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null })
 };
