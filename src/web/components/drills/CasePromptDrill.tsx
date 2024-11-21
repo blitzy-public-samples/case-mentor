@@ -1,6 +1,6 @@
 // Third-party imports
 import React, { useState, useEffect, useCallback } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn from class-variance-authority
 
 // Internal imports
 import { DrillType, DrillPrompt, DrillAttempt, DrillFeedback } from '../../types/drills';
@@ -168,6 +168,7 @@ export const CasePromptDrill: React.FC<CasePromptDrillProps> = ({
           drillId={promptId}
           onTimeUp={handleTimeUp}
           autoStart={true}
+          drillType={DrillType.CASE_PROMPT}
         />
       </section>
 
@@ -187,7 +188,7 @@ export const CasePromptDrill: React.FC<CasePromptDrillProps> = ({
               setResponse(e.target.value);
               validateResponse(e.target.value);
             }}
-            className={cn(
+            className={clsx(
               "w-full min-h-[300px] p-4 rounded-md border resize-y",
               "focus:ring-2 focus:ring-primary-base focus:outline-none",
               validationError ? "border-error-base" : "border-gray-300"
@@ -213,7 +214,7 @@ export const CasePromptDrill: React.FC<CasePromptDrillProps> = ({
         <button
           type="submit"
           disabled={isSubmitting || !!validationError}
-          className={cn(
+          className={clsx(
             "w-full py-3 px-4 rounded-md font-medium text-white",
             "transition-colors duration-200",
             isSubmitting || validationError

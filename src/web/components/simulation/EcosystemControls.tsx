@@ -12,8 +12,8 @@ import React, { useState, useCallback } from 'react';
 // Internal imports
 import { EnvironmentParameters, SimulationStatus } from '../../types/simulation';
 import { useSimulation } from '../../hooks/useSimulation';
-import Select from '../shared/Select';
-import Button from '../shared/Button';
+import { Select } from '../shared/Select';
+import { Button } from '../shared/Button';
 
 // Environment parameter options with ARIA-compliant labels
 const TEMPERATURE_OPTIONS = [
@@ -94,7 +94,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
         <Select
           value={environment.temperature.toString()}
           options={TEMPERATURE_OPTIONS}
-          onChange={(value) => handleEnvironmentChange('temperature', value)}
+          onChange={(value: string) => handleEnvironmentChange('temperature', value)}
           placeholder="Select Temperature"
           disabled={loading || simulationState?.status === SimulationStatus.RUNNING}
           aria-label="Water Temperature"
@@ -103,7 +103,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
         <Select
           value={environment.depth.toString()}
           options={DEPTH_OPTIONS}
-          onChange={(value) => handleEnvironmentChange('depth', value)}
+          onChange={(value: string) => handleEnvironmentChange('depth', value)}
           placeholder="Select Depth"
           disabled={loading || simulationState?.status === SimulationStatus.RUNNING}
           aria-label="Water Depth"
@@ -112,7 +112,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
         <Select
           value={environment.salinity.toString()}
           options={SALINITY_OPTIONS}
-          onChange={(value) => handleEnvironmentChange('salinity', value)}
+          onChange={(value: string) => handleEnvironmentChange('salinity', value)}
           placeholder="Select Salinity"
           disabled={loading || simulationState?.status === SimulationStatus.RUNNING}
           aria-label="Water Salinity"
@@ -121,7 +121,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
         <Select
           value={environment.lightLevel.toString()}
           options={LIGHT_LEVEL_OPTIONS}
-          onChange={(value) => handleEnvironmentChange('lightLevel', value)}
+          onChange={(value: string) => handleEnvironmentChange('lightLevel', value)}
           placeholder="Select Light Level"
           disabled={loading || simulationState?.status === SimulationStatus.RUNNING}
           aria-label="Light Level"
@@ -140,7 +140,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
             onClick={startSimulation}
             disabled={loading}
             isLoading={loading}
-            aria-label="Start Simulation"
+            ariaLabel="Start Simulation"
           >
             Start
           </Button>
@@ -150,7 +150,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
             onClick={stopSimulation}
             disabled={loading}
             isLoading={loading}
-            aria-label="Stop Simulation"
+            ariaLabel="Stop Simulation"
           >
             Stop
           </Button>
@@ -160,7 +160,7 @@ export default function EcosystemControls({ className }: EcosystemControlsProps)
           variant="ghost"
           onClick={resetSimulation}
           disabled={loading || simulationState?.status === SimulationStatus.RUNNING}
-          aria-label="Reset Simulation"
+          ariaLabel="Reset Simulation"
         >
           Reset
         </Button>

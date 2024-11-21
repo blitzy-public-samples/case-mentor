@@ -1,7 +1,7 @@
 // react v18.0.0
 import React, { useState, useCallback } from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { clsx } from 'class-variance-authority';
 
 // Internal imports
 import { 
@@ -48,7 +48,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
     return (
       <div
         key={point.id}
-        className={cn(
+        className={clsx(
           'p-4 mb-3 rounded-lg border-l-4',
           severityStyles[point.severity]
         )}
@@ -105,7 +105,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
         </div>
         
         <div 
-          className={cn(
+          className={clsx(
             'flex items-center justify-center w-20 h-20',
             'rounded-full border-4',
             scoreColor,
@@ -126,7 +126,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
   // Loading state
   if (isLoading) {
     return (
-      <Card className={cn('animate-pulse', className)}>
+      <Card className={clsx('animate-pulse', className)}>
         <div className="h-32 bg-gray-200 rounded" />
       </Card>
     );
@@ -135,7 +135,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
   // Error state
   if (error) {
     return (
-      <Card className={cn('p-6 text-red-600', className)}>
+      <Card className={clsx('p-6 text-red-600', className)}>
         <p role="alert">Failed to load feedback: {error.message}</p>
       </Card>
     );
@@ -144,14 +144,14 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
   // No feedback available
   if (!feedback) {
     return (
-      <Card className={cn('p-6 text-gray-600', className)}>
+      <Card className={clsx('p-6 text-gray-600', className)}>
         <p>No feedback available yet.</p>
       </Card>
     );
   }
 
   // Group feedback points by category
-  const feedbackByCategory = feedback.feedbackPoints.reduce((acc, point) => {
+  const feedbackByCategory = feedback.feedbackPoints.reduce<Record<FeedbackCategory, FeedbackPoint[]>>((acc, point) => {
     if (!acc[point.category]) {
       acc[point.category] = [];
     }
@@ -161,7 +161,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
 
   return (
     <div 
-      className={cn('space-y-6', className)}
+      className={clsx('space-y-6', className)}
       role="region"
       aria-label="AI Feedback"
     >
@@ -204,7 +204,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
         <div className="p-6">
           <h2 className="text-xl font-semibold mb-4">Key Strengths</h2>
           <ul className="list-disc pl-5 space-y-2">
-            {feedback.strengths.map((strength, index) => (
+            {feedback.strengths.map((strength: string, index: number) => (
               <li key={index} className="text-green-700">{strength}</li>
             ))}
           </ul>
@@ -216,7 +216,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
         <div className="p-6">
           <h2 className="text-xl font-semibold mb-4">Areas for Improvement</h2>
           <ul className="list-disc pl-5 space-y-2">
-            {feedback.improvements.map((improvement, index) => (
+            {feedback.improvements.map((improvement: string, index: number) => (
               <li key={index} className="text-amber-700">{improvement}</li>
             ))}
           </ul>

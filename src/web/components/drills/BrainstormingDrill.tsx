@@ -1,6 +1,6 @@
 // Third-party imports
 import React, { useState, useCallback, useRef } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn
 
 // Internal imports
 import { DrillType, DrillPrompt, DrillAttempt } from '../../types/drills';
@@ -53,7 +53,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Custom hooks
-  const { submitAttempt } = useDrill();
+  const { submitAttempt } = useDrill(DrillType.BRAINSTORMING);
 
   /**
    * Validates a single idea
@@ -91,7 +91,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
     }
 
     const newIdea: BrainstormingIdea = {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID?.() || Math.random().toString(36).substring(2),
       content: trimmedIdea,
       timestamp: new Date()
     };
@@ -131,7 +131,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
       const attempt: Partial<DrillAttempt> = {
         promptId: prompt.id,
         response: JSON.stringify(ideas),
-        timeSpent: prompt.timeLimit * 60 // Convert to seconds
+        timeSpent: (prompt.timeLimit || 0) * 60 // Convert to seconds, default to 0 if undefined
       };
 
       const result = await submitAttempt(prompt.id, attempt.response!, attempt.timeSpent);
@@ -139,7 +139,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
       if (result.success) {
         onComplete(result.data as DrillAttempt);
       } else {
-        throw new Error(result.error?.message || 'Failed to submit attempt');
+        throw new Error(result.error || 'Failed to submit attempt');
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Failed to submit drill attempt');
@@ -170,10 +170,11 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
 
       {/* Timer section */}
       <DrillTimer
-        duration={prompt.timeLimit * 60} // Convert minutes to seconds
+        duration={(prompt.timeLimit || 0) * 60} // Convert minutes to seconds, default to 0 if undefined
         drillId={prompt.id}
         onTimeUp={handleTimeUp}
         autoStart={true}
+        drillType={DrillType.BRAINSTORMING}
       />
 
       {/* Ideas input form */}
@@ -193,7 +194,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
               value={currentIdea}
               onChange={(e) => setCurrentIdea(e.target.value)}
               placeholder={IDEA_INPUT_PLACEHOLDER}
-              className={cn(
+              className={clsx(
                 "flex-1 min-w-0 rounded-md border-gray-300 shadow-sm",
                 "focus:border-primary-base focus:ring-primary-base",
                 "disabled:bg-gray-100 disabled:cursor-not-allowed"
@@ -236,7 +237,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveIdea(idea.id)}
-                  className={cn(
+                  className={clsx(
                     buttonVariants({ variant: 'ghost', size: 'sm' }),
                     "text-error-base hover:text-error-hover"
                   )}

@@ -1,6 +1,5 @@
 // Internal imports
 import { colors, breakpoints } from './theme';
-import { APP_ROUTES } from './routes';
 
 /**
  * Human Tasks:

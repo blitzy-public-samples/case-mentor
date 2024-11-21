@@ -19,7 +19,9 @@ import {
   AuthResponse,
   AuthProvider,
   PasswordResetRequest,
-  PasswordUpdateRequest
+  PasswordUpdateRequest,
+  ErrorCode,
+  User
 } from '../types/auth';
 import { ERROR_MESSAGES, AUTH_CONFIG } from '../config/constants';
 
@@ -35,7 +37,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -50,7 +52,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -70,13 +72,17 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
           details: error
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
       };
+    }
+
+    if (!data.user || !data.session) {
+      throw new Error('Invalid response from authentication service');
     }
 
     // Get user profile data
@@ -88,10 +94,19 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
 
     // Create auth session
     const session: AuthSession = {
-      user: data.user,
+      user: {
+        id: data.user.id,
+        email: data.user.email || '',
+        profile: profile,
+        subscriptionTier: profile?.subscriptionTier || 'FREE',
+        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        createdAt: new Date(data.user.created_at),
+        updatedAt: new Date(),
+        lastLoginAt: new Date()
+      },
       session: data.session,
-      profile,
-      expiresAt: new Date(data.session.expires_at).getTime()
+      profile: profile,
+      expiresAt: data.session.expires_at ? new Date(data.session.expires_at).getTime() : 0
     };
 
     return {
@@ -106,9 +121,9 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
-        details: error
+        details: error instanceof Error ? { message: error.message } : {}
       },
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -128,7 +143,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -143,7 +158,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -163,13 +178,17 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
       };
+    }
+
+    if (!data.user) {
+      throw new Error('Invalid response from registration service');
     }
 
     // Create initial profile record
@@ -188,7 +207,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'INTERNAL_ERROR',
+          code: ErrorCode.INTERNAL_ERROR,
           message: ERROR_MESSAGES.API.SERVER,
           details: profileError
         },
@@ -206,10 +225,19 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
 
     // Create auth session
     const session: AuthSession = {
-      user: data.user,
-      session: data.session,
-      profile,
-      expiresAt: new Date(data.session.expires_at).getTime()
+      user: {
+        id: data.user.id,
+        email: data.user.email || '',
+        profile: profile,
+        subscriptionTier: 'FREE',
+        subscriptionStatus: 'ACTIVE',
+        createdAt: new Date(data.user.created_at),
+        updatedAt: new Date(),
+        lastLoginAt: new Date()
+      },
+      session: data.session!,
+      profile: profile,
+      expiresAt: data.session?.expires_at ? new Date(data.session.expires_at).getTime() : 0
     };
 
     return {
@@ -224,9 +252,9 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
-        details: error
+        details: error instanceof Error ? { message: error.message } : {}
       },
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -258,7 +286,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -274,7 +302,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
@@ -295,9 +323,9 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
-        details: error
+        details: error instanceof Error ? { message: error.message } : {}
       },
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -317,7 +345,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -335,7 +363,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
@@ -356,9 +384,9 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
-        details: error
+        details: error instanceof Error ? { message: error.message } : {}
       },
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -386,13 +414,36 @@ export async function getSession(): Promise<AuthSession | null> {
       .single();
 
     return {
-      user: session.user,
+      user: {
+        id: session.user.id,
+        email: session.user.email || '',
+        profile: profile,
+        subscriptionTier: profile?.subscriptionTier || 'FREE',
+        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        createdAt: new Date(session.user.created_at),
+        updatedAt: new Date(),
+        lastLoginAt: new Date()
+      },
       session,
       profile,
-      expiresAt: new Date(session.expires_at).getTime()
+      expiresAt: session.expires_at ? new Date(session.expires_at).getTime() : 0
     };
   } catch (error) {
     console.error('Get session error:', error);
+    return null;
+  }
+}
+
+/**
+ * Retrieves current authenticated user
+ * Requirement: Authentication & Authorization - User management
+ */
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    const session = await getSession();
+    return session?.user || null;
+  } catch (error) {
+    console.error('Get current user error:', error);
     return null;
   }
 }
@@ -410,7 +461,7 @@ export async function refreshSession(): Promise<AuthSession | null> {
     }
 
     // Check if token needs refresh
-    const expiresAt = new Date(session.expires_at).getTime();
+    const expiresAt = session.expires_at ? new Date(session.expires_at).getTime() : 0;
     const now = Date.now();
     
     if (expiresAt - now < AUTH_CONFIG.REFRESH_THRESHOLD * 1000) {
@@ -429,17 +480,42 @@ export async function refreshSession(): Promise<AuthSession | null> {
         .single();
 
       return {
-        user: refreshedSession.user,
+        user: {
+          id: refreshedSession.user.id,
+          email: refreshedSession.user.email || '',
+          profile: profile,
+          subscriptionTier: profile?.subscriptionTier || 'FREE',
+          subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+          createdAt: new Date(refreshedSession.user.created_at),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
         session: refreshedSession,
         profile,
-        expiresAt: new Date(refreshedSession.expires_at).getTime()
+        expiresAt: refreshedSession.expires_at ? new Date(refreshedSession.expires_at).getTime() : 0
       };
     }
 
+    // Get user profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
+
     return {
-      user: session.user,
+      user: {
+        id: session.user.id,
+        email: session.user.email || '',
+        profile: profile,
+        subscriptionTier: profile?.subscriptionTier || 'FREE',
+        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        createdAt: new Date(session.user.created_at),
+        updatedAt: new Date(),
+        lastLoginAt: new Date()
+      },
       session,
-      profile: null,
+      profile,
       expiresAt
     };
   } catch (error) {

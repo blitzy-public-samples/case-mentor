@@ -10,10 +10,20 @@
 
 // Third-party imports
 import { format } from 'date-fns'; // ^2.30.0
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 // Internal imports
 import { APIResponse, APIError, ErrorCode } from '../types/api';
 import { DrillType, DrillDifficulty } from '../types/drills';
+
+// Requirement: User Interface Design - Tailwind CSS class name merging utility
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// Alias for backward compatibility
+export const classNames = cn;
 
 // Requirement: User Interface Design - Consistent date formatting across application
 export function formatDate(date: Date | string | number, formatString: string): string {

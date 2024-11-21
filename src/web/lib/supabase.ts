@@ -14,11 +14,14 @@ import { createClient } from '@supabase/supabase-js'; // ^2.38.0
 import { API_CONFIG } from '../config/constants';
 
 // Requirement: Database Layer - Validate required environment variables
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl) {
   throw new Error('Missing environment variable: NEXT_PUBLIC_SUPABASE_URL');
 }
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+if (!supabaseAnonKey) {
   throw new Error('Missing environment variable: NEXT_PUBLIC_SUPABASE_ANON_KEY');
 }
 
@@ -28,8 +31,8 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
  */
 const createSupabaseClient = () => {
   const client = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       auth: {
         // Requirement: Authentication - JWT-based authentication configuration

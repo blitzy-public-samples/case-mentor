@@ -1,9 +1,9 @@
 // React v18.0.0
 import * as React from 'react';
 // @radix-ui/react-select v2.0.0
-import * as Select from '@radix-ui/react-select';
+import * as SelectPrimitive from '@radix-ui/react-select';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 import { colors, shadows } from '../../config/theme';
 
@@ -35,18 +35,22 @@ interface SelectProps {
 
 // Requirement: Component Library - Tailwind class definitions for select styling
 const selectStyles = {
-  trigger: cn(
+  trigger: cva(
     'flex h-10 w-full items-center justify-between rounded-md border px-3 py-2',
     'bg-white text-sm ring-offset-white transition-colors',
     'focus:outline-none focus:ring-2 focus:ring-offset-2',
     'disabled:cursor-not-allowed disabled:opacity-50',
     {
-      default: 'border-gray-200 hover:border-gray-300',
-      error: 'border-error-base hover:border-error-hover',
-      disabled: 'border-gray-100 bg-gray-50'
+      variants: {
+        state: {
+          default: 'border-gray-200 hover:border-gray-300',
+          error: 'border-error-base hover:border-error-hover',
+          disabled: 'border-gray-100 bg-gray-50'
+        }
+      }
     }
   ),
-  content: cn(
+  content: cva(
     'relative z-50 min-w-[8rem] overflow-hidden rounded-md',
     'border border-gray-200 bg-white text-gray-950 shadow-md',
     'data-[state=open]:animate-in data-[state=closed]:animate-out',
@@ -54,7 +58,7 @@ const selectStyles = {
     'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95'
   ),
   viewport: 'p-1',
-  item: cn(
+  item: cva(
     'relative flex w-full cursor-default select-none items-center',
     'rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none',
     'focus:bg-gray-100 data-[disabled]:pointer-events-none data-[disabled]:opacity-50'
@@ -93,15 +97,15 @@ export function Select({
   };
 
   return (
-    <Select.Root
+    <SelectPrimitive.Root
       value={value}
       onValueChange={onChange}
       disabled={disabled}
       open={open}
       onOpenChange={setOpen}
     >
-      <Select.Trigger
-        className={cn(
+      <SelectPrimitive.Trigger
+        className={cva(
           selectStyles.trigger,
           {
             'border-error-base': error,
@@ -113,11 +117,11 @@ export function Select({
         aria-describedby={error ? 'select-error' : undefined}
         onKeyDown={handleKeyDown}
       >
-        <Select.Value placeholder={placeholder} />
-        <Select.Icon className="ml-2">
+        <SelectPrimitive.Value placeholder={placeholder} />
+        <SelectPrimitive.Icon className="ml-2">
           <ChevronDownIcon className="h-4 w-4 opacity-50" />
-        </Select.Icon>
-      </Select.Trigger>
+        </SelectPrimitive.Icon>
+      </SelectPrimitive.Trigger>
       
       {error && (
         <span id="select-error" className="mt-1 text-sm text-error-base">
@@ -125,8 +129,8 @@ export function Select({
         </span>
       )}
 
-      <Select.Portal>
-        <Select.Content
+      <SelectPrimitive.Portal>
+        <SelectPrimitive.Content
           className={selectStyles.content}
           position="popper"
           sideOffset={4}
@@ -134,32 +138,32 @@ export function Select({
             boxShadow: shadows.md
           }}
         >
-          <Select.ScrollUpButton className="flex h-6 cursor-default items-center justify-center bg-white">
+          <SelectPrimitive.ScrollUpButton className="flex h-6 cursor-default items-center justify-center bg-white">
             <ChevronUpIcon className="h-4 w-4" />
-          </Select.ScrollUpButton>
+          </SelectPrimitive.ScrollUpButton>
           
-          <Select.Viewport className={selectStyles.viewport}>
+          <SelectPrimitive.Viewport className={selectStyles.viewport}>
             {options.map((option) => (
-              <Select.Item
+              <SelectPrimitive.Item
                 key={option.value}
                 value={option.value}
                 disabled={option.disabled}
                 className={selectStyles.item}
               >
-                <Select.ItemText>{option.label}</Select.ItemText>
-                <Select.ItemIndicator className={selectStyles.indicator}>
+                <SelectPrimitive.ItemText>{option.label}</SelectPrimitive.ItemText>
+                <SelectPrimitive.ItemIndicator className={selectStyles.indicator}>
                   <CheckIcon className="h-4 w-4" />
-                </Select.ItemIndicator>
-              </Select.Item>
+                </SelectPrimitive.ItemIndicator>
+              </SelectPrimitive.Item>
             ))}
-          </Select.Viewport>
+          </SelectPrimitive.Viewport>
           
-          <Select.ScrollDownButton className="flex h-6 cursor-default items-center justify-center bg-white">
+          <SelectPrimitive.ScrollDownButton className="flex h-6 cursor-default items-center justify-center bg-white">
             <ChevronDownIcon className="h-4 w-4" />
-          </Select.ScrollDownButton>
-        </Select.Content>
-      </Select.Portal>
-    </Select.Root>
+          </SelectPrimitive.ScrollDownButton>
+        </SelectPrimitive.Content>
+      </SelectPrimitive.Portal>
+    </SelectPrimitive.Root>
   );
 }
 

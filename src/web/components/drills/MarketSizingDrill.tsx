@@ -1,6 +1,6 @@
 // Third-party imports
 import React, { useState, useCallback } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn from class-variance-authority
 
 // Internal imports
 import { DrillType, DrillPrompt, DrillAttempt } from '../../types/drills';
@@ -140,8 +140,9 @@ export const MarketSizingDrill: React.FC<MarketSizingDrillProps> = ({
         ]
       };
 
-      const attempt = await submitAttempt(prompt.id, JSON.stringify(workings), 0);
-      onComplete(attempt as DrillAttempt);
+      const result = await submitAttempt(prompt.id, JSON.stringify(workings), 0);
+      // Cast the result to DrillAttempt since we know the structure matches
+      onComplete(result as unknown as DrillAttempt);
     } catch (error) {
       console.error('Error submitting market sizing attempt:', error);
     } finally {
@@ -168,6 +169,7 @@ export const MarketSizingDrill: React.FC<MarketSizingDrillProps> = ({
         drillId={prompt.id}
         onTimeUp={handleComplete}
         autoStart={true}
+        drillType={DrillType.MARKET_SIZING}
       />
 
       {/* Assumption inputs */}
@@ -197,7 +199,7 @@ export const MarketSizingDrill: React.FC<MarketSizingDrillProps> = ({
         <button
           onClick={handleComplete}
           disabled={!isValid() || isCalculating}
-          className={cn(
+          className={clsx(
             "w-full px-4 py-2 text-white rounded-md transition-colors",
             isValid() && !isCalculating
               ? "bg-primary-base hover:bg-primary-hover"

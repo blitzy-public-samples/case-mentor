@@ -54,15 +54,15 @@ export const useSimulation = () => {
       );
 
       if (response.success && response.data) {
-        setSimulationState(response.data);
+        setSimulationState(response.data.data);
         
         // Check if simulation completed
-        if (response.data.status === SimulationStatus.COMPLETED) {
+        if (response.data.data.status === SimulationStatus.COMPLETED) {
           const resultResponse = await api.get<SimulationResponse<SimulationResult>>(
             `/simulations/${simulationState.id}/result`
           );
           if (resultResponse.success && resultResponse.data) {
-            setSimulationResult(resultResponse.data);
+            setSimulationResult(resultResponse.data.data);
           }
         }
       } else {
@@ -94,7 +94,7 @@ export const useSimulation = () => {
       );
 
       if (response.success && response.data) {
-        setSimulationState(response.data);
+        setSimulationState(response.data.data);
         toast.show({
           type: ToastType.SUCCESS,
           message: 'Species added successfully'
@@ -128,7 +128,7 @@ export const useSimulation = () => {
     )
       .then(response => {
         if (response.success && response.data) {
-          setSimulationState(response.data);
+          setSimulationState(response.data.data);
           toast.show({
             type: ToastType.SUCCESS,
             message: 'Species removed successfully'
@@ -171,7 +171,7 @@ export const useSimulation = () => {
       );
 
       if (response.success && response.data) {
-        setSimulationState(response.data);
+        setSimulationState(response.data.data);
         toast.show({
           type: ToastType.SUCCESS,
           message: 'Environment updated successfully'
@@ -206,7 +206,7 @@ export const useSimulation = () => {
       );
 
       if (response.success && response.data) {
-        setSimulationState(response.data);
+        setSimulationState(response.data.data);
         toast.show({
           type: ToastType.SUCCESS,
           message: 'Simulation started successfully'
@@ -241,7 +241,7 @@ export const useSimulation = () => {
       );
 
       if (response.success && response.data) {
-        setSimulationState(response.data);
+        setSimulationState(response.data.data);
         toast.show({
           type: ToastType.SUCCESS,
           message: 'Simulation stopped successfully'

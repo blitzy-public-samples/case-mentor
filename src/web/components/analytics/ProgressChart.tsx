@@ -15,7 +15,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  LineChart
 } from 'recharts'; // ^2.0.0
 
 // Internal imports
@@ -86,7 +87,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
-        <Line
+        <LineChart
           data={chartData}
           margin={{
             top: 20,
@@ -153,7 +154,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({
             dot={{ r: 4 }}
             activeDot={{ r: 6 }}
           />
-        </Line>
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

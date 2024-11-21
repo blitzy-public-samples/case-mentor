@@ -3,8 +3,8 @@ import React from 'react'; // ^18.0.0
 import { Metadata } from 'next'; // ^13.0.0
 
 // Internal imports
-import { LoginForm } from '../../components/auth/LoginForm';
-import { Card } from '../../components/shared/Card';
+import { LoginForm } from '@/components/auth/LoginForm';
+import { Card } from '@/components/shared/Card';
 
 /**
  * Human Tasks:

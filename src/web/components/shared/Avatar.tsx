@@ -1,7 +1,8 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { cva } from 'class-variance-authority'; // ^0.7.0
 import Image from 'next/image'; // ^13.0.0
+import clsx from 'clsx';
 
 // Internal imports
 import { UserProfile } from '../../types/user';
@@ -50,7 +51,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   const initials = getInitials(profile.firstName, profile.lastName);
   
   // Requirement: Accessibility Requirements - Base styles with ARIA support
-  const baseStyles = cn(
+  const baseStyles = clsx(
     'relative rounded-full overflow-hidden flex items-center justify-center',
     'transition-opacity duration-200',
     {

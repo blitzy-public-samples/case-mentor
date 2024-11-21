@@ -1,11 +1,11 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { cva } from 'class-variance-authority'; // ^0.7.0
 
 // Internal imports
 import SimulationCard from '../../../components/simulation/SimulationCard';
-import EcosystemCanvas from '../../../components/simulation/EcosystemCanvas';
-import SpeciesSelector from '../../../components/simulation/SpeciesSelector';
+import { EcosystemCanvas } from '../../../components/simulation/EcosystemCanvas';
+import { SpeciesSelector } from '../../../components/simulation/SpeciesSelector';
 import { useSimulation } from '../../../hooks/useSimulation';
 
 /**
@@ -19,53 +19,54 @@ import { useSimulation } from '../../../hooks/useSimulation';
 
 // Requirement: McKinsey Simulation - Page layout styling
 const pageStyles = {
-  container: cn(
-    'flex flex-col gap-6 p-6',
-    'min-h-screen bg-gray-50'
+  container: cva(
+    'flex flex-col gap-6 p-6 min-h-screen bg-gray-50'
   ),
-  header: cn(
+  header: cva(
     'flex flex-col gap-2'
   ),
-  title: cn(
-    'text-2xl font-bold text-gray-900',
-    'focus:outline-none focus:ring-2 focus:ring-primary-500'
+  title: cva(
+    'text-2xl font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500'
   ),
-  description: cn(
+  description: cva(
     'text-gray-600'
   ),
-  mainContent: cn(
-    'grid gap-6',
-    'grid-cols-1 lg:grid-cols-12'
+  mainContent: cva(
+    'grid gap-6 grid-cols-1 lg:grid-cols-12'
   ),
-  leftPanel: cn(
-    'flex flex-col gap-4',
-    'lg:col-span-4'
+  leftPanel: cva(
+    'flex flex-col gap-4 lg:col-span-4'
   ),
-  rightPanel: cn(
+  rightPanel: cva(
     'lg:col-span-8'
   ),
-  controls: cn(
+  controls: cva(
     'flex gap-4 mt-4'
   ),
-  button: cn(
-    'px-4 py-2 rounded-md font-medium',
-    'transition-colors duration-200',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    {
-      primary: [
+  button: {
+    primary: cva(
+      [
+        'px-4 py-2 rounded-md font-medium',
+        'transition-colors duration-200',
+        'focus:outline-none focus:ring-2 focus:ring-offset-2',
         'bg-primary-base text-white',
         'hover:bg-primary-hover',
         'active:bg-primary-active',
         'disabled:bg-primary-disabled'
-      ],
-      secondary: [
+      ]
+    ),
+    secondary: cva(
+      [
+        'px-4 py-2 rounded-md font-medium',
+        'transition-colors duration-200',
+        'focus:outline-none focus:ring-2 focus:ring-offset-2',
         'bg-gray-100 text-gray-900',
         'hover:bg-gray-200',
         'active:bg-gray-300',
         'disabled:bg-gray-50 disabled:text-gray-400'
       ]
-    }
-  )
+    )
+  }
 };
 
 /**
@@ -117,39 +118,41 @@ export default function SimulationPage(): JSX.Element {
   };
 
   return (
-    <main className={pageStyles.container}>
+    <main className={pageStyles.container()}>
       {/* Accessible header section */}
-      <header className={pageStyles.header} role="banner">
+      <header className={pageStyles.header()} role="banner">
         <h1 
-          className={pageStyles.title}
+          className={pageStyles.title()}
           tabIndex={0}
         >
           Ecosystem Simulation
         </h1>
-        <p className={pageStyles.description}>
+        <p className={pageStyles.description()}>
           Configure and run ecosystem simulations with species selection and real-time visualization
         </p>
       </header>
 
       {/* Main simulation interface */}
-      <div className={pageStyles.mainContent}>
+      <div className={pageStyles.mainContent()}>
         {/* Left panel: Species selection and simulation controls */}
-        <div className={pageStyles.leftPanel}>
+        <div className={pageStyles.leftPanel()}>
           <SpeciesSelector />
           
-          <SimulationCard
-            simulation={simulationState}
-            loading={loading}
-          />
+          {simulationState && (
+            <SimulationCard
+              simulation={simulationState}
+              loading={loading}
+            />
+          )}
 
           {/* Simulation controls */}
           <div 
-            className={pageStyles.controls}
+            className={pageStyles.controls()}
             role="group"
             aria-label="Simulation controls"
           >
             <button
-              className={cn(pageStyles.button.primary)}
+              className={pageStyles.button.primary()}
               onClick={handleStartSimulation}
               disabled={loading || !simulationState}
               aria-busy={loading}
@@ -158,7 +161,7 @@ export default function SimulationPage(): JSX.Element {
             </button>
             
             <button
-              className={cn(pageStyles.button.secondary)}
+              className={pageStyles.button.secondary()}
               onClick={handleStopSimulation}
               disabled={loading || !simulationState}
               aria-busy={loading}
@@ -167,7 +170,7 @@ export default function SimulationPage(): JSX.Element {
             </button>
 
             <button
-              className={cn(pageStyles.button.secondary)}
+              className={pageStyles.button.secondary()}
               onClick={resetSimulation}
               disabled={loading}
               aria-busy={loading}
@@ -179,7 +182,7 @@ export default function SimulationPage(): JSX.Element {
 
         {/* Right panel: Ecosystem visualization */}
         <div 
-          className={pageStyles.rightPanel}
+          className={pageStyles.rightPanel()}
           role="region"
           aria-label="Ecosystem visualization"
         >

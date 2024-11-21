@@ -13,7 +13,7 @@ import { motion } from 'framer-motion'; // ^10.0.0
 // Internal imports
 import { SimulationResult } from '../../types/simulation';
 import { useSimulation } from '../../hooks/useSimulation';
-import Card from '../shared/Card';
+import { Card } from '../shared/Card';
 
 // Interface for component props
 interface SimulationResultsProps {

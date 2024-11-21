@@ -1,9 +1,9 @@
 // External dependencies
 import * as React from 'react' // ^18.0.0
 import { AlertCircle, CheckCircle, XCircle, AlertTriangle, X } from 'lucide-react' // ^0.294.0
+import { clsx } from 'clsx' // For className merging
 
 // Internal dependencies
-import { classNames } from '../../lib/utils'
 import { buttonVariants } from './Button'
 
 // Requirement: Design System Specifications - Alert component interface
@@ -70,14 +70,14 @@ export const Alert: React.FC<AlertProps> = ({
       role="alert"
       aria-live="polite"
       aria-atomic="true"
-      className={classNames(
+      className={clsx(
         baseStyles,
         variantStyles[variant],
         className
       )}
     >
       {/* Alert icon */}
-      <IconComponent className={classNames('h-5 w-5', iconStyles[variant])} aria-hidden="true" />
+      <IconComponent className={clsx('h-5 w-5', iconStyles[variant])} aria-hidden="true" />
 
       <div className="flex-1">
         {/* Alert title */}
@@ -116,7 +116,7 @@ export const Alert: React.FC<AlertProps> = ({
           type="button"
           aria-label="Dismiss alert"
           onClick={onDismiss}
-          className={classNames(
+          className={clsx(
             'p-1 rounded-md hover:bg-opacity-20 hover:bg-gray-900 transition-colors',
             iconStyles[variant]
           )}

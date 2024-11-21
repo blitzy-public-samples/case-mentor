@@ -3,8 +3,8 @@ import React, { useState } from 'react'; // ^18.0.0
 
 // Internal imports
 import { resetPassword } from '../../lib/auth';
-import Input from '../shared/Input';
-import Button from '../shared/Button';
+import { Input } from '../shared/Input';
+import { Button } from '../shared/Button';
 import { useToast, ToastType } from '../../hooks/useToast';
 
 /**
@@ -98,7 +98,7 @@ const ResetPasswordForm: React.FC = () => {
           type="email"
           label="Email address"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           error={error}
           placeholder="Enter your email address"
           disabled={loading}

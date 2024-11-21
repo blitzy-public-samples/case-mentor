@@ -10,7 +10,7 @@ import {
   RateLimitInfo, 
   PaginatedResponse 
 } from '../types/api';
-import { getCurrentUser } from './auth';
+import { getSession } from './auth';
 import { 
   API_CONFIG, 
   ERROR_MESSAGES 
@@ -61,9 +61,9 @@ const createAPIClient = (): AxiosInstance => {
 
   // Add request interceptor for authentication
   client.interceptors.request.use(async (config) => {
-    const user = await getCurrentUser();
-    if (user?.session) {
-      config.headers.Authorization = `Bearer ${user.session.access_token}`;
+    const session = await getSession();
+    if (session?.session) {
+      config.headers.Authorization = `Bearer ${session.session.access_token}`;
     }
     return config;
   });

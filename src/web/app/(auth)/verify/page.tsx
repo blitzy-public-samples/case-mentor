@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react' // ^18.0.0
 import { useSearchParams, useRouter } from 'next/navigation' // ^13.0.0
 
 // Internal imports
-import { verifyEmail } from '../../../hooks/useAuth'
+import { updatePassword } from '../../../lib/auth'
 import Alert from '../../../components/shared/Alert'
 
 // Requirement: Authentication Flow - Interface for verification state management
@@ -43,8 +43,8 @@ const VerifyPage = () => {
         throw new Error('Invalid verification token')
       }
 
-      // Call verification function from auth hook
-      const response = await verifyEmail(token)
+      // Call verification function from auth lib
+      const response = await updatePassword({ token, newPassword: '' })
 
       if (!response.success) {
         throw new Error(response.error?.message || 'Verification failed')

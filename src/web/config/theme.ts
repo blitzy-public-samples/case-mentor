@@ -49,7 +49,7 @@ export const colors = {
 }
 
 // Requirement: Design System Specifications - Consistent spacing scale
-export const spacing = {
+export const spacing: { base: number; scale: number[] } = {
   base: 4,
   scale: [4, 8, 12, 16, 24, 32, 48, 64]
 }
@@ -95,7 +95,7 @@ function createColorVariant(baseColor: string) {
 export class ThemeConfig {
   private readonly colors: Record<string, Record<string, string>>
   private readonly fontFamily: Record<string, string[]>
-  private readonly spacing: Record<string, number>
+  private readonly spacing: { base: number; scale: number[] }
   private readonly breakpoints: Record<string, string>
   private readonly shadows: Record<string, string>
 
@@ -134,6 +134,7 @@ export const theme = {
 
 // Export default theme configuration for Tailwind CSS
 const tailwindConfig: Config = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors,

@@ -1,7 +1,7 @@
 // External dependencies
 import * as React from 'react' // ^18.0.0
 import { Slot } from '@radix-ui/react-slot' // ^1.0.0
-import { cn } from 'class-variance-authority' // ^0.7.0
+import { clsx } from 'clsx' // For className merging
 
 // Internal dependencies
 import { colors, shadows } from '../../config/theme'
@@ -33,7 +33,7 @@ export const buttonVariants = ({
   size = 'md',
   className = ''
 }: Partial<ButtonProps>) => {
-  return cn(
+  return clsx(
     // Base styles with focus and disabled states
     'inline-flex items-center justify-center rounded-md font-medium transition-colors',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',

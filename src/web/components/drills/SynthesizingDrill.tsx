@@ -6,6 +6,7 @@ import { buttonVariants } from '../shared/Button';
 import { cardVariants } from '../shared/Card';
 import { Input } from '../shared/Input';
 import { useDrill } from '../../hooks/useDrill';
+import { DrillType } from '../../types/drills';
 
 /**
  * Human Tasks:
@@ -33,7 +34,7 @@ export const SynthesizingDrill: React.FC<SynthesizingDrillProps> = ({
     error,
     submitAttempt,
     progress
-  } = useDrill('SYNTHESIZING');
+  } = useDrill(DrillType.SYNTHESIZING);
 
   // Local state management
   const [response, setResponse] = useState<string>('');
@@ -87,7 +88,7 @@ export const SynthesizingDrill: React.FC<SynthesizingDrillProps> = ({
       if (result.success) {
         onComplete();
       } else {
-        setFeedback(result.error?.message || 'Failed to submit response. Please try again.');
+        setFeedback(typeof result.error === 'string' ? result.error : result.error?.message || 'Failed to submit response. Please try again.');
       }
     } catch (error) {
       setFeedback('An unexpected error occurred. Please try again.');

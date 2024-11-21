@@ -4,10 +4,10 @@
 import React, { Suspense } from 'react'; // ^18.0.0
 
 // Internal imports
-import EcosystemCanvas from '../../../components/simulation/EcosystemCanvas';
-import EcosystemControls from '../../../components/simulation/EcosystemControls';
-import SimulationResults from '../../../components/simulation/SimulationResults';
-import { useSimulation } from '../../../hooks/useSimulation';
+import EcosystemCanvas from '@/components/simulation/EcosystemCanvas';
+import EcosystemControls from '@/components/simulation/EcosystemControls';
+import SimulationResults from '@/components/simulation/SimulationResults';
+import { useSimulation } from '@/hooks/useSimulation';
 
 // Global constants for canvas dimensions
 const SIMULATION_CANVAS_WIDTH = 1024;

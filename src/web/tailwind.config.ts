@@ -2,7 +2,7 @@
 import type { Config } from 'tailwindcss'
 import typography from '@tailwindcss/typography' // v0.5.10
 import forms from '@tailwindcss/forms' // v0.5.7
-import { colors, fontFamily, spacing, breakpoints, shadows } from '../config/theme'
+import { colors, fontFamily, spacing, breakpoints, shadows } from './config/theme'
 
 /**
  * Human Tasks:

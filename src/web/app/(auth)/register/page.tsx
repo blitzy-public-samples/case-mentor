@@ -3,8 +3,8 @@ import { Metadata } from 'next'; // ^13.0.0
 import Link from 'next/link'; // ^13.0.0
 
 // Internal imports
-import { RegisterForm } from '../../components/auth/RegisterForm';
-import { Card } from '../../components/shared/Card';
+import { RegisterForm } from '@/components/auth/RegisterForm';
+import { Card } from '@/components/shared/Card';
 
 /**
  * Human Tasks:

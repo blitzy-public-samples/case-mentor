@@ -122,7 +122,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'SUBSCRIPTION_ERROR',
+          code: 'INTERNAL_ERROR',
           message: error.message,
           details: {}
         },
@@ -172,7 +172,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'SUBSCRIPTION_ERROR',
+          code: 'INTERNAL_ERROR',
           message: error.message,
           details: {}
         },

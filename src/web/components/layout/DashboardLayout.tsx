@@ -1,7 +1,7 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
 import { usePathname } from 'next/navigation'; // ^13.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // For className merging
 
 // Internal imports
 import { Header } from './Header';
@@ -57,7 +57,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header - Fixed position with proper z-index */}
       <Header 
-        className={cn(
+        className={clsx(
           "fixed top-0 left-0 right-0",
           "z-[var(--layout-z-header)]"
         )}
@@ -68,7 +68,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
 
       {/* Main content area */}
       <main
-        className={cn(
+        className={clsx(
           // Base layout styles
           "min-h-screen pt-16 transition-all duration-300",
           // Responsive padding and margin
@@ -83,7 +83,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
         aria-label="Dashboard content"
       >
         {/* Content wrapper with max width constraint */}
-        <div className={cn(
+        <div className={clsx(
           "mx-auto max-w-7xl w-full",
           "py-6 md:py-8 lg:py-12"
         )}>

@@ -1,6 +1,6 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn from class-variance-authority
 
 // Internal imports
 import { formatScore } from '../../lib/utils';
@@ -17,9 +17,9 @@ interface ProgressProps {
   // Maximum possible value
   max: number;
   // Size variant: 'sm' | 'md' | 'lg'
-  size?: string;
+  size?: 'sm' | 'md' | 'lg';
   // Color variant: 'primary' | 'secondary' | 'accent'
-  variant?: string;
+  variant?: 'primary' | 'secondary' | 'accent';
   // Whether to show percentage label
   showLabel?: boolean;
   // Optional custom class names
@@ -31,7 +31,7 @@ interface ProgressProps {
 // Requirement: Design System Specifications - Implements consistent progress visualization
 const progressVariants = () => {
   return {
-    base: cn(
+    base: clsx(
       'relative w-full overflow-hidden rounded-full bg-gray-100 transition-all',
       'dark:bg-gray-700'
     ),
@@ -39,21 +39,21 @@ const progressVariants = () => {
       sm: 'h-2',
       md: 'h-4',
       lg: 'h-6'
-    },
+    } as const,
     variant: {
-      primary: cn(
+      primary: clsx(
         'bg-primary-base',
         'dark:bg-primary-base'
       ),
-      secondary: cn(
+      secondary: clsx(
         'bg-secondary-base',
         'dark:bg-secondary-base'
       ),
-      accent: cn(
+      accent: clsx(
         'bg-accent-base',
         'dark:bg-accent-base'
       )
-    }
+    } as const
   };
 };
 
@@ -79,13 +79,13 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
     const variants = progressVariants();
     
     // Generate class names
-    const containerClasses = cn(
+    const containerClasses = clsx(
       variants.base,
       variants.size[size],
       className
     );
     
-    const barClasses = cn(
+    const barClasses = clsx(
       'h-full transition-all duration-300 ease-in-out',
       variants.variant[variant]
     );
@@ -113,7 +113,7 @@ export const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           }}
         />
         {showLabel && (
-          <span className={cn(
+          <span className={clsx(
             'absolute inset-0 flex items-center justify-center text-sm font-medium',
             percentage > 50 ? 'text-white' : 'text-gray-700 dark:text-gray-200'
           )}>
