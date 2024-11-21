@@ -1,10 +1,7 @@
 // @ts-check
 import { z } from 'zod'; // ^3.22.0
 import { 
-  EcosystemSimulation,
-  initializeEcosystem,
-  simulateTimeStep,
-  getSimulationResult
+  EcosystemSimulation
 } from '../lib/simulation/ecosystem';
 import { SimulationEvaluator } from '../lib/simulation/evaluator';
 import { SimulationAttempt } from '../models/SimulationAttempt';
@@ -15,8 +12,9 @@ import {
   SimulationState,
   SimulationResult,
   SimulationStatus
-} from '../lib/simulation/types';
+} from '../../types/simulation';
 import { APIError } from '../lib/errors/APIError';
+import { APIErrorCode } from '../types/api';
 
 /**
  * Human Tasks:
@@ -95,7 +93,7 @@ export class SimulationService {
   ): Promise<SimulationState> {
     if (!this.simulation || !this.currentAttempt) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'No active simulation found'
       );
     }
@@ -112,7 +110,7 @@ export class SimulationService {
     // Initialize ecosystem with species
     const state = await this.simulation.initializeEcosystem(
       validatedSpecies,
-      this.currentAttempt.environment
+      await this.currentAttempt.getEnvironment()
     );
 
     // Update attempt state
@@ -134,7 +132,7 @@ export class SimulationService {
   ): Promise<SimulationState> {
     if (!this.simulation || !this.currentAttempt) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'No active simulation found'
       );
     }
@@ -149,7 +147,7 @@ export class SimulationService {
 
     // Initialize ecosystem with new environment
     const state = await this.simulation.initializeEcosystem(
-      this.currentAttempt.species,
+      await this.currentAttempt.getSpecies(),
       validatedEnvironment
     );
 
@@ -168,15 +166,16 @@ export class SimulationService {
   public async executeTimeStep(attemptId: string): Promise<SimulationState> {
     if (!this.simulation || !this.currentAttempt) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'No active simulation found'
       );
     }
 
     // Validate simulation is active
-    if (this.currentAttempt.status !== SimulationStatus.RUNNING) {
+    const status = await this.currentAttempt.getStatus();
+    if (status !== SimulationStatus.RUNNING) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Simulation is not in running state'
       );
     }
@@ -185,7 +184,7 @@ export class SimulationService {
     await this.simulation.simulateTimeStep();
 
     // Update time remaining
-    const timeRemaining = Math.max(0, this.currentAttempt.timeRemaining - 1000);
+    const timeRemaining = Math.max(0, await this.currentAttempt.getTimeRemaining() - 1000);
 
     // Update attempt state
     const updatedState = await this.currentAttempt.updateState({
@@ -203,15 +202,16 @@ export class SimulationService {
   public async completeSimulation(attemptId: string): Promise<SimulationResult> {
     if (!this.simulation || !this.currentAttempt) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'No active simulation found'
       );
     }
 
     // Validate simulation can be completed
-    if (this.currentAttempt.status === SimulationStatus.COMPLETED) {
+    const status = await this.currentAttempt.getStatus();
+    if (status === SimulationStatus.COMPLETED) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Simulation is already completed'
       );
     }
