@@ -79,6 +79,20 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
       };
     }
 
+    if (!data.session || !data.user) {
+      return {
+        success: false,
+        data: null,
+        error: {
+          code: 'AUTHENTICATION_ERROR',
+          message: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
+          details: {}
+        },
+        timestamp: new Date().toISOString(),
+        requestId: crypto.randomUUID()
+      };
+    }
+
     // Get user profile data
     const { data: profile } = await supabase
       .from('profiles')
@@ -90,8 +104,8 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
     const session: AuthSession = {
       user: data.user,
       session: data.session,
-      profile,
-      expiresAt: new Date(data.session.expires_at).getTime()
+      profile: profile || null,
+      expiresAt: new Date(data.session.expires_at || 0).getTime()
     };
 
     return {
@@ -158,14 +172,14 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
       password: credentials.password
     });
 
-    if (error) {
+    if (error || !data.session || !data.user) {
       return {
         success: false,
         data: null,
         error: {
           code: 'AUTHENTICATION_ERROR',
-          message: error.message,
-          details: error
+          message: error?.message || ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
+          details: error || {}
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
@@ -208,8 +222,8 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
     const session: AuthSession = {
       user: data.user,
       session: data.session,
-      profile,
-      expiresAt: new Date(data.session.expires_at).getTime()
+      profile: profile || null,
+      expiresAt: new Date(data.session.expires_at || 0).getTime()
     };
 
     return {
@@ -388,8 +402,8 @@ export async function getSession(): Promise<AuthSession | null> {
     return {
       user: session.user,
       session,
-      profile,
-      expiresAt: new Date(session.expires_at).getTime()
+      profile: profile || null,
+      expiresAt: new Date(session.expires_at || 0).getTime()
     };
   } catch (error) {
     console.error('Get session error:', error);
@@ -410,7 +424,7 @@ export async function refreshSession(): Promise<AuthSession | null> {
     }
 
     // Check if token needs refresh
-    const expiresAt = new Date(session.expires_at).getTime();
+    const expiresAt = new Date(session.expires_at || 0).getTime();
     const now = Date.now();
     
     if (expiresAt - now < AUTH_CONFIG.REFRESH_THRESHOLD * 1000) {
@@ -431,15 +445,22 @@ export async function refreshSession(): Promise<AuthSession | null> {
       return {
         user: refreshedSession.user,
         session: refreshedSession,
-        profile,
-        expiresAt: new Date(refreshedSession.expires_at).getTime()
+        profile: profile || null,
+        expiresAt: new Date(refreshedSession.expires_at || 0).getTime()
       };
     }
+
+    // Get user profile
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single();
 
     return {
       user: session.user,
       session,
-      profile: null,
+      profile: profile || null,
       expiresAt
     };
   } catch (error) {
