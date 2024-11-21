@@ -17,7 +17,9 @@ import {
   AuthSession, 
   AuthState, 
   AuthResponse,
-  AuthProvider
+  AuthProvider,
+  PasswordResetRequest,
+  PasswordUpdateRequest
 } from '../types/auth';
 import { 
   User,
