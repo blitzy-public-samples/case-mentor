@@ -8,8 +8,9 @@ import DrillCard from '../../components/drills/DrillCard';
 import SimulationCard from '../../components/simulation/SimulationCard';
 import PlanCard from '../../components/subscription/PlanCard';
 import { SUBSCRIPTION_TIERS } from '../../config/constants';
-import { DrillAttempt } from '../../types/drills';
+import { DrillAttempt, DrillPrompt } from '../../types/drills';
 import { UserSubscriptionTier } from '../../types/user';
+import { SubscriptionPlan } from '../../types/subscription';
 
 /**
  * Human Tasks:
@@ -102,7 +103,7 @@ export default async function Dashboard(): Promise<JSX.Element> {
             ) : drillError ? (
               <p className="text-error-600">Failed to load drills: {drillError}</p>
             ) : drills?.length > 0 ? (
-              drills.slice(0, 3).map(drill => (
+              drills.slice(0, 3).map((drill: DrillPrompt) => (
                 <DrillCard
                   key={drill.id}
                   drill={drill}
@@ -148,23 +149,26 @@ export default async function Dashboard(): Promise<JSX.Element> {
           Your Subscription
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {Object.values(SUBSCRIPTION_TIERS).map(plan => (
-            <PlanCard
-              key={plan.name}
-              plan={{
-                id: plan.name,
-                name: plan.name,
-                price: plan.price,
-                features: plan.features,
-                description: `Access to ${plan.drillAttempts} drill attempts`,
-                tier: plan.name as UserSubscriptionTier,
-                interval: 'month',
-                stripeProductId: '',
-                stripePriceId: ''
-              }}
-              isSelected={authState.user?.subscriptionTier === plan.name}
-            />
-          ))}
+          {Object.entries(SUBSCRIPTION_TIERS).map(([tierName, plan]) => {
+            const subscriptionPlan: SubscriptionPlan = {
+              id: tierName,
+              name: tierName,
+              price: plan.price,
+              features: [...plan.features],
+              description: `Access to ${plan.drillAttempts} drill attempts`,
+              tier: tierName as UserSubscriptionTier,
+              interval: 'month',
+              stripeProductId: '',
+              stripePriceId: ''
+            };
+            return (
+              <PlanCard
+                key={tierName}
+                plan={subscriptionPlan}
+                isSelected={authState.user?.subscriptionTier === tierName}
+              />
+            );
+          })}
         </div>
       </section>
     </main>
