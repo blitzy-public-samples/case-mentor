@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'; // ^9.0.0
 
 // Internal imports
 import supabase from './supabase';
-import { APIError } from '../types/api';
+import { APIError, ErrorCode } from '../types/api';
 
 /**
  * Human Tasks:
@@ -66,7 +66,7 @@ const uploadFile = async (file: File, bucket: string): Promise<string> => {
 
     if (error) {
       throw {
-        code: 'STORAGE_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: 'Failed to upload file',
         details: error
       } as APIError;
@@ -77,7 +77,7 @@ const uploadFile = async (file: File, bucket: string): Promise<string> => {
   } catch (error) {
     if (error instanceof Error) {
       throw {
-        code: 'VALIDATION_ERROR',
+        code: ErrorCode.VALIDATION_ERROR,
         message: error.message,
         details: { fileName: file.name, fileType: file.type, fileSize: file.size }
       } as APIError;
@@ -104,7 +104,7 @@ const deleteFile = async (path: string, bucket: string): Promise<void> => {
 
     if (error) {
       throw {
-        code: 'STORAGE_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: 'Failed to delete file',
         details: error
       } as APIError;
@@ -112,7 +112,7 @@ const deleteFile = async (path: string, bucket: string): Promise<void> => {
   } catch (error) {
     if (error instanceof Error) {
       throw {
-        code: 'VALIDATION_ERROR',
+        code: ErrorCode.VALIDATION_ERROR,
         message: error.message,
         details: { filePath: path, bucket }
       } as APIError;
@@ -141,7 +141,7 @@ const getPublicUrl = (path: string, bucket: string): string => {
   } catch (error) {
     if (error instanceof Error) {
       throw {
-        code: 'VALIDATION_ERROR',
+        code: ErrorCode.VALIDATION_ERROR,
         message: error.message,
         details: { filePath: path, bucket }
       } as APIError;
