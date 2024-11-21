@@ -1,6 +1,6 @@
 // @package zod ^3.22.0
 import { z } from 'zod';
-import { DrillType, DrillResponse, DrillEvaluation } from '../../types/drills';
+import { DrillType, DrillResponse, DrillEvaluation, DrillEvaluationSchema } from '../../types/drills';
 
 /**
  * Human Tasks:
