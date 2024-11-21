@@ -1,11 +1,11 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { cva } from 'class-variance-authority'; // ^0.7.0
 import { format } from 'date-fns'; // ^2.30.0
 
 // Internal imports
 import { SimulationState, SimulationStatus, Species, EnvironmentParameters } from '../../types/simulation';
-import Card, { cardVariants } from '../shared/Card';
+import { Card, cardVariants } from '../shared/Card';
 import { useSimulation } from '../../hooks/useSimulation';
 
 /**
@@ -22,6 +22,14 @@ interface SimulationCardProps {
   loading: boolean;
   className?: string;
 }
+
+// Utility function for merging class names
+const cn = (...inputs: (string | boolean | undefined | null | { [key: string]: boolean | undefined })[]) => {
+  return inputs
+    .flat()
+    .filter(Boolean)
+    .join(' ');
+};
 
 /**
  * A card component that displays simulation state and controls with accessibility features
