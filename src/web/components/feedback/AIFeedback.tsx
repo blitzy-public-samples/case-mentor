@@ -1,7 +1,7 @@
 // react v18.0.0
 import React, { useState, useCallback } from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 // Internal imports
 import { 
@@ -151,7 +151,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
   }
 
   // Group feedback points by category
-  const feedbackByCategory = feedback.feedbackPoints.reduce((acc, point) => {
+  const feedbackByCategory: Record<FeedbackCategory, FeedbackPoint[]> = feedback.feedbackPoints.reduce((acc, point) => {
     if (!acc[point.category]) {
       acc[point.category] = [];
     }
