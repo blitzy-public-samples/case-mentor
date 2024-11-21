@@ -2,7 +2,7 @@
 import * as React from 'react' // ^18.0.0
 import { usePathname } from 'next/navigation' // ^13.0.0
 import Link from 'next/link' // ^13.0.0
-import { cn } from 'class-variance-authority' // ^0.7.0
+import { clsx } from 'clsx' // For className merging
 
 // Internal dependencies
 import { buttonVariants } from '../shared/Button'
@@ -45,7 +45,7 @@ export const Sidebar = () => {
 
   return (
     <aside
-      className={cn(
+      className={clsx(
         'fixed left-0 top-0 z-40 h-screen w-64 transform transition-transform duration-300',
         'bg-white border-r border-gray-200 p-4',
         'md:translate-x-0',
@@ -117,7 +117,7 @@ export const Sidebar = () => {
             </div>
             <button
               onClick={logout}
-              className={cn(
+              className={clsx(
                 buttonVariants({ variant: 'ghost', size: 'sm' }),
                 'text-gray-600 hover:text-gray-900'
               )}
@@ -159,7 +159,7 @@ const NavItem = ({ href, icon, label, onClick }: {
     <Link
       href={href}
       onClick={onClick}
-      className={cn(
+      className={clsx(
         buttonVariants({ variant: 'ghost', size: 'sm' }),
         'w-full justify-start',
         isActive && 'bg-gray-100 text-gray-900',
