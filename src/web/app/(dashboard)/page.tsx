@@ -3,13 +3,13 @@ import React from 'react'; // ^18.0.0
 import { format } from 'date-fns'; // ^2.30.0
 
 // Internal imports
-import ProgressChart from '../../components/analytics/ProgressChart';
+import { ProgressChart } from '../../components/analytics/ProgressChart';
 import DrillCard from '../../components/drills/DrillCard';
 import SimulationCard from '../../components/simulation/SimulationCard';
 import PlanCard from '../../components/subscription/PlanCard';
-import { useAuth } from '../../hooks/useAuth';
-import { useDrill } from '../../hooks/useDrill';
-import { useSimulation } from '../../hooks/useSimulation';
+import { SUBSCRIPTION_TIERS } from '../../config/constants';
+import { DrillAttempt } from '../../types/drills';
+import { UserSubscriptionTier } from '../../types/user';
 
 /**
  * Human Tasks:
@@ -26,19 +26,22 @@ import { useSimulation } from '../../hooks/useSimulation';
  * Requirement: Core Features - Access to practice drills, McKinsey simulation, and subscription management
  */
 export default async function Dashboard(): Promise<JSX.Element> {
-  // Get authenticated user data
-  const { state: authState } = useAuth();
+  // Get authenticated user data from server
+  const response = await fetch('/api/auth/session');
+  const authState = await response.json();
   const userId = authState.user?.id;
 
-  // Fetch drill data and progress
-  const { drills, loading: drillsLoading, progress, error: drillError } = useDrill();
+  // Fetch drill data and progress from server
+  const drillsResponse = await fetch('/api/drills');
+  const { drills, progress } = await drillsResponse.json();
+  const drillsLoading = false;
+  const drillError = null;
 
-  // Get simulation state
-  const { 
-    simulationState, 
-    loading: simulationLoading, 
-    error: simulationError 
-  } = useSimulation();
+  // Get simulation state from server
+  const simulationResponse = await fetch('/api/simulation');
+  const { simulationState } = await simulationResponse.json();
+  const simulationLoading = false;
+  const simulationError = null;
 
   // Format recent activity from drill attempts
   const getRecentActivity = (attempts: DrillAttempt[]): Array<{date: string, type: string, score: number}> => {
@@ -77,9 +80,8 @@ export default async function Dashboard(): Promise<JSX.Element> {
         </h2>
         <div className="bg-white rounded-lg shadow-md p-6">
           <ProgressChart 
-            userId={userId} 
+            userId={userId}
             height="300px"
-            className="w-full"
           />
         </div>
       </section>
@@ -106,7 +108,6 @@ export default async function Dashboard(): Promise<JSX.Element> {
                   drill={drill}
                   progress={progress}
                   onStart={() => {/* Handle drill start */}}
-                  className="w-full"
                 />
               ))
             ) : (
@@ -127,7 +128,6 @@ export default async function Dashboard(): Promise<JSX.Element> {
             <SimulationCard
               simulation={simulationState}
               loading={simulationLoading}
-              className="w-full"
             />
           ) : simulationError ? (
             <p className="text-error-600">Failed to load simulation: {simulationError}</p>
@@ -163,7 +163,6 @@ export default async function Dashboard(): Promise<JSX.Element> {
                 stripePriceId: ''
               }}
               isSelected={authState.user?.subscriptionTier === plan.name}
-              className="w-full"
             />
           ))}
         </div>
