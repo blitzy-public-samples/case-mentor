@@ -67,13 +67,13 @@ export function useDrill(drillType: DrillType) {
       throw new Error('User not authenticated');
     }
 
-    const response = await api.get<DrillResponse>(`/api/drills/${drillType}/progress`);
+    const response = await api.get<DrillProgress>(`/api/drills/${drillType}/progress`);
     
     if (!response.success || !response.data) {
       throw new Error(response.error?.message || 'Failed to fetch progress');
     }
 
-    return response.data as DrillProgress;
+    return response.data;
   }, [drillType, userId]);
 
   /**
