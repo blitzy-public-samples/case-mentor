@@ -1,7 +1,7 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { clsx } from 'clsx';
 import { colors, spacing } from '../../config/theme';
 
 // Human Tasks:
@@ -73,7 +73,7 @@ const Loading: React.FC<LoadingProps> = ({
     <div
       role="status"
       aria-label={label}
-      className={cn(
+      className={clsx(
         'inline-flex items-center justify-center',
         className
       )}
