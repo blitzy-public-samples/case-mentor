@@ -9,8 +9,6 @@
 
 // @package node:crypto (Node.js built-in)
 import { createCipheriv, createDecipheriv, randomBytes, pbkdf2Sync, timingSafeEqual } from 'crypto';
-import { SECURITY } from '../config/constants';
-import type { SecurityConfig } from '../types/config';
 
 // Requirement: Data Security (8.2) - Cryptographic constants
 const ALGORITHM = 'aes-256-gcm';
