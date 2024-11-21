@@ -175,7 +175,7 @@ export const EcosystemCanvas: React.FC<EcosystemCanvasProps> = ({
   const animationFrameRef = useRef<number>();
   const lastFrameTimeRef = useRef<number>(0);
   
-  const { simulationState, status } = useSimulation();
+  const { simulationState } = useSimulation();
   const getContext = useCanvasSetup(canvasRef);
 
   /**
@@ -208,14 +208,14 @@ export const EcosystemCanvas: React.FC<EcosystemCanvasProps> = ({
     });
 
     // Continue animation if simulation is running
-    if (status === SimulationStatus.RUNNING) {
+    if (simulationState.status === SimulationStatus.RUNNING) {
       animationFrameRef.current = requestAnimationFrame(animate);
     }
-  }, [getContext, simulationState, status, width, height]);
+  }, [getContext, simulationState, width, height]);
 
   // Set up animation loop
   useEffect(() => {
-    if (status === SimulationStatus.RUNNING) {
+    if (simulationState?.status === SimulationStatus.RUNNING) {
       animationFrameRef.current = requestAnimationFrame(animate);
     }
 
@@ -224,7 +224,7 @@ export const EcosystemCanvas: React.FC<EcosystemCanvasProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [status, animate]);
+  }, [simulationState?.status, animate]);
 
   return (
     <canvas
