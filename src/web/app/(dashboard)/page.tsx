@@ -10,6 +10,9 @@ import PlanCard from '../../components/subscription/PlanCard';
 import { useAuth } from '../../hooks/useAuth';
 import { useDrill } from '../../hooks/useDrill';
 import { useSimulation } from '../../hooks/useSimulation';
+import { DrillPrompt, DrillAttempt } from '../../types/drills';
+import { SubscriptionPlan } from '../../types/subscription';
+import { SUBSCRIPTION_TIERS } from '../../config/constants';
 
 /**
  * Human Tasks:
@@ -51,6 +54,19 @@ export default async function Dashboard(): Promise<JSX.Element> {
         score: attempt.score
       }));
   };
+
+  // Convert subscription tiers to plan format
+  const subscriptionPlans: SubscriptionPlan[] = Object.entries(SUBSCRIPTION_TIERS).map(([tier, details]) => ({
+    id: tier,
+    name: tier,
+    price: details.price,
+    features: [...details.features], // Convert readonly array to mutable
+    description: `Access to ${details.drillAttempts} drill attempts`,
+    tier: tier as UserSubscriptionTier,
+    interval: 'month',
+    stripeProductId: '',
+    stripePriceId: ''
+  }));
 
   return (
     <main className="container mx-auto px-4 py-8" role="main">
@@ -100,7 +116,7 @@ export default async function Dashboard(): Promise<JSX.Element> {
             ) : drillError ? (
               <p className="text-error-600">Failed to load drills: {drillError}</p>
             ) : drills?.length > 0 ? (
-              drills.slice(0, 3).map(drill => (
+              drills.slice(0, 3).map((drill: DrillPrompt) => (
                 <DrillCard
                   key={drill.id}
                   drill={drill}
@@ -148,21 +164,11 @@ export default async function Dashboard(): Promise<JSX.Element> {
           Your Subscription
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {Object.values(SUBSCRIPTION_TIERS).map(plan => (
+          {subscriptionPlans.map(plan => (
             <PlanCard
-              key={plan.name}
-              plan={{
-                id: plan.name,
-                name: plan.name,
-                price: plan.price,
-                features: plan.features,
-                description: `Access to ${plan.drillAttempts} drill attempts`,
-                tier: plan.name as UserSubscriptionTier,
-                interval: 'month',
-                stripeProductId: '',
-                stripePriceId: ''
-              }}
-              isSelected={authState.user?.subscriptionTier === plan.name}
+              key={plan.id}
+              plan={plan}
+              isSelected={authState.user?.subscriptionTier === plan.tier}
               className="w-full"
             />
           ))}
