@@ -10,14 +10,14 @@ import {
   DrillAttempt, 
   DrillEvaluation,
   DrillAttemptSchema 
-} from '../../types/drills';
+} from '../types/drills';
 
 import {
   DrillResult,
   DrillMetrics
-} from '../../lib/drills/types';
+} from '../lib/drills/types';
 
-import { evaluateDrillAttempt } from '../../lib/drills/evaluator';
+import { evaluateDrillAttempt } from '../lib/drills/evaluator';
 
 /**
  * Human Tasks:
