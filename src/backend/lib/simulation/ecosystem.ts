@@ -16,6 +16,7 @@ import {
   SimulationMetrics
 } from './types';
 import { APIError } from '../errors/APIError';
+import { APIErrorCode } from '../../types/api';
 
 /**
  * Human Tasks:
@@ -79,7 +80,35 @@ export class EcosystemSimulation {
     this.context = validatedContext;
   }
 
-  // ... [rest of the class implementation remains the same]
+  async initializeEcosystem(
+    selectedSpecies: Species[],
+    environment: EnvironmentParameters
+  ): Promise<EcosystemState> {
+    this.state.species = selectedSpecies;
+    this.state.environment = environment;
+    this.state.timestamp = Date.now();
+    return this.state;
+  }
+
+  async simulateTimeStep(): Promise<void> {
+    // Implementation would go here
+  }
+
+  calculateStabilityScore(): number {
+    return this.state.stabilityScore;
+  }
+
+  async getSimulationResult(): Promise<SimulationResult> {
+    // Implementation would go here
+    return {
+      simulationId: '',
+      score: 0,
+      ecosystemStability: 0,
+      speciesBalance: 0,
+      feedback: [],
+      completedAt: new Date().toISOString()
+    };
+  }
 }
 
 // Exported standalone functions that use the singleton instance
@@ -89,28 +118,28 @@ export function initializeEcosystem(
   environment: EnvironmentParameters
 ): Promise<EcosystemState> {
   if (!ecosystemInstance) {
-    throw new APIError('INTERNAL_ERROR', 'Ecosystem simulation not initialized');
+    throw new APIError(APIErrorCode.INTERNAL_ERROR, 'Ecosystem simulation not initialized');
   }
   return ecosystemInstance.initializeEcosystem(selectedSpecies, environment);
 }
 
 export function simulateTimeStep(): Promise<void> {
   if (!ecosystemInstance) {
-    throw new APIError('INTERNAL_ERROR', 'Ecosystem simulation not initialized');
+    throw new APIError(APIErrorCode.INTERNAL_ERROR, 'Ecosystem simulation not initialized');
   }
   return ecosystemInstance.simulateTimeStep();
 }
 
 export function calculateStabilityScore(): number {
   if (!ecosystemInstance) {
-    throw new APIError('INTERNAL_ERROR', 'Ecosystem simulation not initialized');
+    throw new APIError(APIErrorCode.INTERNAL_ERROR, 'Ecosystem simulation not initialized');
   }
   return ecosystemInstance.calculateStabilityScore();
 }
 
 export function getSimulationResult(): Promise<SimulationResult> {
   if (!ecosystemInstance) {
-    throw new APIError('INTERNAL_ERROR', 'Ecosystem simulation not initialized');
+    throw new APIError(APIErrorCode.INTERNAL_ERROR, 'Ecosystem simulation not initialized');
   }
   return ecosystemInstance.getSimulationResult();
 }
