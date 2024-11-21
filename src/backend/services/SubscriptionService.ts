@@ -106,7 +106,8 @@ export class SubscriptionService {
             });
 
             return subscription;
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as Error;
             throw new Error(`Failed to create subscription: ${error.message}`);
         }
     }
@@ -144,7 +145,8 @@ export class SubscriptionService {
             // Update local subscription record
             const updatedSubscription = await updateSubscriptionModel(subscriptionId, updateData);
             return updatedSubscription;
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as Error;
             throw new Error(`Failed to update subscription: ${error.message}`);
         }
     }
@@ -174,7 +176,8 @@ export class SubscriptionService {
 
             // Update local subscription record
             await cancelSubscriptionModel(subscriptionId, immediately);
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as Error;
             throw new Error(`Failed to cancel subscription: ${error.message}`);
         }
     }
@@ -197,21 +200,16 @@ export class SubscriptionService {
 
             // Get current usage metrics
             const usage = await checkUsage(subscriptionId);
-            const limits = plan.limits;
 
             return {
                 subscriptionId,
                 drillAttempts: usage.drillAttempts,
                 simulationAttempts: usage.simulationAttempts,
                 apiRequests: usage.apiRequests,
-                limits: {
-                    drillAttemptsPerDay: limits.drillAttemptsPerDay,
-                    simulationAttemptsPerDay: limits.simulationAttemptsPerDay,
-                    apiRequestsPerHour: limits.apiRequestsPerHour
-                },
                 period: new Date()
             };
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as Error;
             throw new Error(`Failed to get subscription usage: ${error.message}`);
         }
     }
@@ -251,7 +249,8 @@ export class SubscriptionService {
                     break;
                 }
             }
-        } catch (error) {
+        } catch (err: unknown) {
+            const error = err as Error;
             throw new Error(`Failed to handle webhook event: ${error.message}`);
         }
     }
