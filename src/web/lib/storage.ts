@@ -23,7 +23,7 @@ const ALLOWED_FILE_TYPES = [
   'image/png',
   'image/svg+xml',
   'application/pdf'
-];
+] as const;
 
 /**
  * Validates file size and type against allowed configurations
@@ -36,7 +36,7 @@ const validateFile = (file: File): boolean => {
   }
 
   // Verify file type
-  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+  if (!ALLOWED_FILE_TYPES.includes(file.type as typeof ALLOWED_FILE_TYPES[number])) {
     throw new Error(`File type ${file.type} is not allowed. Allowed types: ${ALLOWED_FILE_TYPES.join(', ')}`);
   }
 
