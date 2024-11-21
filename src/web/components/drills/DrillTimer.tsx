@@ -1,10 +1,11 @@
 // Third-party imports
 import React, { useState, useEffect, useCallback } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn from class-variance-authority
 
 // Internal imports
 import { useDrill } from '../../hooks/useDrill';
 import { Progress } from '../shared/Progress';
+import { DrillType } from '../../types/drills';
 
 /**
  * Human Tasks:
@@ -30,6 +31,8 @@ interface DrillTimerProps {
   onTimeUp: () => void;
   // Whether to start timer automatically
   autoStart?: boolean;
+  // Type of drill
+  drillType: DrillType;
 }
 
 /**
@@ -50,14 +53,15 @@ export const DrillTimer: React.FC<DrillTimerProps> = ({
   duration,
   drillId,
   onTimeUp,
-  autoStart = false
+  autoStart = false,
+  drillType
 }) => {
   // Initialize timer state
   const [timeRemaining, setTimeRemaining] = useState(duration);
   const [isRunning, setIsRunning] = useState(autoStart);
 
   // Get drill submission function
-  const { submitAttempt } = useDrill();
+  const { submitAttempt } = useDrill(drillType);
 
   /**
    * Handles timer completion
@@ -114,7 +118,7 @@ export const DrillTimer: React.FC<DrillTimerProps> = ({
       aria-label={`Time remaining: ${formatTime(timeRemaining)}`}
     >
       <div className="flex items-center justify-between">
-        <span className={cn(
+        <span className={clsx(
           "font-mono text-2xl font-bold",
           isWarning && "text-error-base animate-pulse"
         )}>
@@ -122,7 +126,7 @@ export const DrillTimer: React.FC<DrillTimerProps> = ({
         </span>
         <button
           onClick={() => setIsRunning(!isRunning)}
-          className={cn(
+          className={clsx(
             "px-4 py-2 rounded-md text-sm font-medium",
             isRunning 
               ? "bg-error-base text-white hover:bg-error-hover"
