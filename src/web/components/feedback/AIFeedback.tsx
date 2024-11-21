@@ -9,9 +9,9 @@ import {
   FeedbackSeverity, 
   AIFeedback as AIFeedbackType,
   FeedbackPoint 
-} from '../../../types/feedback';
-import Card from '../../shared/Card';
-import { useFeedback } from '../../../hooks/useFeedback';
+} from '../../types/feedback';
+import Card from '../shared/Card';
+import { useFeedback } from '../../hooks/useFeedback';
 
 // Requirement: AI Evaluation - Component props interface
 interface AIFeedbackProps {
@@ -151,7 +151,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
   }
 
   // Group feedback points by category
-  const feedbackByCategory = feedback.feedbackPoints.reduce<Record<FeedbackCategory, FeedbackPoint[]>>((acc, point) => {
+  const feedbackByCategory = feedback.feedbackPoints.reduce<Record<FeedbackCategory, FeedbackPoint[]>>((acc: Record<FeedbackCategory, FeedbackPoint[]>, point: FeedbackPoint) => {
     if (!acc[point.category]) {
       acc[point.category] = [];
     }
@@ -193,7 +193,7 @@ const AIFeedback: React.FC<AIFeedbackProps> = ({ drillId, className }) => {
               className="px-6 pb-6"
               role="list"
             >
-              {points.map(renderFeedbackPoint)}
+              {(points as FeedbackPoint[]).map(renderFeedbackPoint)}
             </div>
           )}
         </Card>
