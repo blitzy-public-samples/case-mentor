@@ -2,8 +2,9 @@
 
 // react v18.0.0
 import React, { useState, useCallback } from 'react';
-// @stripe/stripe-react-components v2.0.0
-import { Elements } from '@stripe/stripe-react-components';
+// @stripe/stripe-js v2.0.0
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 // Internal imports
 import PricingTable from '../../../components/subscription/PricingTable';
@@ -143,7 +144,7 @@ export default function SubscriptionPage() {
 
         {/* Requirement: Rate Limiting - Display subscription plans with tier-based features */}
         <PricingTable
-          plans={subscription?.availablePlans || []}
+          plans={subscription?.plans || []}
           onPlanSelect={handlePlanSelect}
         />
 
