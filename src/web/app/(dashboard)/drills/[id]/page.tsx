@@ -176,6 +176,7 @@ const DrillPage = () => {
               MAX_ATTEMPT_DURATION
             )}
             drillId={currentDrill.id}
+            drillType={currentDrill.type}
             onTimeUp={() => handleDrillComplete({
               promptId: currentDrill.id,
               response: '',
