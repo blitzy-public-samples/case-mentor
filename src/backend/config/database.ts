@@ -76,14 +76,5 @@ export const supabaseClient = createClient(databaseConfig.url, process.env.SUPAB
         params: {
             eventsPerSecond: 10,
         },
-    },
-    // Connection pooling configuration
-    pool: {
-        min: databaseConfig.poolMin,
-        max: databaseConfig.poolMax,
-        idleTimeoutMillis: 120000, // 2 minutes
-        createTimeoutMillis: 5000, // 5 seconds
-        acquireTimeoutMillis: 10000, // 10 seconds
-        propagateCreateError: false // Don't fail fast on connection issues
     }
 });
