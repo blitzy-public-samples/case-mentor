@@ -1,5 +1,7 @@
 // @package jsonwebtoken ^9.0.0
 // @package cookie ^0.5.0
+// @package @types/jsonwebtoken
+// @package @types/cookie
 
 /**
  * Human Tasks:
