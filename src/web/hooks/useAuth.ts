@@ -10,7 +10,7 @@ import {
   AuthResponse,
   PasswordResetRequest
 } from '../types/auth';
-import { UserSubscriptionTier, UserSubscriptionStatus } from '../types/user';
+import { UserSubscriptionTier, UserSubscriptionStatus, UserPreparationLevel } from '../types/user';
 import supabase from '../lib/supabase';
 import { api } from '../lib/api';
 import { ErrorCode } from '../types/api';
@@ -43,7 +43,7 @@ const emptyAuthSession: AuthSession = {
       lastName: '',
       targetFirm: '',
       interviewDate: null,
-      preparationLevel: 'BEGINNER',
+      preparationLevel: UserPreparationLevel.BEGINNER,
       avatarUrl: null
     },
     subscriptionTier: UserSubscriptionTier.FREE,
@@ -58,7 +58,7 @@ const emptyAuthSession: AuthSession = {
     lastName: '',
     targetFirm: '',
     interviewDate: null,
-    preparationLevel: 'BEGINNER',
+    preparationLevel: UserPreparationLevel.BEGINNER,
     avatarUrl: null
   },
   expiresAt: 0
