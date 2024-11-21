@@ -1,12 +1,13 @@
 // Third-party imports
+'use client';
 import React from 'react'; // ^18.0.0
 import { useRouter } from 'next/navigation'; // ^13.0.0
 
 // Internal imports
-import DrillCard from '../../components/drills/DrillCard';
-import DrillFilter from '../../components/drills/DrillFilter';
-import { useDrill } from '../../hooks/useDrill';
-import { DrillType, DrillDifficulty } from '../../types/drills';
+import DrillCard from '@/components/drills/DrillCard';
+import DrillFilter from '@/components/drills/DrillFilter';
+import { useDrill } from '@/hooks/useDrill';
+import { DrillType, DrillDifficulty, DrillPrompt } from '@/types/drills';
 
 /**
  * Human Tasks:
@@ -32,14 +33,14 @@ export default function DrillsPage() {
   // Requirement: Practice Drills - Filter available industries from drill data
   const industries = React.useMemo(() => {
     if (!drills) return [];
-    return Array.from(new Set(drills.map(drill => drill.industry))).sort();
+    return Array.from(new Set(drills.map((drill: DrillPrompt) => drill.industry))).sort();
   }, [drills]);
 
   // Requirement: Practice Drills - Apply filters to drill list
   const filteredDrills = React.useMemo(() => {
     if (!drills) return [];
     
-    return drills.filter(drill => {
+    return drills.filter((drill: DrillPrompt) => {
       const matchesType = !selectedType || drill.type === selectedType;
       const matchesDifficulty = !selectedDifficulty || drill.difficulty === selectedDifficulty;
       const matchesIndustry = !selectedIndustry || drill.industry === selectedIndustry;
@@ -116,7 +117,7 @@ export default function DrillsPage() {
 
       {/* Requirement: User Interface Design - Responsive drill grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredDrills.map((drill) => (
+        {filteredDrills.map((drill: DrillPrompt) => (
           <DrillCard
             key={drill.id}
             drill={drill}
