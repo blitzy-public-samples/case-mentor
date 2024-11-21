@@ -11,14 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { 
-  SimulationService,
-  startSimulation,
-  updateSpecies,
-  updateEnvironment,
-  executeTimeStep,
-  completeSimulation
-} from '../../services/SimulationService';
+import { SimulationService } from '../../services/SimulationService';
 import { withAuth, requireSubscription } from '../../lib/auth/middleware';
 import {
   SimulationExecutionContext,
@@ -26,7 +19,8 @@ import {
   Environment,
   SimulationState,
   SimulationResult
-} from '../../lib/simulation/types';
+} from '../../types/simulation';
+import { UserSubscriptionTier } from '../../types/user';
 
 // Request validation schemas
 const StartSimulationSchema = z.object({
@@ -66,147 +60,143 @@ const simulationService = new SimulationService();
  * POST handler for simulation initialization and updates
  * Addresses requirement: McKinsey Simulation - Ecosystem game replication
  */
-export const POST = withAuth(
-  requireSubscription(['PREMIUM'])(
-    async (req: NextRequest): Promise<NextResponse> => {
-      try {
-        const body = await req.json();
+export const POST = withAuth(async (req: NextRequest, context: { user: any }) => {
+  const subscriptionCheck = await requireSubscription([UserSubscriptionTier.PREMIUM])(req, context);
+  if (subscriptionCheck) return subscriptionCheck;
 
-        // Validate request based on action type
-        switch (body.action) {
-          case 'start': {
-            const { context } = StartSimulationSchema.parse(body);
-            const result = await simulationService.startSimulation(
-              req.user.id,
-              context as SimulationExecutionContext
-            );
-            return NextResponse.json(result);
-          }
+  try {
+    const body = await req.json();
 
-          case 'updateSpecies': {
-            const { simulationId, species } = UpdateSpeciesSchema.parse(body);
-            const result = await simulationService.updateSpecies(
-              simulationId,
-              species as Species[]
-            );
-            return NextResponse.json(result);
-          }
-
-          case 'updateEnvironment': {
-            const { simulationId, environment } = UpdateEnvironmentSchema.parse(body);
-            const result = await simulationService.updateEnvironment(
-              simulationId,
-              environment as Environment
-            );
-            return NextResponse.json(result);
-          }
-
-          default:
-            return NextResponse.json(
-              { error: 'Invalid action type' },
-              { status: 400 }
-            );
-        }
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          return NextResponse.json(
-            { error: 'Invalid request payload', details: error.errors },
-            { status: 400 }
-          );
-        }
-        return NextResponse.json(
-          { error: 'Internal server error' },
-          { status: 500 }
+    // Validate request based on action type
+    switch (body.action) {
+      case 'start': {
+        const { context: simContext } = StartSimulationSchema.parse(body);
+        const result = await simulationService.startSimulation(
+          context.user.id,
+          simContext as SimulationExecutionContext
         );
+        return NextResponse.json(result);
       }
+
+      case 'updateSpecies': {
+        const { simulationId, species } = UpdateSpeciesSchema.parse(body);
+        const result = await simulationService.updateSpecies(
+          simulationId,
+          species as Species[]
+        );
+        return NextResponse.json(result);
+      }
+
+      case 'updateEnvironment': {
+        const { simulationId, environment } = UpdateEnvironmentSchema.parse(body);
+        const result = await simulationService.updateEnvironment(
+          simulationId,
+          environment as Environment
+        );
+        return NextResponse.json(result);
+      }
+
+      default:
+        return NextResponse.json(
+          { error: 'Invalid action type' },
+          { status: 400 }
+        );
     }
-  )
-);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request payload', details: error.errors },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+});
 
 /**
  * PUT handler for executing simulation time steps
  * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
  */
-export const PUT = withAuth(
-  requireSubscription(['PREMIUM'])(
-    async (req: NextRequest): Promise<NextResponse> => {
-      try {
-        const { simulationId } = z.object({
-          simulationId: z.string().uuid()
-        }).parse(await req.json());
+export const PUT = withAuth(async (req: NextRequest, context: { user: any }) => {
+  const subscriptionCheck = await requireSubscription([UserSubscriptionTier.PREMIUM])(req, context);
+  if (subscriptionCheck) return subscriptionCheck;
 
-        const result = await simulationService.executeTimeStep(simulationId);
-        return NextResponse.json(result);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          return NextResponse.json(
-            { error: 'Invalid simulation ID' },
-            { status: 400 }
-          );
-        }
-        return NextResponse.json(
-          { error: 'Internal server error' },
-          { status: 500 }
-        );
-      }
+  try {
+    const { simulationId } = z.object({
+      simulationId: z.string().uuid()
+    }).parse(await req.json());
+
+    const result = await simulationService.executeTimeStep(simulationId);
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid simulation ID' },
+        { status: 400 }
+      );
     }
-  )
-);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+});
 
 /**
  * GET handler for retrieving simulation state
  * Addresses requirement: API Response Times - <200ms API response time
  */
-export const GET = withAuth(
-  requireSubscription(['PREMIUM'])(
-    async (req: NextRequest): Promise<NextResponse> => {
-      try {
-        const simulationId = req.nextUrl.searchParams.get('simulationId');
-        if (!simulationId) {
-          return NextResponse.json(
-            { error: 'Simulation ID is required' },
-            { status: 400 }
-          );
-        }
+export const GET = withAuth(async (req: NextRequest, context: { user: any }) => {
+  const subscriptionCheck = await requireSubscription([UserSubscriptionTier.PREMIUM])(req, context);
+  if (subscriptionCheck) return subscriptionCheck;
 
-        const state = await simulationService.getState(simulationId);
-        return NextResponse.json(state);
-      } catch (error) {
-        return NextResponse.json(
-          { error: 'Internal server error' },
-          { status: 500 }
-        );
-      }
+  try {
+    const simulationId = req.nextUrl.searchParams.get('simulationId');
+    if (!simulationId) {
+      return NextResponse.json(
+        { error: 'Simulation ID is required' },
+        { status: 400 }
+      );
     }
-  )
-);
+
+    const state = await simulationService.getState(simulationId);
+    return NextResponse.json(state);
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+});
 
 /**
  * DELETE handler for completing simulation
  * Addresses requirement: McKinsey Simulation - Complex data analysis
  */
-export const DELETE = withAuth(
-  requireSubscription(['PREMIUM'])(
-    async (req: NextRequest): Promise<NextResponse> => {
-      try {
-        const { simulationId } = z.object({
-          simulationId: z.string().uuid()
-        }).parse(await req.json());
+export const DELETE = withAuth(async (req: NextRequest, context: { user: any }) => {
+  const subscriptionCheck = await requireSubscription([UserSubscriptionTier.PREMIUM])(req, context);
+  if (subscriptionCheck) return subscriptionCheck;
 
-        const result = await simulationService.completeSimulation(simulationId);
-        return NextResponse.json(result);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          return NextResponse.json(
-            { error: 'Invalid simulation ID' },
-            { status: 400 }
-          );
-        }
-        return NextResponse.json(
-          { error: 'Internal server error' },
-          { status: 500 }
-        );
-      }
+  try {
+    const { simulationId } = z.object({
+      simulationId: z.string().uuid()
+    }).parse(await req.json());
+
+    const result = await simulationService.completeSimulation(simulationId);
+    return NextResponse.json(result);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid simulation ID' },
+        { status: 400 }
+      );
     }
-  )
-);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+});
