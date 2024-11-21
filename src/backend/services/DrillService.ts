@@ -118,7 +118,7 @@ export class DrillService {
       .eq('user_id', userId)
       .eq('status', DrillStatus.IN_PROGRESS);
 
-    if (count >= MAX_CONCURRENT_ATTEMPTS) {
+    if ((count ?? 0) >= MAX_CONCURRENT_ATTEMPTS) {
       throw new Error(`Maximum concurrent attempts (${MAX_CONCURRENT_ATTEMPTS}) exceeded`);
     }
 
@@ -177,6 +177,7 @@ export class DrillService {
     const evaluation = await evaluateDrillAttempt(
       drill.type,
       response,
+      drill.type,
       {
         drillType: drill.type,
         rubric: {
@@ -261,7 +262,7 @@ export class DrillService {
       .eq('user_id', userId)
       .eq('drill_id', drillId);
 
-    return count < MAX_CONCURRENT_ATTEMPTS;
+    return (count ?? 0) < MAX_CONCURRENT_ATTEMPTS;
   }
 
   /**
