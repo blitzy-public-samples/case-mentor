@@ -11,8 +11,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FeedbackService } from '../../services/FeedbackService';
 import { withAuth } from '../../lib/auth/middleware';
-import { APIError } from '../../lib/errors/APIError';
+import { APIError, APIErrorCode } from '../../types/api';
 import { z } from 'zod';
+import { OpenAIService } from '../../lib/openai';
 
 // Validation schemas for request payloads
 const FeedbackRequestSchema = z.object({
@@ -42,8 +43,9 @@ const FeedbackUpdateSchema = z.object({
   })).optional()
 });
 
-// Initialize feedback service
-const feedbackService = new FeedbackService();
+// Initialize services
+const openAIService = new OpenAIService();
+const feedbackService = new FeedbackService(openAIService);
 
 /**
  * GET handler for retrieving feedback
@@ -57,7 +59,7 @@ export const GET = withAuth(async (request: NextRequest) => {
 
     if (!feedbackId && !attemptId) {
       throw new APIError(
-        'VALIDATION_ERROR',
+        APIErrorCode.VALIDATION_ERROR,
         'Either feedbackId or attemptId is required',
         { params: { feedbackId, attemptId } }
       );
@@ -67,7 +69,7 @@ export const GET = withAuth(async (request: NextRequest) => {
       const feedback = await feedbackService.getFeedback(feedbackId);
       if (!feedback) {
         throw new APIError(
-          'NOT_FOUND',
+          APIErrorCode.NOT_FOUND,
           'Feedback not found',
           { feedbackId }
         );
@@ -83,11 +85,12 @@ export const GET = withAuth(async (request: NextRequest) => {
     if (error instanceof APIError) {
       return NextResponse.json(error.toJSON(), { status: 400 });
     }
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       new APIError(
-        'INTERNAL_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Failed to retrieve feedback',
-        { error: error.message }
+        { error: message }
       ).toJSON(),
       { status: 500 }
     );
@@ -118,7 +121,7 @@ export const POST = withAuth(async (request: NextRequest) => {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         new APIError(
-          'VALIDATION_ERROR',
+          APIErrorCode.VALIDATION_ERROR,
           'Invalid request payload',
           { details: error.errors }
         ).toJSON(),
@@ -128,11 +131,12 @@ export const POST = withAuth(async (request: NextRequest) => {
     if (error instanceof APIError) {
       return NextResponse.json(error.toJSON(), { status: 400 });
     }
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       new APIError(
-        'INTERNAL_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Failed to generate feedback',
-        { error: error.message }
+        { error: message }
       ).toJSON(),
       { status: 500 }
     );
@@ -150,7 +154,7 @@ export const PATCH = withAuth(async (request: NextRequest) => {
     
     if (!feedbackId) {
       throw new APIError(
-        'VALIDATION_ERROR',
+        APIErrorCode.VALIDATION_ERROR,
         'Feedback ID is required',
         { params: { feedbackId } }
       );
@@ -173,7 +177,7 @@ export const PATCH = withAuth(async (request: NextRequest) => {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         new APIError(
-          'VALIDATION_ERROR',
+          APIErrorCode.VALIDATION_ERROR,
           'Invalid update payload',
           { details: error.errors }
         ).toJSON(),
@@ -183,11 +187,12 @@ export const PATCH = withAuth(async (request: NextRequest) => {
     if (error instanceof APIError) {
       return NextResponse.json(error.toJSON(), { status: 400 });
     }
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       new APIError(
-        'INTERNAL_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Failed to update feedback',
-        { error: error.message }
+        { error: message }
       ).toJSON(),
       { status: 500 }
     );
