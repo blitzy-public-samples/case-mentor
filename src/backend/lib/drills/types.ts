@@ -10,6 +10,9 @@ import { DrillType, DrillResponse, DrillEvaluation, DrillEvaluationSchema } from
  * 4. Implement proper validation for weight distributions in evaluation criteria
  */
 
+// Re-export imported types
+export { DrillType, DrillResponse, DrillEvaluation };
+
 // Requirement: AI Evaluation - Standardized evaluation criteria structure
 export interface DrillEvaluationCriteria {
     drillType: DrillType;
