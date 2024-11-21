@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'; // ^13.0.0
 import { withAuth, requireSubscription } from '../../../lib/auth/middleware';
 import { handleError } from '../../../lib/errors/handlers';
 import { SimulationService } from '../../../services/SimulationService';
-import { UserSubscriptionTier } from '../../../types/user';
+import { User, UserSubscriptionTier } from '../../../types/user';
 
 /**
  * Human Tasks:
@@ -43,10 +43,10 @@ const actionSchema = z.object({
  * Addresses requirement: McKinsey Simulation - Ecosystem game replication
  */
 export const GET = withAuth(
-  async (request: NextRequest, context: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
     try {
       const simulationService = new SimulationService();
-      const state = await simulationService.getSimulationState(context.params.id);
+      const state = await simulationService.getSimulationState(params.id);
       
       return NextResponse.json({
         success: true,
@@ -68,7 +68,7 @@ export const GET = withAuth(
  * Addresses requirement: McKinsey Simulation - Complex data analysis
  */
 export const PUT = withAuth(
-  async (request: NextRequest, context: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
     try {
       const body = await request.json();
       const { type, data } = updateSchema.parse(body);
@@ -78,12 +78,12 @@ export const PUT = withAuth(
 
       if (type === 'species' && data.species) {
         updatedState = await simulationService.updateSpecies(
-          context.params.id,
+          params.id,
           data.species
         );
       } else if (type === 'environment' && data.environment) {
         updatedState = await simulationService.updateEnvironment(
-          context.params.id,
+          params.id,
           data.environment
         );
       } else {
@@ -110,7 +110,7 @@ export const PUT = withAuth(
  * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
  */
 export const POST = withAuth(
-  async (request: NextRequest, context: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
     try {
       const body = await request.json();
       const { action } = actionSchema.parse(body);
@@ -119,9 +119,9 @@ export const POST = withAuth(
       let result;
 
       if (action === 'timeStep') {
-        result = await simulationService.executeTimeStep(context.params.id);
+        result = await simulationService.executeTimeStep(params.id);
       } else if (action === 'complete') {
-        result = await simulationService.completeSimulation(context.params.id);
+        result = await simulationService.completeSimulation(params.id);
       }
 
       return NextResponse.json({
