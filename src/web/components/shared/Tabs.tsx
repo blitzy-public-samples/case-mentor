@@ -57,7 +57,11 @@ interface TabsContentProps {
 }
 
 // Requirement: Accessibility Requirements - WCAG 2.1 AA compliant keyboard navigation
-const Tabs: React.FC<TabsProps> = ({
+const Tabs: React.FC<TabsProps> & {
+  TabsList: React.FC<TabsListProps>;
+  TabsTrigger: React.FC<TabsTriggerProps>;
+  TabsContent: React.FC<TabsContentProps>;
+} = ({
   defaultValue,
   orientation = 'horizontal',
   children,
