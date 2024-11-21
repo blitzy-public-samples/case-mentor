@@ -1,5 +1,6 @@
 // @package @supabase/supabase-js ^2.38.0
 // @package zod ^3.22.0
+// @package uuid ^9.0.0
 
 /**
  * Human Tasks:
@@ -93,8 +94,9 @@ export class Feedback {
                     this.updatedAt.toISOString()
                 ]
             );
-        } catch (error) {
-            throw new Error('Failed to save feedback: ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error('Failed to save feedback: ' + message);
         }
     }
 
@@ -117,8 +119,9 @@ export class Feedback {
 
                 Object.assign(this, validatedUpdate);
             });
-        } catch (error) {
-            throw new Error('Failed to update feedback: ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error('Failed to update feedback: ' + message);
         }
     }
 
@@ -131,8 +134,9 @@ export class Feedback {
                     [this.id]
                 );
             });
-        } catch (error) {
-            throw new Error('Failed to delete feedback: ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error('Failed to delete feedback: ' + message);
         }
     }
 
@@ -146,8 +150,9 @@ export class Feedback {
             );
 
             return result ? new Feedback(result) : null;
-        } catch (error) {
-            throw new Error('Failed to find feedback: ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error('Failed to find feedback: ' + message);
         }
     }
 
@@ -160,8 +165,9 @@ export class Feedback {
             );
 
             return results.map(data => new Feedback(data));
-        } catch (error) {
-            throw new Error('Failed to find feedback by attempt: ' + error.message);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            throw new Error('Failed to find feedback by attempt: ' + message);
         }
     }
 }
