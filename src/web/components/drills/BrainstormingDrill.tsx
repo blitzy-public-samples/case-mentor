@@ -170,7 +170,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
 
       {/* Timer section */}
       <DrillTimer
-        duration={(prompt.timeLimit || 0) * 60} // Convert minutes to seconds, default to 0 if undefined
+        duration={(prompt.timeLimit || 0) * 60} // Convert minutes to seconds, ensure non-null value
         drillId={prompt.id}
         onTimeUp={handleTimeUp}
         autoStart={true}

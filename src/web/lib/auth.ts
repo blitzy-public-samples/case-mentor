@@ -17,14 +17,16 @@ import {
   AuthSession, 
   AuthState, 
   AuthResponse,
-  AuthProvider,
-  PasswordResetRequest,
-  PasswordUpdateRequest,
+  AuthProvider
+} from '../types/auth';
+import { 
+  User,
   UserSubscriptionTier,
   UserSubscriptionStatus,
-  User
-} from '../types/auth';
+  UserProfile 
+} from '../types/user';
 import { ERROR_MESSAGES, AUTH_CONFIG } from '../config/constants';
+import { ErrorCode } from '../types/api';
 
 /**
  * Authenticates user with email and password
@@ -38,7 +40,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -53,7 +55,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -73,7 +75,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
           details: error
         },
@@ -122,7 +124,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -144,7 +146,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -159,7 +161,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -179,7 +181,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
@@ -208,7 +210,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: 'INTERNAL_ERROR',
+          code: ErrorCode.INTERNAL_ERROR,
           message: ERROR_MESSAGES.API.SERVER,
           details: profileError
         },
@@ -253,7 +255,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -287,7 +289,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -303,7 +305,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
@@ -324,7 +326,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -346,7 +348,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: 'VALIDATION_ERROR',
+          code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -364,7 +366,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
           details: error
         },
@@ -385,7 +387,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
       success: false,
       data: null,
       error: {
-        code: 'INTERNAL_ERROR',
+        code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
