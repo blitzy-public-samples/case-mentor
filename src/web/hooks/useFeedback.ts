@@ -54,7 +54,7 @@ export const useFeedback = (drillId: string) => {
         if (!response.success || !response.data) {
           throw new Error(response.error?.message || 'Failed to fetch feedback');
         }
-        return response.data;
+        return response.data.data;
       } catch (error) {
         throw new Error('Error fetching feedback data');
       }
@@ -111,7 +111,7 @@ export const useFeedback = (drillId: string) => {
       if (!response.success || !response.data) {
         throw new Error(response.error?.message || 'Failed to request feedback');
       }
-      return response.data;
+      return response.data.data;
     },
     {
       onSuccess: () => {
