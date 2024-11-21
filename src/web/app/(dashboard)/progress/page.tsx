@@ -11,7 +11,7 @@ import React from 'react'; // ^18.0.0
 
 // Internal imports
 import { ProgressChart } from '../../../components/analytics/ProgressChart';
-import { ScoreDistribution } from '../../../components/analytics/ScoreDistribution';
+import ScoreDistribution from '../../../components/analytics/ScoreDistribution';
 import { SkillRadar } from '../../../components/analytics/SkillRadar';
 import { useProgress } from '../../../hooks/useProgress';
 import { useAuth } from '../../../hooks/useAuth';
@@ -29,7 +29,7 @@ export default async function ProgressPage() {
   const userId = authState.user?.id;
 
   // Fetch user progress data
-  const { progress, isLoading, error } = useProgress(userId);
+  const { progress, isLoading, error } = useProgress(userId || '');
 
   // Handle loading state
   if (isLoading || !userId) {
