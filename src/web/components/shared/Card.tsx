@@ -1,7 +1,7 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 // Import theme tokens from relative path
 import { shadows, spacing } from '../../config/theme';
 
@@ -29,44 +29,34 @@ interface CardVariantsProps {
 }
 
 // Requirement: Design System Specifications - Consistent shadow and spacing application
-const cardVariants = ({ shadow = 'md', padding = 'md', hoverable = false }: CardVariantsProps) => {
-  // Map padding sizes to theme spacing values
-  const paddingMap = {
-    sm: `${spacing.scale[1]}px`, // 8px
-    md: `${spacing.scale[3]}px`, // 16px
-    lg: `${spacing.scale[4]}px`, // 24px
-  };
-
-  // Map shadow sizes to theme shadow values
-  const shadowMap = {
-    sm: shadows.sm,
-    md: shadows.md,
-    lg: shadows.lg,
-  };
-
-  return cn(
-    // Base styles
-    'rounded-lg bg-white',
-    // Requirement: Accessibility Requirements - Ensure sufficient color contrast
-    'border border-gray-200',
-    
-    // Apply padding based on size
-    `p-${paddingMap[padding]}`,
-    
-    // Apply shadow based on size
-    `shadow-${shadowMap[shadow]}`,
-    
-    // Requirement: Accessibility Requirements - Smooth transitions for hover states
-    'transition-all duration-200',
-    
-    // Hoverable state with accessible focus indication
-    hoverable && [
-      'hover:shadow-lg hover:-translate-y-1',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
-      'active:shadow-md active:translate-y-0'
-    ]
-  );
-};
+const cardVariants = cva('rounded-lg bg-white', {
+  variants: {
+    shadow: {
+      sm: `shadow-${shadows.sm}`,
+      md: `shadow-${shadows.md}`,
+      lg: `shadow-${shadows.lg}`,
+    },
+    padding: {
+      sm: `p-${spacing.scale[1]}`,
+      md: `p-${spacing.scale[3]}`,
+      lg: `p-${spacing.scale[4]}`,
+    },
+    hoverable: {
+      true: [
+        'hover:shadow-lg hover:-translate-y-1',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+        'active:shadow-md active:translate-y-0',
+        'transition-all duration-200'
+      ],
+      false: '',
+    },
+  },
+  defaultVariants: {
+    shadow: 'md',
+    padding: 'md',
+    hoverable: false,
+  },
+});
 
 // Requirement: Component Library - Core card component implementation
 const Card: React.FC<CardProps> = ({
@@ -85,10 +75,7 @@ const Card: React.FC<CardProps> = ({
 
   return (
     <div
-      className={cn(
-        cardVariants({ shadow, padding, hoverable }),
-        className
-      )}
+      className={cardVariants({ shadow, padding, hoverable, className })}
       {...ariaProps}
       {...props}
     >
