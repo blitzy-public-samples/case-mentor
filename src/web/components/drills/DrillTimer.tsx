@@ -137,7 +137,7 @@ export const DrillTimer: React.FC<DrillTimerProps> = ({
       <Progress
         value={progressPercentage}
         max={100}
-        variant={isWarning ? 'error' : 'primary'}
+        variant={isWarning ? 'secondary' : 'primary'}
         size="md"
         ariaLabel={`${Math.round(progressPercentage)}% time remaining`}
       />
