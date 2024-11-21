@@ -11,6 +11,7 @@ import {
     Subscription 
 } from '../../types/subscription';
 import { APIError } from '../errors/APIError';
+import { APIErrorCode } from '../../types/api';
 
 /**
  * Human Tasks:
@@ -34,7 +35,7 @@ export async function createCustomer(email: string, name: string): Promise<Strip
         return customer;
     } catch (error) {
         throw new APIError(
-            'PAYMENT_ERROR',
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to create customer',
             { email, error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -74,7 +75,7 @@ export async function createSubscription(
         return subscription;
     } catch (error) {
         throw new APIError(
-            'PAYMENT_ERROR',
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to create subscription',
             { customerId, priceId, error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -109,14 +110,14 @@ export async function handleWebhook(
 
             default:
                 throw new APIError(
-                    'WEBHOOK_ERROR',
+                    APIErrorCode.VALIDATION_ERROR,
                     'Unhandled webhook event type',
                     { eventType: event.type }
                 );
         }
     } catch (error) {
         throw new APIError(
-            'WEBHOOK_ERROR',
+            APIErrorCode.VALIDATION_ERROR,
             'Failed to process webhook',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -152,7 +153,7 @@ export async function updateSubscription(
         return subscription;
     } catch (error) {
         throw new APIError(
-            'PAYMENT_ERROR',
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to update subscription',
             { subscriptionId, error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -172,7 +173,7 @@ export async function cancelSubscription(
         return subscription;
     } catch (error) {
         throw new APIError(
-            'PAYMENT_ERROR',
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to cancel subscription',
             { subscriptionId, error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -200,7 +201,7 @@ export async function createPaymentIntent(
         return paymentIntent;
     } catch (error) {
         throw new APIError(
-            'PAYMENT_ERROR',
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to create payment intent',
             { customerId, amount, error: error instanceof Error ? error.message : 'Unknown error' }
         );
@@ -221,7 +222,7 @@ async function validateAndConstructEvent(
         return event;
     } catch (error) {
         throw new APIError(
-            'WEBHOOK_ERROR',
+            APIErrorCode.VALIDATION_ERROR,
             'Failed to validate webhook signature',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         );
