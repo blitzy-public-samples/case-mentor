@@ -40,7 +40,21 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
     if (!credentials.email || !credentials.email.includes('@')) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
@@ -55,7 +69,21 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
     if (!credentials.password || credentials.password.length < 8) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
@@ -75,7 +103,21 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
     if (error) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
@@ -124,7 +166,21 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
   } catch (error) {
     return {
       success: false,
-      data: null,
+      data: {
+        user: {
+          id: '',
+          email: '',
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: {
         code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
@@ -146,7 +202,21 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
     if (!credentials.email || !credentials.email.includes('@')) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
@@ -161,7 +231,21 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
     if (!credentials.password || credentials.password.length < 8) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
@@ -181,7 +265,21 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
     if (error) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
@@ -210,7 +308,21 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
     if (profileError) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.INTERNAL_ERROR,
           message: ERROR_MESSAGES.API.SERVER,
@@ -255,7 +367,21 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
   } catch (error) {
     return {
       success: false,
-      data: null,
+      data: {
+        user: {
+          id: '',
+          email: '',
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: {
         code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
@@ -289,7 +415,21 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
     if (!request.email || !request.email.includes('@')) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
@@ -305,7 +445,21 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
     if (error) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
@@ -318,7 +472,21 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
 
     return {
       success: true,
-      data: null,
+      data: {
+        user: {
+          id: '',
+          email: request.email,
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: null,
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -326,7 +494,21 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
   } catch (error) {
     return {
       success: false,
-      data: null,
+      data: {
+        user: {
+          id: '',
+          email: '',
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: {
         code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,
@@ -348,7 +530,21 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
     if (!request.newPassword || request.newPassword.length < 8) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.VALIDATION_ERROR,
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
@@ -366,7 +562,21 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
     if (error) {
       return {
         success: false,
-        data: null,
+        data: {
+          user: {
+            id: '',
+            email: '',
+            profile: {} as UserProfile,
+            subscriptionTier: UserSubscriptionTier.FREE,
+            subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session: {} as Session,
+          profile: {} as UserProfile,
+          expiresAt: 0
+        },
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error.message,
@@ -379,7 +589,21 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
 
     return {
       success: true,
-      data: null,
+      data: {
+        user: {
+          id: data.user.id,
+          email: data.user.email || '',
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(data.user.created_at),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: null,
       timestamp: new Date().toISOString(),
       requestId: crypto.randomUUID()
@@ -387,7 +611,21 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
   } catch (error) {
     return {
       success: false,
-      data: null,
+      data: {
+        user: {
+          id: '',
+          email: '',
+          profile: {} as UserProfile,
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: {} as Session,
+        profile: {} as UserProfile,
+        expiresAt: 0
+      },
       error: {
         code: ErrorCode.INTERNAL_ERROR,
         message: ERROR_MESSAGES.API.SERVER,

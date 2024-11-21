@@ -33,6 +33,23 @@ const initialState: AuthState = {
   user: null
 };
 
+// Default empty auth session for error responses
+const emptyAuthSession: AuthSession = {
+  user: {
+    id: '',
+    email: '',
+    profile: {},
+    subscriptionTier: UserSubscriptionTier.FREE,
+    subscriptionStatus: UserSubscriptionStatus.ACTIVE,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    lastLoginAt: new Date()
+  },
+  session: {} as Session,
+  profile: {},
+  expiresAt: 0
+};
+
 /**
  * Custom React hook for managing authentication state and operations
  * Requirement: Authentication & Authorization - JWT-based authentication with secure session management
@@ -205,7 +222,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: false,
-        data: null,
+        data: emptyAuthSession,
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Login failed',
@@ -273,7 +290,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: false,
-        data: null,
+        data: emptyAuthSession,
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Registration failed',
@@ -322,7 +339,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: true,
-        data: null,
+        data: emptyAuthSession,
         error: null,
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
@@ -331,7 +348,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: false,
-        data: null,
+        data: emptyAuthSession,
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Password reset failed',
@@ -361,7 +378,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: true,
-        data: null,
+        data: emptyAuthSession,
         error: null,
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
@@ -370,7 +387,7 @@ export function useAuth() {
       setState(prev => ({ ...prev, loading: false }));
       return {
         success: false,
-        data: null,
+        data: emptyAuthSession,
         error: {
           code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Email verification failed',
