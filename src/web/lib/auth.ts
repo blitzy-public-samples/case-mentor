@@ -20,7 +20,8 @@ import {
   AuthProvider,
   PasswordResetRequest,
   PasswordUpdateRequest,
-  ErrorCode,
+  UserSubscriptionTier,
+  UserSubscriptionStatus,
   User
 } from '../types/auth';
 import { ERROR_MESSAGES, AUTH_CONFIG } from '../config/constants';
@@ -37,7 +38,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -52,7 +53,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -72,7 +73,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: ERROR_MESSAGES.AUTH.INVALID_CREDENTIALS,
           details: error
         },
@@ -98,8 +99,8 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
         id: data.user.id,
         email: data.user.email || '',
         profile: profile,
-        subscriptionTier: profile?.subscriptionTier || 'FREE',
-        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        subscriptionTier: (profile?.subscriptionTier as UserSubscriptionTier) || UserSubscriptionTier.FREE,
+        subscriptionStatus: (profile?.subscriptionStatus as UserSubscriptionStatus) || UserSubscriptionStatus.ACTIVE,
         createdAt: new Date(data.user.created_at),
         updatedAt: new Date(),
         lastLoginAt: new Date()
@@ -121,7 +122,7 @@ export async function signIn(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: ErrorCode.INTERNAL_ERROR,
+        code: 'INTERNAL_ERROR',
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -143,7 +144,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -158,7 +159,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -178,7 +179,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error.message,
           details: error
         },
@@ -207,7 +208,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         success: false,
         data: null,
         error: {
-          code: ErrorCode.INTERNAL_ERROR,
+          code: 'INTERNAL_ERROR',
           message: ERROR_MESSAGES.API.SERVER,
           details: profileError
         },
@@ -229,8 +230,8 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
         id: data.user.id,
         email: data.user.email || '',
         profile: profile,
-        subscriptionTier: 'FREE',
-        subscriptionStatus: 'ACTIVE',
+        subscriptionTier: UserSubscriptionTier.FREE,
+        subscriptionStatus: UserSubscriptionStatus.ACTIVE,
         createdAt: new Date(data.user.created_at),
         updatedAt: new Date(),
         lastLoginAt: new Date()
@@ -252,7 +253,7 @@ export async function signUp(credentials: AuthCredentials): Promise<AuthResponse
       success: false,
       data: null,
       error: {
-        code: ErrorCode.INTERNAL_ERROR,
+        code: 'INTERNAL_ERROR',
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -286,7 +287,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_EMAIL,
           details: {}
         },
@@ -302,7 +303,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error.message,
           details: error
         },
@@ -323,7 +324,7 @@ export async function resetPassword(request: PasswordResetRequest): Promise<Auth
       success: false,
       data: null,
       error: {
-        code: ErrorCode.INTERNAL_ERROR,
+        code: 'INTERNAL_ERROR',
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -345,7 +346,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: ErrorCode.VALIDATION_ERROR,
+          code: 'VALIDATION_ERROR',
           message: ERROR_MESSAGES.VALIDATION.INVALID_PASSWORD,
           details: {}
         },
@@ -363,7 +364,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error.message,
           details: error
         },
@@ -384,7 +385,7 @@ export async function updatePassword(request: PasswordUpdateRequest): Promise<Au
       success: false,
       data: null,
       error: {
-        code: ErrorCode.INTERNAL_ERROR,
+        code: 'INTERNAL_ERROR',
         message: ERROR_MESSAGES.API.SERVER,
         details: error instanceof Error ? { message: error.message } : {}
       },
@@ -418,8 +419,8 @@ export async function getSession(): Promise<AuthSession | null> {
         id: session.user.id,
         email: session.user.email || '',
         profile: profile,
-        subscriptionTier: profile?.subscriptionTier || 'FREE',
-        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        subscriptionTier: (profile?.subscriptionTier as UserSubscriptionTier) || UserSubscriptionTier.FREE,
+        subscriptionStatus: (profile?.subscriptionStatus as UserSubscriptionStatus) || UserSubscriptionStatus.ACTIVE,
         createdAt: new Date(session.user.created_at),
         updatedAt: new Date(),
         lastLoginAt: new Date()
@@ -484,8 +485,8 @@ export async function refreshSession(): Promise<AuthSession | null> {
           id: refreshedSession.user.id,
           email: refreshedSession.user.email || '',
           profile: profile,
-          subscriptionTier: profile?.subscriptionTier || 'FREE',
-          subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+          subscriptionTier: (profile?.subscriptionTier as UserSubscriptionTier) || UserSubscriptionTier.FREE,
+          subscriptionStatus: (profile?.subscriptionStatus as UserSubscriptionStatus) || UserSubscriptionStatus.ACTIVE,
           createdAt: new Date(refreshedSession.user.created_at),
           updatedAt: new Date(),
           lastLoginAt: new Date()
@@ -508,8 +509,8 @@ export async function refreshSession(): Promise<AuthSession | null> {
         id: session.user.id,
         email: session.user.email || '',
         profile: profile,
-        subscriptionTier: profile?.subscriptionTier || 'FREE',
-        subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+        subscriptionTier: (profile?.subscriptionTier as UserSubscriptionTier) || UserSubscriptionTier.FREE,
+        subscriptionStatus: (profile?.subscriptionStatus as UserSubscriptionStatus) || UserSubscriptionStatus.ACTIVE,
         createdAt: new Date(session.user.created_at),
         updatedAt: new Date(),
         lastLoginAt: new Date()
