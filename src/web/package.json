@@ -22,6 +22,7 @@
     "@radix-ui/react-tooltip": "^1.0.0",
     "@shadcn/ui": "latest",
     "@stripe/stripe-js": "^2.0.0",
+    "@stripe/react-stripe-js": "^3.0.0",
     "@supabase/supabase-js": "^2.38.0",
     "@tanstack/react-query": "^4.0.0",
     "axios": "^1.6.0",
