@@ -9,7 +9,7 @@
 
 // Third-party imports
 import React, { useCallback, useMemo } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { cva } from 'class-variance-authority'; // ^0.7.0
 
 // Internal imports
 import { Species, SpeciesType, SimulationValidation } from '../../types/simulation';
@@ -22,23 +22,23 @@ const CONSUMER_LIMIT = 5;
 
 // Requirement: McKinsey Simulation - Component styling using theme tokens
 const selectorStyles = {
-  container: cn(
+  container: cva([
     'flex flex-col gap-6 p-4 rounded-lg border border-gray-200',
     'bg-white shadow-sm'
-  ),
-  section: cn(
+  ]),
+  section: cva([
     'flex flex-col gap-2'
-  ),
-  heading: cn(
+  ]),
+  heading: cva([
     'text-lg font-semibold text-gray-900'
-  ),
-  selectionArea: cn(
+  ]),
+  selectionArea: cva([
     'flex flex-col gap-4'
-  ),
-  validationMessage: cn(
+  ]),
+  validationMessage: cva([
     'text-sm',
     'text-error-base'
-  )
+  ])
 };
 
 // Props interface for the SpeciesSelector component
@@ -122,13 +122,13 @@ export function SpeciesSelector({ className }: SpeciesSelectorProps): JSX.Elemen
   const consumerRemaining = CONSUMER_LIMIT - consumerCount;
 
   return (
-    <div className={cn(selectorStyles.container, className)}>
+    <div className={selectorStyles.container()}>
       {/* Producers Section */}
-      <section className={selectorStyles.section}>
-        <h2 className={selectorStyles.heading}>
+      <section className={selectorStyles.section()}>
+        <h2 className={selectorStyles.heading()}>
           Producers ({producerCount}/{PRODUCER_LIMIT})
         </h2>
-        <div className={selectorStyles.selectionArea}>
+        <div className={selectorStyles.selectionArea()}>
           <Select
             value=""
             options={getSpeciesOptions(availableSpecies, selectedSpecies, SpeciesType.PRODUCER)}
@@ -146,11 +146,11 @@ export function SpeciesSelector({ className }: SpeciesSelectorProps): JSX.Elemen
       </section>
 
       {/* Consumers Section */}
-      <section className={selectorStyles.section}>
-        <h2 className={selectorStyles.heading}>
+      <section className={selectorStyles.section()}>
+        <h2 className={selectorStyles.heading()}>
           Consumers ({consumerCount}/{CONSUMER_LIMIT})
         </h2>
-        <div className={selectorStyles.selectionArea}>
+        <div className={selectorStyles.selectionArea()}>
           <Select
             value=""
             options={getSpeciesOptions(availableSpecies, selectedSpecies, SpeciesType.CONSUMER)}
@@ -169,12 +169,12 @@ export function SpeciesSelector({ className }: SpeciesSelectorProps): JSX.Elemen
 
       {/* Validation Messages */}
       {producerCount < 1 && (
-        <p className={selectorStyles.validationMessage}>
+        <p className={selectorStyles.validationMessage()}>
           At least 1 producer species is required
         </p>
       )}
       {consumerCount < 1 && (
-        <p className={selectorStyles.validationMessage}>
+        <p className={selectorStyles.validationMessage()}>
           At least 1 consumer species is required
         </p>
       )}
