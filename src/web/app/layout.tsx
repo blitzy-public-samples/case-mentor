@@ -6,9 +6,9 @@ import { Metadata } from 'next';
 
 // Internal imports
 import './globals.css';
-import ThemeProvider from '../providers/ThemeProvider';
+import { ThemeProvider } from '../providers/ThemeProvider';
 import ToastProvider from '../providers/ToastProvider';
-import AuthProvider from '../providers/AuthProvider';
+import { AuthProvider } from '../providers/AuthProvider';
 
 /**
  * Human Tasks:
