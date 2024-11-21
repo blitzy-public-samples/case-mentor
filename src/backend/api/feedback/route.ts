@@ -11,7 +11,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FeedbackService } from '../../services/FeedbackService';
 import { withAuth } from '../../lib/auth/middleware';
-import { APIError, APIErrorCode } from '../../types/api';
+import { APIErrorCode } from '../../types/api';
+import { APIError } from '../../lib/errors/APIError';
 import { z } from 'zod';
 import { OpenAIService } from '../../lib/openai';
 
