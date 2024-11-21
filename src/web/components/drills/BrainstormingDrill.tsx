@@ -131,7 +131,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
       const attempt: Partial<DrillAttempt> = {
         promptId: prompt.id,
         response: JSON.stringify(ideas),
-        timeSpent: (prompt.timeLimit || 0) * 60 // Convert to seconds, default to 0 if undefined
+        timeSpent: prompt.timeLimit ? prompt.timeLimit * 60 : 0 // Convert to seconds, default to 0 if undefined
       };
 
       const result = await submitAttempt(prompt.id, attempt.response!, attempt.timeSpent);
@@ -161,7 +161,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
   }, [ideas.length, handleSubmit]);
 
   // Ensure timeLimit is a number, defaulting to 0 if undefined
-  const duration = (prompt.timeLimit || 0) * 60;
+  const duration = prompt.timeLimit ? prompt.timeLimit * 60 : 0;
 
   return (
     <div className="space-y-6 p-4 bg-white rounded-lg shadow-md">
