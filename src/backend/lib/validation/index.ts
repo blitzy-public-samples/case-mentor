@@ -78,7 +78,7 @@ export type UserValidation = typeof userValidation;
 // Re-export commonly used validation types from zod
 export {
   z,
-  type z as ZodType,
+  type z.ZodType,
   type z.ZodSchema,
   type z.ZodError,
   type z.ZodIssue
