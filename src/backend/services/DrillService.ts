@@ -11,7 +11,7 @@ import {
   DrillEvaluation,
   DrillDifficulty,
   DrillResponse
-} from '../../types/drills';
+} from '../types/drills';
 import { DrillAttemptModel } from '../models/DrillAttempt';
 import { evaluateDrillAttempt } from '../lib/drills/evaluator';
 
