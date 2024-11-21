@@ -20,6 +20,12 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
+// Interface for auth state to fix implicit any type
+interface AuthState {
+  authenticated: boolean;
+  loading: boolean;
+}
+
 /**
  * Root layout component for the dashboard section that provides authentication protection,
  * progress tracking, and consistent layout structure for all dashboard routes.
@@ -37,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps) {
 
   return (
     <AuthProvider>
-      {({ state }) => {
+      {(state: AuthState) => {
         // Requirement: Authentication & Authorization - Protect dashboard routes
         if (!state.authenticated && !state.loading) {
           redirect('/login');
