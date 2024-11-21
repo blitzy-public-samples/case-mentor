@@ -48,7 +48,9 @@ export const withAuth = (
         throw {
           code: APIErrorCode.AUTHENTICATION_ERROR,
           message: 'Authentication required',
-          details: {}
+          details: {},
+          timestamp: new Date().toISOString(),
+          requestId: req.headers.get('x-request-id') || crypto.randomUUID()
         } as APIError;
       }
 
@@ -58,7 +60,9 @@ export const withAuth = (
         throw {
           code: APIErrorCode.AUTHENTICATION_ERROR,
           message: 'Invalid authentication token',
-          details: {}
+          details: {},
+          timestamp: new Date().toISOString(),
+          requestId: req.headers.get('x-request-id') || crypto.randomUUID()
         } as APIError;
       }
 
@@ -81,7 +85,9 @@ export const withAuth = (
       return NextResponse.json({
         code: APIErrorCode.AUTHENTICATION_ERROR,
         message: 'Authentication failed',
-        details: {}
+        details: {},
+        timestamp: new Date().toISOString(),
+        requestId: req.headers.get('x-request-id') || crypto.randomUUID()
       } as APIError, { status: 401 });
     }
   };
@@ -100,7 +106,9 @@ export const requireSubscription = (requiredTiers: UserSubscriptionTier[]) => {
           details: {
             currentTier: user.subscriptionTier,
             requiredTiers
-          }
+          },
+          timestamp: new Date().toISOString(),
+          requestId: req.headers.get('x-request-id') || crypto.randomUUID()
         } as APIError;
       }
 
@@ -114,7 +122,9 @@ export const requireSubscription = (requiredTiers: UserSubscriptionTier[]) => {
       return NextResponse.json({
         code: APIErrorCode.AUTHORIZATION_ERROR,
         message: 'Authorization failed',
-        details: {}
+        details: {},
+        timestamp: new Date().toISOString(),
+        requestId: req.headers.get('x-request-id') || crypto.randomUUID()
       } as APIError, { status: 403 });
     }
   };
