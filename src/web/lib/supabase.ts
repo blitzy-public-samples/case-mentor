@@ -42,20 +42,22 @@ const createSupabaseClient = () => {
         headers: {
           'x-client-info': 'mckinsey-prep-web',
         },
-        timeout: API_CONFIG.TIMEOUT
+        fetch: (url, options) => {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+          return fetch(url, { ...options, signal: controller.signal })
+            .finally(() => clearTimeout(timeoutId));
+        }
       },
       // Requirement: System Performance - Configure retry mechanism
       db: {
-        schema: 'public',
-        retryAttempts: API_CONFIG.RETRY_ATTEMPTS,
-        retryInterval: 1000 // Start with 1 second, increases exponentially
+        schema: 'public'
       },
       // Requirement: Database Layer - Configure real-time subscriptions
       realtime: {
         params: {
           eventsPerSecond: 10,
-          heartbeat: 30000, // 30 seconds
-          timeout: API_CONFIG.TIMEOUT
+          heartbeat: 30000 // 30 seconds
         }
       }
     }
