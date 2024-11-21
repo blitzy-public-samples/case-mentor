@@ -134,7 +134,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
         timeSpent: prompt.timeLimit * 60 // Convert to seconds
       };
 
-      const result = await submitAttempt(prompt.id, attempt.response!, attempt.timeSpent);
+      const result = await submitAttempt(prompt.id, attempt.response!, attempt.timeSpent!);
 
       if (result.success) {
         onComplete(result.data as DrillAttempt);
@@ -170,7 +170,7 @@ export const BrainstormingDrill: React.FC<BrainstormingDrillProps> = ({
 
       {/* Timer section */}
       <DrillTimer
-        duration={prompt.timeLimit * 60} // Convert minutes to seconds
+        duration={(prompt.timeLimit || 0) * 60} // Convert minutes to seconds, default to 0 if undefined
         drillId={prompt.id}
         onTimeUp={handleTimeUp}
         autoStart={true}
