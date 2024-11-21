@@ -1,7 +1,7 @@
 // react v18.0.0
 'use client';
 import React from 'react';
-import Loading from '../components/shared/Loading';
+import LoadingSpinner from '../components/shared/Loading';
 
 // Human Tasks:
 // 1. Verify loading component behavior during slow network conditions
@@ -27,7 +27,7 @@ const Loading: React.FC = () => {
       role="status"
       aria-live="polite"
     >
-      <Loading
+      <LoadingSpinner
         // Using large size for better visibility during page transitions
         size="lg"
         // Requirement: Accessibility Requirements - Clear loading state communication
