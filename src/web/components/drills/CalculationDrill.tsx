@@ -1,11 +1,12 @@
 // Third-party imports
 import React, { useState, useEffect, useCallback } from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { clsx } from 'clsx'; // Using clsx instead of cn from class-variance-authority
 
 // Internal imports
 import { DrillTimer } from './DrillTimer';
 import { Input } from '../shared/Input';
 import { useDrill } from '../../hooks/useDrill';
+import { DrillType } from '../../types/drills';
 
 /**
  * Human Tasks:
@@ -24,7 +25,13 @@ const ACCEPTABLE_ERROR_MARGIN = 0.05;
 
 interface CalculationDrillProps {
   drillId: string;
-  prompt: DrillPrompt;
+  prompt: {
+    id: string;
+    type: DrillType;
+    title: string;
+    description: string;
+    expectedAnswer: number;
+  };
   onComplete: () => void;
 }
 
@@ -62,7 +69,7 @@ export const CalculationDrill: React.FC<CalculationDrillProps> = ({
   const [timeSpent, setTimeSpent] = useState<number>(0);
 
   // Get drill submission function from hook
-  const { submitAttempt } = useDrill('CALCULATION');
+  const { submitAttempt } = useDrill(DrillType.CALCULATION);
 
   /**
    * Handles input changes with validation
@@ -121,6 +128,7 @@ export const CalculationDrill: React.FC<CalculationDrillProps> = ({
         drillId={drillId}
         onTimeUp={handleTimeUp}
         autoStart={true}
+        drillType={DrillType.CALCULATION}
       />
 
       {/* Calculation prompt */}
@@ -142,7 +150,7 @@ export const CalculationDrill: React.FC<CalculationDrillProps> = ({
           label="Your Answer"
           hint="Enter numeric values only. Decimals are allowed."
           error={input && !isCorrect ? "Incorrect. Please check your calculation." : undefined}
-          className={cn(
+          className={clsx(
             "text-lg font-mono",
             isCorrect && "border-green-500 focus:ring-green-500",
             input && !isCorrect && "border-red-500 focus:ring-red-500"
@@ -153,7 +161,7 @@ export const CalculationDrill: React.FC<CalculationDrillProps> = ({
       {/* Real-time feedback */}
       {input && (
         <div
-          className={cn(
+          className={clsx(
             "p-4 rounded-md",
             isCorrect 
               ? "bg-green-50 text-green-700" 
