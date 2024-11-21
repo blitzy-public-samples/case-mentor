@@ -76,10 +76,12 @@ export type SimulationValidation = typeof simulationValidation;
 export type UserValidation = typeof userValidation;
 
 // Re-export commonly used validation types from zod
-export {
-  z,
-  type z.ZodType,
-  type z.ZodSchema,
-  type z.ZodError,
-  type z.ZodIssue
+export type {
+  z.ZodType,
+  z.ZodSchema,
+  z.ZodError,
+  z.ZodIssue
 };
+
+// Re-export zod itself
+export { z };
