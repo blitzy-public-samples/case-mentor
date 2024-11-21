@@ -43,24 +43,24 @@ export default function RootLayout({ children }: LayoutProps) {
 
   return (
     <AuthProvider>
-      {(state: AuthState) => {
-        // Requirement: Authentication & Authorization - Protect dashboard routes
-        if (!state.authenticated && !state.loading) {
-          redirect('/login');
-        }
+      <ProgressProvider>
+        {({ state }: { state: AuthState }) => {
+          // Requirement: Authentication & Authorization - Protect dashboard routes
+          if (!state.authenticated && !state.loading) {
+            redirect('/login');
+          }
 
-        return (
-          <ProgressProvider>
-            {/* 
+          return (
+            /* 
               Requirement: User Interface Design - Responsive layout following WCAG 2.1 AA
               Requirement: User Management - Progress tracking with SWR caching
-            */}
+            */
             <DashboardLayout>
               {children}
             </DashboardLayout>
-          </ProgressProvider>
-        );
-      }}
+          );
+        }}
+      </ProgressProvider>
     </AuthProvider>
   );
 }
