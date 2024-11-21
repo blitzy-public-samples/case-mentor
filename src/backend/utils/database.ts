@@ -176,7 +176,7 @@ export async function withTransaction<T>(
  * Builds a type-safe database query
  * Requirement: Database Layer (5.2 Component Details) - Type-safe query building
  */
-export function buildQuery<T>(
+export function buildQuery<T extends Record<string, unknown>>(
     table: string,
     filters: QueryFilters = {}
 ): PostgrestFilterBuilder<any, T, T> {
