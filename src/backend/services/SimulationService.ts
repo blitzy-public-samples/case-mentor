@@ -8,11 +8,12 @@ import { SimulationAttempt } from '../models/SimulationAttempt';
 import {
   SimulationExecutionContext,
   Species,
-  Environment,
+  EnvironmentParameters,
   SimulationState,
   SimulationResult,
-  SimulationStatus
-} from '../../types/simulation';
+  SimulationStatus,
+  SpeciesType
+} from '../lib/simulation/types';
 import { APIError } from '../lib/errors/APIError';
 import { APIErrorCode } from '../types/api';
 
@@ -102,7 +103,7 @@ export class SimulationService {
     const validatedSpecies = z.array(z.object({
       id: z.string(),
       name: z.string(),
-      type: z.enum(['PRODUCER', 'CONSUMER']),
+      type: z.nativeEnum(SpeciesType),
       energyRequirement: z.number(),
       reproductionRate: z.number()
     })).parse(species);
@@ -110,7 +111,7 @@ export class SimulationService {
     // Initialize ecosystem with species
     const state = await this.simulation.initializeEcosystem(
       validatedSpecies,
-      await this.currentAttempt.getEnvironment()
+      this.currentAttempt.environment
     );
 
     // Update attempt state
@@ -128,7 +129,7 @@ export class SimulationService {
    */
   public async updateEnvironment(
     attemptId: string,
-    environment: Environment
+    environment: EnvironmentParameters
   ): Promise<SimulationState> {
     if (!this.simulation || !this.currentAttempt) {
       throw new APIError(
@@ -147,7 +148,7 @@ export class SimulationService {
 
     // Initialize ecosystem with new environment
     const state = await this.simulation.initializeEcosystem(
-      await this.currentAttempt.getSpecies(),
+      this.currentAttempt.species,
       validatedEnvironment
     );
 
@@ -172,8 +173,7 @@ export class SimulationService {
     }
 
     // Validate simulation is active
-    const status = await this.currentAttempt.getStatus();
-    if (status !== SimulationStatus.RUNNING) {
+    if (this.currentAttempt.status !== SimulationStatus.RUNNING) {
       throw new APIError(
         APIErrorCode.INTERNAL_ERROR,
         'Simulation is not in running state'
@@ -184,7 +184,7 @@ export class SimulationService {
     await this.simulation.simulateTimeStep();
 
     // Update time remaining
-    const timeRemaining = Math.max(0, await this.currentAttempt.getTimeRemaining() - 1000);
+    const timeRemaining = Math.max(0, this.currentAttempt.timeRemaining - 1000);
 
     // Update attempt state
     const updatedState = await this.currentAttempt.updateState({
@@ -208,8 +208,7 @@ export class SimulationService {
     }
 
     // Validate simulation can be completed
-    const status = await this.currentAttempt.getStatus();
-    if (status === SimulationStatus.COMPLETED) {
+    if (this.currentAttempt.status === SimulationStatus.COMPLETED) {
       throw new APIError(
         APIErrorCode.INTERNAL_ERROR,
         'Simulation is already completed'
