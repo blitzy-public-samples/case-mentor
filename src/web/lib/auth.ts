@@ -20,7 +20,8 @@ import {
   AuthProvider,
   PasswordResetRequest,
   PasswordUpdateRequest,
-  ErrorCode
+  ErrorCode,
+  User
 } from '../types/auth';
 import { ERROR_MESSAGES, AUTH_CONFIG } from '../config/constants';
 
@@ -429,6 +430,20 @@ export async function getSession(): Promise<AuthSession | null> {
     };
   } catch (error) {
     console.error('Get session error:', error);
+    return null;
+  }
+}
+
+/**
+ * Retrieves current authenticated user
+ * Requirement: Authentication & Authorization - User management
+ */
+export async function getCurrentUser(): Promise<User | null> {
+  try {
+    const session = await getSession();
+    return session?.user || null;
+  } catch (error) {
+    console.error('Get current user error:', error);
     return null;
   }
 }
