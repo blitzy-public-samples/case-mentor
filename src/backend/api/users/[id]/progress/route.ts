@@ -89,5 +89,5 @@ async function GET(
   }
 }
 
-// Export the route handler with authentication middleware
-export { withAuth(GET) as GET };
+const handler = withAuth(GET);
+export { handler as GET };
