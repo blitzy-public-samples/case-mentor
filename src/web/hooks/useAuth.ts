@@ -8,12 +8,12 @@ import {
   AuthCredentials, 
   AuthSession, 
   AuthResponse,
-  PasswordResetRequest,
-  UserSubscriptionTier,
-  UserSubscriptionStatus
+  PasswordResetRequest
 } from '../types/auth';
+import { UserSubscriptionTier, UserSubscriptionStatus } from '../types/user';
 import supabase from '../lib/supabase';
 import { api } from '../lib/api';
+import { ErrorCode } from '../types/api';
 
 /**
  * Human Tasks:
@@ -206,7 +206,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Login failed',
           details: { error }
         },
@@ -274,7 +274,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Registration failed',
           details: { error }
         },
@@ -332,7 +332,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Password reset failed',
           details: { error }
         },
@@ -371,7 +371,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Email verification failed',
           details: { error }
         },
