@@ -3,7 +3,7 @@ import React from 'react';
 // framer-motion v10.0.0
 import { motion } from 'framer-motion';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cx } from 'class-variance-authority';
 import { ToastType, type ToastOptions } from '../../hooks/useToast';
 import { theme } from '../../config/theme';
 
@@ -80,7 +80,7 @@ const Toast: React.FC<ToastProps> = ({ visible, options, onClose }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
       transition={{ duration: 0.3 }}
-      className={cn(
+      className={cx(
         'fixed bottom-4 right-4 z-50',
         'max-w-md rounded-lg p-4',
         'flex items-center justify-between',
