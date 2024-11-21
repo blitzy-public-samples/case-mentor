@@ -13,6 +13,7 @@ import {
   DrillEvaluation 
 } from '../../types/drills';
 import { APIErrorCode } from '../../types/api';
+import { createClient } from '@supabase/supabase-js';
 
 /**
  * Human Tasks:
@@ -25,6 +26,18 @@ import { APIErrorCode } from '../../types/api';
 // Requirement: System Performance - Cache configuration
 const CACHE_TTL = 300; // 5 minutes
 const MAX_PAGE_SIZE = 50;
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_KEY!
+);
+
+// Initialize Redis cache client
+const cache = {
+  get: async (key: string) => null, // Placeholder until Redis is configured
+  set: async (key: string, value: string, ex: string, ttl: number) => null
+};
 
 // Request validation schemas
 const listDrillsSchema = z.object({
@@ -63,7 +76,7 @@ export const GET = withAuth(async (
     const validated = listDrillsSchema.parse(params);
 
     // Initialize service and fetch drills
-    const drillService = new DrillService();
+    const drillService = new DrillService(supabase, cache);
     const drills = await drillService.listDrills(
       validated.type,
       validated.difficulty,
@@ -114,7 +127,7 @@ export const POST = withAuth(async (
     const body = await request.json();
     const validated = startDrillSchema.parse(body);
 
-    const drillService = new DrillService();
+    const drillService = new DrillService(supabase, cache);
     const attempt = await drillService.startDrillAttempt(
       user.id,
       validated.drillId
@@ -151,7 +164,7 @@ export const PUT = withAuth(async (
     const body = await request.json();
     const validated = submitDrillSchema.parse(body);
 
-    const drillService = new DrillService();
+    const drillService = new DrillService(supabase, cache);
     const evaluation = await drillService.submitDrillResponse(
       validated.attemptId,
       validated.response
