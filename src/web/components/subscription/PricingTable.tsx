@@ -1,7 +1,7 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 // Internal imports
 import PlanCard from './PlanCard';
@@ -24,29 +24,29 @@ interface PricingTableProps {
 
 // Requirement: Design System Specifications - Pricing table layout styles
 const pricingTableVariants = {
-  container: cn(
+  container: cva([
     // Base styles
     'w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
     'py-12 sm:py-16 lg:py-20'
-  ),
-  grid: cn(
+  ]),
+  grid: cva([
     // Grid layout with responsive columns
     'grid gap-6',
     'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
     'items-start'
-  ),
-  header: cn(
+  ]),
+  header: cva([
     'text-center mb-12',
     'space-y-4'
-  ),
-  title: cn(
+  ]),
+  title: cva([
     'text-3xl font-bold tracking-tight',
     'text-gray-900 sm:text-4xl'
-  ),
-  description: cn(
+  ]),
+  description: cva([
     'max-w-2xl mx-auto',
     'text-lg text-gray-600'
-  )
+  ])
 };
 
 // Requirement: Subscription System - Pricing table component implementation
@@ -84,20 +84,20 @@ export const PricingTable: React.FC<PricingTableProps> = ({
 
   return (
     // Requirement: Design System Specifications - Responsive layout implementation
-    <div className={cn(pricingTableVariants.container, className)}>
+    <div className={pricingTableVariants.container({ className })}>
       {/* Header section */}
-      <div className={pricingTableVariants.header}>
-        <h2 className={pricingTableVariants.title}>
+      <div className={pricingTableVariants.header()}>
+        <h2 className={pricingTableVariants.title()}>
           Choose the right plan for you
         </h2>
-        <p className={pricingTableVariants.description}>
+        <p className={pricingTableVariants.description()}>
           Get unlimited access to practice drills, McKinsey simulations, and expert feedback
         </p>
       </div>
 
       {/* Requirement: Rate Limiting - Display tier-based features */}
       <div 
-        className={pricingTableVariants.grid}
+        className={pricingTableVariants.grid()}
         role="group"
         aria-label="Subscription plans"
       >
