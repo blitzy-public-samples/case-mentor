@@ -9,7 +9,8 @@ import {
   AuthSession, 
   AuthResponse,
   PasswordResetRequest,
-  ErrorCode 
+  UserSubscriptionTier,
+  UserSubscriptionStatus
 } from '../types/auth';
 import supabase from '../lib/supabase';
 import { api } from '../lib/api';
@@ -61,8 +62,8 @@ export function useAuth() {
             id: session.user.id,
             email: session.user.email || '',
             profile,
-            subscriptionTier: profile?.subscriptionTier || 'FREE',
-            subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+            subscriptionTier: profile?.subscriptionTier || UserSubscriptionTier.FREE,
+            subscriptionStatus: profile?.subscriptionStatus || UserSubscriptionStatus.ACTIVE,
             createdAt: new Date(session.user.created_at),
             updatedAt: new Date(),
             lastLoginAt: new Date()
@@ -101,8 +102,8 @@ export function useAuth() {
             id: session.user.id,
             email: session.user.email || '',
             profile,
-            subscriptionTier: profile?.subscriptionTier || 'FREE',
-            subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+            subscriptionTier: profile?.subscriptionTier || UserSubscriptionTier.FREE,
+            subscriptionStatus: profile?.subscriptionStatus || UserSubscriptionStatus.ACTIVE,
             createdAt: new Date(session.user.created_at),
             updatedAt: new Date(),
             lastLoginAt: new Date()
@@ -181,8 +182,8 @@ export function useAuth() {
           id: user.id,
           email: user.email || '',
           profile,
-          subscriptionTier: profile?.subscriptionTier || 'FREE',
-          subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+          subscriptionTier: profile?.subscriptionTier || UserSubscriptionTier.FREE,
+          subscriptionStatus: profile?.subscriptionStatus || UserSubscriptionStatus.ACTIVE,
           createdAt: new Date(user.created_at),
           updatedAt: new Date(),
           lastLoginAt: new Date()
@@ -205,7 +206,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error instanceof Error ? error.message : 'Login failed',
           details: { error }
         },
@@ -249,8 +250,8 @@ export function useAuth() {
           id: user.id,
           email: user.email || '',
           profile,
-          subscriptionTier: 'FREE',
-          subscriptionStatus: 'ACTIVE',
+          subscriptionTier: UserSubscriptionTier.FREE,
+          subscriptionStatus: UserSubscriptionStatus.ACTIVE,
           createdAt: new Date(user.created_at),
           updatedAt: new Date(),
           lastLoginAt: new Date()
@@ -273,7 +274,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error instanceof Error ? error.message : 'Registration failed',
           details: { error }
         },
@@ -331,7 +332,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error instanceof Error ? error.message : 'Password reset failed',
           details: { error }
         },
@@ -370,7 +371,7 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: ErrorCode.AUTHENTICATION_ERROR,
+          code: 'AUTHENTICATION_ERROR',
           message: error instanceof Error ? error.message : 'Email verification failed',
           details: { error }
         },
