@@ -117,7 +117,7 @@ export class EcosystemSimulation {
       species: selectedSpecies,
       environment: validatedEnvironment,
       interactions,
-      stabilityScore: this.calculateInitialStabilityScore(selectedSpecies, interactions),
+      stabilityScore: this.calculateStabilityScore(),
       timestamp: Date.now()
     };
 
@@ -140,7 +140,7 @@ export class EcosystemSimulation {
     // Check time limit
     if (Date.now() - this.startTime > this.context.timeLimit) {
       throw new APIError(
-        'SIMULATION_ERROR',
+        'INTERNAL_ERROR',
         'Simulation time limit exceeded'
       );
     }
