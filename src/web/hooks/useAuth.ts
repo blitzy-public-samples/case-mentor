@@ -8,7 +8,8 @@ import {
   AuthCredentials, 
   AuthSession, 
   AuthResponse,
-  PasswordResetRequest 
+  PasswordResetRequest,
+  ErrorCode 
 } from '../types/auth';
 import supabase from '../lib/supabase';
 import { api } from '../lib/api';
@@ -56,10 +57,19 @@ export function useAuth() {
           .single();
 
         const authSession: AuthSession = {
-          user: session.user,
+          user: {
+            id: session.user.id,
+            email: session.user.email || '',
+            profile,
+            subscriptionTier: profile?.subscriptionTier || 'FREE',
+            subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+            createdAt: new Date(session.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
           session,
           profile,
-          expiresAt: new Date(session.expires_at).getTime()
+          expiresAt: session.expires_at ? new Date(session.expires_at).getTime() : 0
         };
 
         setState({
@@ -67,7 +77,7 @@ export function useAuth() {
           loading: false,
           authenticated: true,
           session: authSession,
-          user: session.user
+          user: authSession.user
         });
       } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
         // Reset state on sign out or user deletion
@@ -80,14 +90,32 @@ export function useAuth() {
         });
       } else if (event === 'TOKEN_REFRESHED' && session) {
         // Update session on token refresh
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        const authSession: AuthSession = {
+          user: {
+            id: session.user.id,
+            email: session.user.email || '',
+            profile,
+            subscriptionTier: profile?.subscriptionTier || 'FREE',
+            subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+            createdAt: new Date(session.user.created_at),
+            updatedAt: new Date(),
+            lastLoginAt: new Date()
+          },
+          session,
+          profile,
+          expiresAt: session.expires_at ? new Date(session.expires_at).getTime() : 0
+        };
+
         setState(prev => ({
           ...prev,
           loading: false,
-          session: prev.session ? {
-            ...prev.session,
-            session,
-            expiresAt: new Date(session.expires_at).getTime()
-          } : null
+          session: authSession
         }));
       }
     } catch (error) {
@@ -139,6 +167,7 @@ export function useAuth() {
       });
 
       if (error) throw error;
+      if (!user || !session) throw new Error('Invalid response from authentication service');
 
       // Get user profile
       const { data: profile } = await supabase
@@ -148,10 +177,19 @@ export function useAuth() {
         .single();
 
       const authSession: AuthSession = {
-        user,
+        user: {
+          id: user.id,
+          email: user.email || '',
+          profile,
+          subscriptionTier: profile?.subscriptionTier || 'FREE',
+          subscriptionStatus: profile?.subscriptionStatus || 'ACTIVE',
+          createdAt: new Date(user.created_at),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
         session,
         profile,
-        expiresAt: new Date(session.expires_at).getTime()
+        expiresAt: session.expires_at ? new Date(session.expires_at).getTime() : 0
       };
 
       return {
@@ -167,9 +205,9 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Login failed',
-          details: error
+          details: { error }
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
@@ -191,6 +229,7 @@ export function useAuth() {
       });
 
       if (error) throw error;
+      if (!user) throw new Error('Invalid response from registration service');
 
       // Create initial profile
       await api.post('/api/profiles', {
@@ -206,10 +245,19 @@ export function useAuth() {
         .single();
 
       const authSession: AuthSession = {
-        user,
-        session,
+        user: {
+          id: user.id,
+          email: user.email || '',
+          profile,
+          subscriptionTier: 'FREE',
+          subscriptionStatus: 'ACTIVE',
+          createdAt: new Date(user.created_at),
+          updatedAt: new Date(),
+          lastLoginAt: new Date()
+        },
+        session: session!,
         profile,
-        expiresAt: new Date(session.expires_at).getTime()
+        expiresAt: session?.expires_at ? new Date(session.expires_at).getTime() : 0
       };
 
       return {
@@ -225,9 +273,9 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Registration failed',
-          details: error
+          details: { error }
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
@@ -283,9 +331,9 @@ export function useAuth() {
         success: false,
         data: null,
         error: {
-          code: 'AUTHENTICATION_ERROR',
+          code: ErrorCode.AUTHENTICATION_ERROR,
           message: error instanceof Error ? error.message : 'Password reset failed',
-          details: error
+          details: { error }
         },
         timestamp: new Date().toISOString(),
         requestId: crypto.randomUUID()
