@@ -1,7 +1,7 @@
 // External dependencies
 import * as React from 'react' // ^18.0.0
 import * as DialogPrimitive from '@radix-ui/react-dialog' // ^1.0.0
-import { cn } from 'class-variance-authority' // ^0.7.0
+import { clsx } from 'clsx' // For className merging
 
 // Internal dependencies
 import { buttonVariants } from './Button'
@@ -38,7 +38,7 @@ const Dialog = React.forwardRef<HTMLDivElement, DialogProps>(
         {/* Requirement: Accessibility Requirements - WCAG 2.1 AA compliance with proper ARIA */}
         <DialogPrimitive.Portal>
           <DialogPrimitive.Overlay
-            className={cn(
+            className={clsx(
               'fixed inset-0 z-50 bg-black/50',
               'data-[state=open]:animate-in data-[state=closed]:animate-out',
               'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
@@ -59,7 +59,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
     return (
       <DialogPrimitive.Content
         ref={ref}
-        className={cn(
+        className={clsx(
           // Base styles
           'fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]',
           'w-full max-w-lg rounded-lg bg-white p-6',
@@ -96,7 +96,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
         {/* Requirement: Accessibility Requirements - Keyboard accessible close button */}
         {showCloseButton && (
           <DialogPrimitive.Close
-            className={cn(
+            className={clsx(
               buttonVariants({ variant: 'ghost', size: 'sm' }),
               'absolute right-4 top-4',
               'focus:ring-2 focus:ring-offset-2',
