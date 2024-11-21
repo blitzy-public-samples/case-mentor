@@ -38,7 +38,14 @@ const emptyAuthSession: AuthSession = {
   user: {
     id: '',
     email: '',
-    profile: {},
+    profile: {
+      firstName: '',
+      lastName: '',
+      targetFirm: '',
+      interviewDate: null,
+      preparationLevel: 'BEGINNER',
+      avatarUrl: null
+    },
     subscriptionTier: UserSubscriptionTier.FREE,
     subscriptionStatus: UserSubscriptionStatus.ACTIVE,
     createdAt: new Date(),
@@ -46,7 +53,14 @@ const emptyAuthSession: AuthSession = {
     lastLoginAt: new Date()
   },
   session: {} as Session,
-  profile: {},
+  profile: {
+    firstName: '',
+    lastName: '',
+    targetFirm: '',
+    interviewDate: null,
+    preparationLevel: 'BEGINNER',
+    avatarUrl: null
+  },
   expiresAt: 0
 };
 
