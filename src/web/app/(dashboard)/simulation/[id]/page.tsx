@@ -4,7 +4,7 @@
 import React, { Suspense } from 'react'; // ^18.0.0
 
 // Internal imports
-import EcosystemCanvas from '../../../components/simulation/EcosystemCanvas';
+import { EcosystemCanvas } from '../../../components/simulation/EcosystemCanvas';
 import EcosystemControls from '../../../components/simulation/EcosystemControls';
 import SimulationResults from '../../../components/simulation/SimulationResults';
 import { useSimulation } from '../../../hooks/useSimulation';
