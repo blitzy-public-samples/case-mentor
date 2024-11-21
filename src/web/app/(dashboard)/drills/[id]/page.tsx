@@ -93,7 +93,16 @@ const DrillPage = () => {
       );
 
       if (!result.success) {
-        throw new Error(result.error?.message || 'Failed to submit attempt');
+        throw new Error(typeof result.error === 'string' ? result.error : result.error?.message || 'Failed to submit attempt');
+      }
+
+      if (!result.data) {
+        throw new Error('No data received from attempt submission');
+      }
+
+      // Type guard to ensure result.data is DrillAttempt
+      if (!('id' in result.data)) {
+        throw new Error('Invalid attempt data received');
       }
 
       // Navigate to feedback view
