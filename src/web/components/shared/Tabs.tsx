@@ -57,32 +57,33 @@ interface TabsContentProps {
 }
 
 // Requirement: Accessibility Requirements - WCAG 2.1 AA compliant keyboard navigation
-const Tabs: React.FC<TabsProps> = ({
-  defaultValue,
-  orientation = 'horizontal',
-  children,
-  onChange,
-  className
-}) => {
-  const [activeTab, setActiveTab] = useState(defaultValue);
+const Tabs = Object.assign(
+  ({ defaultValue, orientation = 'horizontal', children, onChange, className }: TabsProps) => {
+    const [activeTab, setActiveTab] = useState(defaultValue);
 
-  const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value);
-    onChange?.(value);
-  }, [onChange]);
+    const handleTabChange = useCallback((value: string) => {
+      setActiveTab(value);
+      onChange?.(value);
+    }, [onChange]);
 
-  return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab: handleTabChange, orientation }}>
-      <div 
-        className={tabsVariants({ orientation, className })}
-        aria-orientation={orientation}
-        style={{ gap: `${spacing.base}px` }}
-      >
-        {children}
-      </div>
-    </TabsContext.Provider>
-  );
-};
+    return (
+      <TabsContext.Provider value={{ activeTab, setActiveTab: handleTabChange, orientation }}>
+        <div 
+          className={tabsVariants({ orientation, className })}
+          aria-orientation={orientation}
+          style={{ gap: `${spacing.base}px` }}
+        >
+          {children}
+        </div>
+      </TabsContext.Provider>
+    );
+  },
+  {
+    TabsList,
+    TabsTrigger,
+    TabsContent
+  }
+);
 
 const TabsList: React.FC<TabsListProps> = ({ children, className }) => {
   const context = useContext(TabsContext);
@@ -218,10 +219,6 @@ const TabsContent: React.FC<TabsContentProps> = ({
     </div>
   );
 };
-
-Tabs.TabsList = TabsList;
-Tabs.TabsTrigger = TabsTrigger;
-Tabs.TabsContent = TabsContent;
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
 export type { TabsProps, TabsListProps, TabsTriggerProps, TabsContentProps };
