@@ -10,7 +10,7 @@ import {
   AIFeedback as AIFeedbackType,
   FeedbackPoint 
 } from '../../types/feedback';
-import Card from '../shared/Card';
+import { Card } from '../shared/Card';
 import { useFeedback } from '../../hooks/useFeedback';
 
 // Requirement: AI Evaluation - Component props interface
