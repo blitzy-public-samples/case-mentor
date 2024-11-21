@@ -12,6 +12,9 @@ import { FeedbackService } from './FeedbackService';
 import { SimulationService } from './SimulationService';
 import { SubscriptionService } from './SubscriptionService';
 import { UserService } from './UserService';
+import { OpenAIService } from '../lib/openai';
+import { supabaseClient } from '../config/database';
+import { createClient as createRedisClient } from '../lib/cache/redis';
 
 /**
  * Central service module that aggregates and exports all core business logic services
@@ -37,6 +40,9 @@ export async function initializeServices(): Promise<{
     userService: UserService;
 }> {
     try {
+        // Initialize Redis client
+        const cache = await createRedisClient();
+
         // Initialize services in dependency order
         const subscriptionService = new SubscriptionService();
         const userService = new UserService();
@@ -45,8 +51,8 @@ export async function initializeServices(): Promise<{
         
         // Initialize drill service with dependencies
         const drillService = new DrillService(
-            supabaseClient, // From database config
-            cache // Redis client should be initialized at app startup
+            supabaseClient,
+            cache
         );
 
         // Validate service initialization
@@ -81,8 +87,13 @@ async function validateServices(services: {
     subscriptionService: SubscriptionService;
     userService: UserService;
 }): Promise<void> {
+    type ServiceValidation = {
+        service: DrillService | FeedbackService | SimulationService | SubscriptionService | UserService;
+        methods: string[];
+    };
+
     // Validate each service has required methods
-    const serviceValidations = [
+    const serviceValidations: ServiceValidation[] = [
         {
             service: services.drillService,
             methods: ['getDrillById', 'listDrills', 'startDrillAttempt', 'submitDrillResponse', 'getUserDrillHistory']
@@ -107,7 +118,7 @@ async function validateServices(services: {
 
     for (const validation of serviceValidations) {
         for (const method of validation.methods) {
-            if (typeof validation.service[method] !== 'function') {
+            if (typeof (validation.service as any)[method] !== 'function') {
                 throw new Error(`Service validation failed: ${method} not found`);
             }
         }
