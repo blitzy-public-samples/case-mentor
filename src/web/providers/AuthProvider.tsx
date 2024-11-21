@@ -157,7 +157,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signIn: async (credentials: AuthCredentials) => {
       setState(prev => ({ ...prev, loading: true }));
       try {
-        const session = await signIn(credentials);
+        const response = await signIn(credentials);
+        if (!response.success || !response.data) {
+          throw new Error(response.error?.message || 'Authentication failed');
+        }
+        const session = response.data;
         setState({
           initialized: true,
           loading: false,
@@ -174,7 +178,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signUp: async (credentials: AuthCredentials) => {
       setState(prev => ({ ...prev, loading: true }));
       try {
-        const session = await signUp(credentials);
+        const response = await signUp(credentials);
+        if (!response.success || !response.data) {
+          throw new Error(response.error?.message || 'Registration failed');
+        }
+        const session = response.data;
         setState({
           initialized: true,
           loading: false,
