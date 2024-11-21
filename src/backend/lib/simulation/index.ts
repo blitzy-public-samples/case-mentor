@@ -9,11 +9,7 @@
  */
 
 import {
-  EcosystemSimulation,
-  initializeEcosystem,
-  simulateTimeStep,
-  calculateStabilityScore,
-  getSimulationResult
+  EcosystemSimulation
 } from './ecosystem';
 
 import {
@@ -22,7 +18,7 @@ import {
   validateSpeciesConfiguration
 } from './evaluator';
 
-import {
+import type {
   SimulationExecutionContext,
   SpeciesInteraction,
   InteractionType,
@@ -45,21 +41,21 @@ export {
   validateSpeciesConfiguration,
   
   // Types and interfaces
-  SimulationExecutionContext,
-  SpeciesInteraction,
+  type SimulationExecutionContext,
+  type SpeciesInteraction,
   InteractionType,
-  EcosystemState,
-  SimulationMetrics,
-  SimulationValidationError
+  type EcosystemState,
+  type SimulationMetrics,
+  type SimulationValidationError
 };
 
 /**
- * Re-export core simulation functionality
+ * Re-export core simulation functionality from EcosystemSimulation class instance methods
  * Addresses requirement: Simulation Engine - Handles ecosystem game logic and simulation state
  */
-export {
+export const {
   initializeEcosystem,
   simulateTimeStep,
   calculateStabilityScore,
   getSimulationResult
-};
+} = EcosystemSimulation.prototype;

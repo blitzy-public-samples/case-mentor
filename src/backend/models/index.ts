@@ -48,24 +48,24 @@ export type {
     DrillEvaluation,
     DrillResult,
     DrillMetrics
-} from '../../types/drills';
+} from '../types/drills';
 
 export type {
     SimulationState,
     SimulationResult,
     SimulationResponse
-} from '../../types/simulation';
+} from '../types/simulation';
 
 export type {
     User,
     UserProfile,
     UserSubscriptionTier,
     UserSubscriptionStatus
-} from '../../types/user';
+} from '../types/user';
 
 export type {
     Subscription,
     SubscriptionPlan,
     SubscriptionFeature,
     SubscriptionLimits
-} from '../../types/subscription';
+} from '../types/subscription';

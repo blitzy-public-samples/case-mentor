@@ -38,7 +38,7 @@ const validateApiKey = (apiKey: string): boolean => {
  * @returns OpenAIConfig Validated configuration object
  */
 const createOpenAIConfig = (): OpenAIConfig => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY ?? '';
 
   if (!validateApiKey(apiKey)) {
     throw new Error('Invalid or missing OpenAI API key. Must start with "sk-" and be at least 32 characters long.');
@@ -67,7 +67,7 @@ export const openaiClient = new OpenAI({
   timeout: 30000, // 30 second timeout for requests
   defaultQuery: {
     model: openaiConfig.model,
-    max_tokens: openaiConfig.maxTokens,
-    temperature: DEFAULT_TEMPERATURE,
+    max_tokens: openaiConfig.maxTokens.toString(),
+    temperature: DEFAULT_TEMPERATURE.toString(),
   },
 });

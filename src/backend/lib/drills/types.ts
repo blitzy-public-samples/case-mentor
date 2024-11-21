@@ -1,6 +1,6 @@
 // @package zod ^3.22.0
 import { z } from 'zod';
-import { DrillType, DrillResponse, DrillEvaluation } from '../../types/drills';
+import { DrillType, DrillResponse, DrillEvaluation, DrillEvaluationSchema } from '../../types/drills';
 
 /**
  * Human Tasks:
@@ -9,6 +9,9 @@ import { DrillType, DrillResponse, DrillEvaluation } from '../../types/drills';
  * 3. Configure analytics to track feedback effectiveness and user improvement rates
  * 4. Implement proper validation for weight distributions in evaluation criteria
  */
+
+// Re-export imported types
+export { DrillType, DrillResponse, DrillEvaluation };
 
 // Requirement: AI Evaluation - Standardized evaluation criteria structure
 export interface DrillEvaluationCriteria {

@@ -15,6 +15,7 @@ import { withAuth } from '../../../lib/auth/middleware';
 import { SubscriptionService } from '../../../services/SubscriptionService';
 import { APIError } from '../../../lib/errors/APIError';
 import { APIErrorCode } from '../../../types/api';
+import { Stripe } from 'stripe';
 
 // Initialize subscription service
 const subscriptionService = new SubscriptionService();
@@ -74,7 +75,8 @@ export const POST = withAuth(async (
         }
 
         // Handle Stripe errors
-        if (error.type?.startsWith('Stripe')) {
+        if (error instanceof Error && 'type' in error && typeof error.type === 'string' && error.type.startsWith('Stripe')) {
+            const stripeError = error as Stripe.StripeError;
             return NextResponse.json({
                 success: false,
                 data: null,
@@ -82,7 +84,7 @@ export const POST = withAuth(async (
                     APIErrorCode.INTERNAL_ERROR,
                     'Payment processing failed',
                     {
-                        stripeError: error.message
+                        stripeError: stripeError.message
                     }
                 ).toJSON(),
                 metadata: {}
@@ -90,7 +92,8 @@ export const POST = withAuth(async (
         }
 
         // Handle unexpected errors
-        console.error('Subscription creation failed:', error);
+        const unknownError = error as Error;
+        console.error('Subscription creation failed:', unknownError);
         return NextResponse.json({
             success: false,
             data: null,
@@ -98,7 +101,7 @@ export const POST = withAuth(async (
                 APIErrorCode.INTERNAL_ERROR,
                 'Failed to create subscription',
                 {
-                    message: error.message
+                    message: unknownError.message
                 }
             ).toJSON(),
             metadata: {}

@@ -64,7 +64,12 @@ export const DELETE = withAuth(async (
         });
 
     } catch (error) {
-        // Handle errors using standardized error handler
-        return handleError(error, request.headers.get('x-request-id') || 'unknown');
+        // Ensure error is of type Error before passing to handleError
+        if (error instanceof Error) {
+            return handleError(error, request.headers.get('x-request-id') || 'unknown');
+        }
+        // Handle non-Error types by creating a new Error instance
+        return handleError(new Error(error instanceof Object ? JSON.stringify(error) : 'Unknown error'), 
+            request.headers.get('x-request-id') || 'unknown');
     }
 });

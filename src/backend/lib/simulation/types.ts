@@ -2,9 +2,11 @@
 import { z } from 'zod'; // ^3.22.0
 import { 
   Species,
-  Environment,
+  EnvironmentParameters,
   SimulationState,
-  SimulationConfig
+  SpeciesType,
+  SimulationStatus,
+  SimulationResult
 } from '../../types/simulation';
 
 /**
@@ -14,6 +16,9 @@ import {
  * 3. Update tsconfig.json to include this file's directory in compilation
  */
 
+// Re-export imported types
+export { Species, EnvironmentParameters, SimulationState, SpeciesType, SimulationStatus, SimulationResult };
+
 /**
  * @description Context for simulation execution including user and time constraints
  * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
@@ -21,7 +26,7 @@ import {
 export interface SimulationExecutionContext {
   userId: string;
   timeLimit: number;
-  config: SimulationConfig;
+  config: Record<string, any>;
 }
 
 /**
@@ -51,7 +56,7 @@ export interface SpeciesInteraction {
  */
 export interface EcosystemState {
   species: Species[];
-  environment: Environment;
+  environment: EnvironmentParameters;
   interactions: SpeciesInteraction[];
   stabilityScore: number;
   timestamp: number;

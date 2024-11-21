@@ -33,6 +33,7 @@ export interface EmailOptions {
   text?: string;
   cc?: string[];
   bcc?: string[];
+  tags?: Array<{ name: string; value: string }>;
 }
 
 /**
@@ -53,18 +54,18 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     const emailData = {
       from: emailConfig.fromAddress,
       ...options,
-      tags: [{ name: 'email_type', value: 'general' }]
+      tags: options.tags || [{ name: 'email_type', value: 'general' }]
     };
 
     // Send email using Resend
-    const { data, error } = await resend.emails.send(emailData);
+    const response = await resend.emails.send(emailData);
 
-    if (error) {
-      console.error('Failed to send email:', error);
+    if (!response.id) {
+      console.error('Failed to send email: No ID returned');
       return false;
     }
 
-    console.log('Email sent successfully:', data?.id);
+    console.log('Email sent successfully:', response.id);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);

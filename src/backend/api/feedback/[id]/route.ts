@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { FeedbackService } from '../../../services/FeedbackService';
 import { withAuth } from '../../../lib/auth/middleware';
 import { APIError, APIErrorCode } from '../../../types/api';
+import { OpenAIService } from '../../../lib/openai';
 
 // Human Tasks:
 // 1. Configure proper monitoring for feedback API response times
@@ -29,8 +30,9 @@ const UpdateFeedbackSchema = z.object({
     })).optional()
 });
 
-// Initialize feedback service
-const feedbackService = new FeedbackService();
+// Initialize services
+const openAIService = new OpenAIService();
+const feedbackService = new FeedbackService(openAIService);
 
 /**
  * GET handler for retrieving individual feedback
@@ -38,10 +40,10 @@ const feedbackService = new FeedbackService();
  */
 export const GET = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
-        const feedback = await feedbackService.getFeedback(params.id);
+        const feedback = await feedbackService.getFeedback(context.params.id);
 
         if (!feedback) {
             return NextResponse.json({
@@ -49,7 +51,7 @@ export const GET = withAuth(async (
                 error: {
                     code: APIErrorCode.NOT_FOUND,
                     message: 'Feedback not found',
-                    details: { feedbackId: params.id }
+                    details: { feedbackId: context.params.id }
                 }
             }, { status: 404 });
         }
@@ -82,7 +84,7 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
         const body = await request.json();
@@ -91,7 +93,7 @@ export const PATCH = withAuth(async (
         const validatedData = UpdateFeedbackSchema.parse(body);
 
         // Update feedback
-        await feedbackService.updateFeedback(params.id, validatedData);
+        await feedbackService.updateFeedback(context.params.id, validatedData);
 
         return NextResponse.json({
             success: true,
@@ -133,11 +135,11 @@ export const PATCH = withAuth(async (
  */
 export const DELETE = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    context: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
         // Verify feedback exists
-        const feedback = await feedbackService.getFeedback(params.id);
+        const feedback = await feedbackService.getFeedback(context.params.id);
         
         if (!feedback) {
             return NextResponse.json({
@@ -145,7 +147,7 @@ export const DELETE = withAuth(async (
                 error: {
                     code: APIErrorCode.NOT_FOUND,
                     message: 'Feedback not found',
-                    details: { feedbackId: params.id }
+                    details: { feedbackId: context.params.id }
                 }
             }, { status: 404 });
         }

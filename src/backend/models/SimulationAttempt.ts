@@ -7,7 +7,9 @@ import {
   SimulationStatus, 
   SimulationResult,
   SimulationStateSchema,
-  SimulationResultSchema
+  SimulationResultSchema,
+  Species,
+  EnvironmentParameters
 } from '../types/simulation';
 import { executeQuery, withTransaction } from '../utils/database';
 

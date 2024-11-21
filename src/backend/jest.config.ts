@@ -87,9 +87,6 @@ const config: Config = {
     }
   },
 
-  // Ensure test environment matches TypeScript configuration
-  moduleResolution: compilerOptions.moduleResolution,
-
   // Additional verbose naming for better test output
   verbose: true,
 

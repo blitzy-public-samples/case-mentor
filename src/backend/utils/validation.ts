@@ -15,7 +15,6 @@ import { UserSubscriptionTier } from '../types/user';
 
 // Requirement: Security Controls - Input validation for drill attempts
 export async function validateDrillAttempt(attempt: any): Promise<boolean> {
-  // Create schema for drill attempt validation
   const drillAttemptSchema = z.object({
     id: z.string().uuid(),
     userId: z.string().uuid(),
@@ -30,7 +29,6 @@ export async function validateDrillAttempt(attempt: any): Promise<boolean> {
   try {
     await drillAttemptSchema.parseAsync(attempt);
     
-    // Additional validation rules
     if (attempt.timeSpent < 60 && attempt.difficulty === DrillDifficulty.ADVANCED) {
       throw new Error('Advanced drills require minimum 1 minute completion time');
     }
@@ -48,7 +46,9 @@ export async function validateDrillAttempt(attempt: any): Promise<boolean> {
       details: {
         error: error instanceof Error ? error.message : 'Validation failed',
         fields: attempt
-      }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: crypto.randomUUID()
     } as APIError;
   }
 }
@@ -68,7 +68,6 @@ export async function validateSimulationParameters(params: any): Promise<boolean
   try {
     await environmentParamsSchema.parseAsync(params);
 
-    // Additional environmental constraints
     if (params.depth > 200 && params.lightLevel > 50) {
       throw new Error('Light levels cannot exceed 50% at depths greater than 200m');
     }
@@ -85,7 +84,9 @@ export async function validateSimulationParameters(params: any): Promise<boolean
       details: {
         error: error instanceof Error ? error.message : 'Validation failed',
         fields: params
-      }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: crypto.randomUUID()
     } as APIError;
   }
 }
@@ -108,7 +109,6 @@ export async function validateUserProfile(profile: any): Promise<boolean> {
   try {
     await userProfileSchema.parseAsync(profile);
 
-    // Additional validation rules
     if (profile.email.endsWith('.test')) {
       throw new Error('Test email domains are not allowed');
     }
@@ -121,7 +121,9 @@ export async function validateUserProfile(profile: any): Promise<boolean> {
       details: {
         error: error instanceof Error ? error.message : 'Validation failed',
         fields: profile
-      }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: crypto.randomUUID()
     } as APIError;
   }
 }
@@ -141,18 +143,17 @@ export async function validateSubscriptionChange(request: any): Promise<boolean>
   try {
     await subscriptionChangeSchema.parseAsync(request);
 
-    // Validate allowed tier transitions
     const allowedTransitions: Record<UserSubscriptionTier, UserSubscriptionTier[]> = {
       [UserSubscriptionTier.FREE]: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM],
       [UserSubscriptionTier.BASIC]: [UserSubscriptionTier.PREMIUM, UserSubscriptionTier.FREE],
       [UserSubscriptionTier.PREMIUM]: [UserSubscriptionTier.BASIC, UserSubscriptionTier.FREE]
     };
 
-    if (!allowedTransitions[request.currentTier].includes(request.newTier)) {
+    const currentTier = request.currentTier as UserSubscriptionTier;
+    if (!allowedTransitions[currentTier].includes(request.newTier)) {
       throw new Error(`Invalid subscription transition from ${request.currentTier} to ${request.newTier}`);
     }
 
-    // Require payment method for upgrades
     if (request.currentTier === UserSubscriptionTier.FREE && 
         [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM].includes(request.newTier) && 
         !request.paymentMethod) {
@@ -167,7 +168,9 @@ export async function validateSubscriptionChange(request: any): Promise<boolean>
       details: {
         error: error instanceof Error ? error.message : 'Validation failed',
         fields: request
-      }
+      },
+      timestamp: new Date().toISOString(),
+      requestId: crypto.randomUUID()
     } as APIError;
   }
 }

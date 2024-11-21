@@ -15,6 +15,7 @@ import { SubscriptionService } from '../../services/SubscriptionService';
 import { APIError } from '../errors/APIError';
 import { Subscription } from '../../types/subscription';
 import { stripeClient, stripeConfig } from '../../config/stripe';
+import { APIErrorCode } from '../../types/api';
 
 // Initialize subscription service
 const subscriptionService = new SubscriptionService();
@@ -34,12 +35,12 @@ export const validateWebhookSignature = async (
       stripeConfig.webhookSecret
     );
     return true;
-  } catch (error) {
-    console.error('Webhook signature validation failed:', error);
+  } catch (err) {
+    console.error('Webhook signature validation failed:', err);
     throw new APIError(
-      'VALIDATION_ERROR',
+      APIErrorCode.VALIDATION_ERROR,
       'Invalid webhook signature',
-      { error: error.message }
+      { error: err instanceof Error ? err.message : String(err) }
     );
   }
 };
@@ -53,12 +54,12 @@ const handleSubscriptionCreated = async (event: Stripe.Event): Promise<void> => 
   try {
     await subscriptionService.handleWebhook(event);
     console.log(`Subscription created successfully: ${subscription.id}`);
-  } catch (error) {
-    console.error('Failed to handle subscription creation:', error);
+  } catch (err) {
+    console.error('Failed to handle subscription creation:', err);
     throw new APIError(
-      'INTERNAL_ERROR',
+      APIErrorCode.INTERNAL_ERROR,
       'Failed to process subscription creation',
-      { subscriptionId: subscription.id, error: error.message }
+      { subscriptionId: subscription.id, error: err instanceof Error ? err.message : String(err) }
     );
   }
 };
@@ -72,12 +73,12 @@ const handleSubscriptionUpdated = async (event: Stripe.Event): Promise<void> => 
   try {
     await subscriptionService.handleWebhook(event);
     console.log(`Subscription updated successfully: ${subscription.id}`);
-  } catch (error) {
-    console.error('Failed to handle subscription update:', error);
+  } catch (err) {
+    console.error('Failed to handle subscription update:', err);
     throw new APIError(
-      'INTERNAL_ERROR',
+      APIErrorCode.INTERNAL_ERROR,
       'Failed to process subscription update',
-      { subscriptionId: subscription.id, error: error.message }
+      { subscriptionId: subscription.id, error: err instanceof Error ? err.message : String(err) }
     );
   }
 };
@@ -91,12 +92,12 @@ const handleSubscriptionDeleted = async (event: Stripe.Event): Promise<void> => 
   try {
     await subscriptionService.handleWebhook(event);
     console.log(`Subscription deleted successfully: ${subscription.id}`);
-  } catch (error) {
-    console.error('Failed to handle subscription deletion:', error);
+  } catch (err) {
+    console.error('Failed to handle subscription deletion:', err);
     throw new APIError(
-      'INTERNAL_ERROR',
+      APIErrorCode.INTERNAL_ERROR,
       'Failed to process subscription deletion',
-      { subscriptionId: subscription.id, error: error.message }
+      { subscriptionId: subscription.id, error: err instanceof Error ? err.message : String(err) }
     );
   }
 };
@@ -110,12 +111,12 @@ const handlePaymentFailed = async (event: Stripe.Event): Promise<void> => {
   try {
     await subscriptionService.handleWebhook(event);
     console.log(`Payment failed for intent: ${paymentIntent.id}`);
-  } catch (error) {
-    console.error('Failed to handle payment failure:', error);
+  } catch (err) {
+    console.error('Failed to handle payment failure:', err);
     throw new APIError(
-      'INTERNAL_ERROR',
+      APIErrorCode.INTERNAL_ERROR,
       'Failed to process payment failure',
-      { paymentIntentId: paymentIntent.id, error: error.message }
+      { paymentIntentId: paymentIntent.id, error: err instanceof Error ? err.message : String(err) }
     );
   }
 };
@@ -135,7 +136,7 @@ export const handleWebhook = async (
     // Validate webhook signature
     if (!signature) {
       throw new APIError(
-        'VALIDATION_ERROR',
+        APIErrorCode.VALIDATION_ERROR,
         'Missing Stripe signature header'
       );
     }
@@ -143,7 +144,7 @@ export const handleWebhook = async (
     const isValid = await validateWebhookSignature(payload, signature);
     if (!isValid) {
       throw new APIError(
-        'VALIDATION_ERROR',
+        APIErrorCode.VALIDATION_ERROR,
         'Invalid webhook signature'
       );
     }
@@ -174,16 +175,16 @@ export const handleWebhook = async (
     }
 
     return res.json({ received: true });
-  } catch (error) {
-    console.error('Webhook processing failed:', error);
-    if (error instanceof APIError) {
-      return res.status(400).json(error.toJSON());
+  } catch (err) {
+    console.error('Webhook processing failed:', err);
+    if (err instanceof APIError) {
+      return res.status(400).json(err.toJSON());
     }
     return res.status(500).json(
       new APIError(
-        'INTERNAL_ERROR',
+        APIErrorCode.INTERNAL_ERROR,
         'Failed to process webhook',
-        { error: error.message }
+        { error: err instanceof Error ? err.message : String(err) }
       ).toJSON()
     );
   }

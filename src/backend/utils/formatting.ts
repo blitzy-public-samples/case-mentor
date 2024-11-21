@@ -2,6 +2,7 @@
 // @package numeral ^2.0.6
 
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import numeral from 'numeral';
 import { APIResponse, APIError } from '../types/api';
 import { DrillResponse } from '../types/drills';
@@ -13,6 +14,9 @@ import { DrillResponse } from '../types/drills';
  * 3. Set up custom numeral.js formats if additional numerical formats are required
  * 4. Review and adjust precision settings based on business requirements
  */
+
+// Configure dayjs plugins
+dayjs.extend(relativeTime);
 
 /**
  * Formats a standardized API response

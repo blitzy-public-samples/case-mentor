@@ -20,36 +20,6 @@ const RETRY_OPTIONS = {
 };
 
 /**
- * Decorator for implementing retry logic on API calls
- * Requirement: System Performance - Reliable API integration
- */
-function retryOnFailure(options: typeof RETRY_OPTIONS) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const originalMethod = descriptor.value;
-
-    descriptor.value = async function (...args: any[]) {
-      let lastError: Error;
-      
-      for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
-        try {
-          return await originalMethod.apply(this, args);
-        } catch (error: any) {
-          lastError = error;
-          
-          if (attempt < options.maxRetries) {
-            await new Promise(resolve => setTimeout(resolve, options.retryDelay));
-          }
-        }
-      }
-      
-      throw lastError;
-    };
-    
-    return descriptor;
-  };
-}
-
-/**
  * Core OpenAI service class for managing API interactions
  * Requirement: AI Evaluation - Core service implementation
  */
@@ -63,28 +33,49 @@ export class OpenAIService {
   }
 
   /**
+   * Implements retry logic for API calls
+   */
+  private async withRetry<T>(operation: () => Promise<T>): Promise<T> {
+    let lastError: Error | undefined;
+    
+    for (let attempt = 0; attempt <= RETRY_OPTIONS.maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error: any) {
+        lastError = error;
+        
+        if (attempt < RETRY_OPTIONS.maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, RETRY_OPTIONS.retryDelay));
+        }
+      }
+    }
+    
+    throw lastError;
+  }
+
+  /**
    * Sends a request to OpenAI API with error handling and timeout
    * Requirement: System Performance - <200ms API response time
    */
-  @retryOnFailure(RETRY_OPTIONS)
-  private async sendRequest(prompt: string, options: any = {}): Promise<any> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  public async sendRequest(prompt: string, options: any = {}): Promise<any> {
+    return this.withRetry(async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
-    try {
-      const response = await this.client.chat.completions.create({
-        model: this.config.model,
-        messages: [{ role: 'system', content: prompt }],
-        max_tokens: this.config.maxTokens,
-        temperature: this.config.temperature,
-        ...options,
-        signal: controller.signal as any
-      });
+      try {
+        const response = await this.client.chat.completions.create({
+          model: this.config.model,
+          messages: [{ role: 'system', content: prompt }],
+          max_tokens: this.config.maxTokens,
+          ...options,
+          signal: controller.signal as any
+        });
 
-      return this.validateResponse(response);
-    } finally {
-      clearTimeout(timeoutId);
-    }
+        return this.validateResponse(response);
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    });
   }
 
   /**
@@ -108,7 +99,6 @@ export class OpenAIService {
  * Evaluates a drill attempt using OpenAI's GPT model
  * Requirement: AI Evaluation - Consistent, objective feedback
  */
-@retryOnFailure(RETRY_OPTIONS)
 export async function evaluateDrillResponse(
   drillType: DrillType,
   response: string,
@@ -126,7 +116,6 @@ export async function evaluateDrillResponse(
       { role: 'system', content: prompt },
       { role: 'user', content: response }
     ],
-    temperature: 0.7,
     presence_penalty: 0.3,
     frequency_penalty: 0.3
   });
@@ -144,7 +133,6 @@ export async function evaluateDrillResponse(
  * Generates detailed feedback for a drill evaluation
  * Requirement: AI Evaluation - Detailed improvement suggestions
  */
-@retryOnFailure(RETRY_OPTIONS)
 export async function generateFeedback(evaluation: any): Promise<string> {
   const service = new OpenAIService();
   
@@ -158,7 +146,6 @@ export async function generateFeedback(evaluation: any): Promise<string> {
   `;
 
   const response = await service.sendRequest(feedbackPrompt, {
-    temperature: 0.8,
     presence_penalty: 0.2,
     frequency_penalty: 0.2
   });

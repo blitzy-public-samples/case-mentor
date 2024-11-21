@@ -11,7 +11,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '../../../services/UserService';
 import { withAuth } from '../../../lib/auth/middleware';
-import { APIError, APIErrorCode } from '../../../lib/errors/APIError';
+import { APIError } from '../../../lib/errors/APIError';
+import { UserSubscriptionTier, UserSubscriptionStatus } from '../../../types/user';
 
 /**
  * GET handler for retrieving user profile and progress data
@@ -21,14 +22,14 @@ import { APIError, APIErrorCode } from '../../../lib/errors/APIError';
  */
 export const GET = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } },
     context: { user: { id: string } }
 ) => {
     try {
+        const { params } = request;
         // Verify requesting user has access to requested profile
         if (context.user.id !== params.id) {
             throw new APIError(
-                APIErrorCode.AUTHORIZATION_ERROR,
+                'AUTHORIZATION_ERROR',
                 'Unauthorized access to user profile',
                 { requestedUserId: params.id }
             );
@@ -47,12 +48,12 @@ export const GET = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), { 
-                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400 
+                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400 
             });
         }
 
         return NextResponse.json(new APIError(
-            APIErrorCode.INTERNAL_ERROR,
+            'INTERNAL_ERROR',
             'Failed to retrieve user data',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -67,14 +68,14 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } },
     context: { user: { id: string } }
 ) => {
     try {
+        const { params } = request;
         // Verify requesting user owns the profile
         if (context.user.id !== params.id) {
             throw new APIError(
-                APIErrorCode.AUTHORIZATION_ERROR,
+                'AUTHORIZATION_ERROR',
                 'Unauthorized profile modification',
                 { requestedUserId: params.id }
             );
@@ -84,7 +85,7 @@ export const PATCH = withAuth(async (
         const profileData = await request.json();
         if (!profileData) {
             throw new APIError(
-                APIErrorCode.VALIDATION_ERROR,
+                'VALIDATION_ERROR',
                 'Profile data is required',
                 { received: profileData }
             );
@@ -103,12 +104,12 @@ export const PATCH = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), {
-                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400
+                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400
             });
         }
 
         return NextResponse.json(new APIError(
-            APIErrorCode.INTERNAL_ERROR,
+            'INTERNAL_ERROR',
             'Failed to update user profile',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -123,14 +124,14 @@ export const PATCH = withAuth(async (
  */
 export const DELETE = withAuth(async (
     request: NextRequest,
-    { params }: { params: { id: string } },
     context: { user: { id: string } }
 ) => {
     try {
+        const { params } = request;
         // Verify requesting user owns the account
         if (context.user.id !== params.id) {
             throw new APIError(
-                APIErrorCode.AUTHORIZATION_ERROR,
+                'AUTHORIZATION_ERROR',
                 'Unauthorized account deletion',
                 { requestedUserId: params.id }
             );
@@ -139,8 +140,8 @@ export const DELETE = withAuth(async (
         // Initialize UserService and update subscription
         const userService = new UserService();
         await userService.updateSubscription(params.id, {
-            tier: 'FREE',
-            status: 'CANCELED'
+            tier: UserSubscriptionTier.FREE,
+            status: UserSubscriptionStatus.CANCELED
         });
 
         return NextResponse.json({
@@ -152,12 +153,12 @@ export const DELETE = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), {
-                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400
+                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400
             });
         }
 
         return NextResponse.json(new APIError(
-            APIErrorCode.INTERNAL_ERROR,
+            'INTERNAL_ERROR',
             'Failed to deactivate account',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });

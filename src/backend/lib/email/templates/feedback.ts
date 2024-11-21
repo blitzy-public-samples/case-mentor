@@ -1,5 +1,24 @@
 // @package mjml ^4.14.0
 
+// Add type declaration for mjml module
+declare module 'mjml' {
+  interface MJMLParsingOptions {
+    fonts?: { [key: string]: string };
+    keepComments?: boolean;
+    beautify?: boolean;
+    minify?: boolean;
+    validationLevel?: 'strict' | 'soft' | 'skip';
+    filePath?: string;
+  }
+
+  interface MJMLParseResults {
+    html: string;
+    errors: any[];
+  }
+
+  function compile(mjml: string, options?: MJMLParsingOptions): MJMLParseResults;
+}
+
 import { APIResponse } from '../../../types/api';
 import { Feedback } from '../../../models/Feedback';
 import { formatScore, formatTimestamp } from '../../../utils/formatting';
@@ -156,7 +175,7 @@ export function generateSimulationFeedbackEmail(
               ${Object.entries(feedback.metrics).map(([metric, value]) => `
                 <tr>
                   <td style="padding: 8px 0; color: #334155; font-weight: 500;">${metric}</td>
-                  <td style="padding: 8px 0; color: #334155; text-align: right;">${formatScore(value as number, 2)}</td>
+                  <td style="padding: 8px 0; color: #334155; text-align: right;">${formatScore(typeof value === 'number' ? value : 0, 2)}</td>
                 </tr>
               `).join('')}
             </mj-table>

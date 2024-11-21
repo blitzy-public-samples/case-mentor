@@ -52,8 +52,8 @@ export const GET = withAuth(async (
                 timestamp: new Date().toISOString()
             }
         });
-    } catch (error) {
-        return handleError(error, request.headers.get('x-request-id') || 'unknown');
+    } catch (error: any) {
+        return handleError(error as Error, request.headers.get('x-request-id') || 'unknown');
     }
 });
 
@@ -88,8 +88,8 @@ export const POST = async (request: NextRequest): Promise<NextResponse> => {
                 timestamp: new Date().toISOString()
             }
         }, { status: 201 });
-    } catch (error) {
-        return handleError(error, request.headers.get('x-request-id') || 'unknown');
+    } catch (error: any) {
+        return handleError(error as Error, request.headers.get('x-request-id') || 'unknown');
     }
 };
 
@@ -126,7 +126,7 @@ export const PUT = withAuth(async (
                 timestamp: new Date().toISOString()
             }
         });
-    } catch (error) {
-        return handleError(error, request.headers.get('x-request-id') || 'unknown');
+    } catch (error: any) {
+        return handleError(error as Error, request.headers.get('x-request-id') || 'unknown');
     }
 });

@@ -9,19 +9,8 @@
  * 5. Set up automated subscription renewal notifications
  */
 
-import { 
-    createUser, 
-    getUserById, 
-    updateUserProfile, 
-    authenticateUser, 
-    updateSubscription 
-} from '../models/User';
-import { 
-    findByUserId, 
-    create as createSubscription, 
-    update as updateSubscriptionDetails,
-    checkUsage 
-} from '../models/Subscription';
+import { UserModel } from '../models/User';
+import { SubscriptionModel } from '../models/Subscription';
 import { executeQuery, withTransaction } from '../utils/database';
 import { validateUserProfile } from '../utils/validation';
 import { 
@@ -40,6 +29,12 @@ import {
  * - Data Security (8. SECURITY CONSIDERATIONS/8.2 Data Security)
  */
 export class UserService {
+    private userModel: UserModel;
+
+    constructor() {
+        this.userModel = new UserModel();
+    }
+
     /**
      * Registers a new user with profile and subscription within a transaction
      * Addresses requirement: User Management - Profile customization
@@ -54,10 +49,10 @@ export class UserService {
 
         return await withTransaction(async () => {
             // Create user with profile
-            const user = await createUser(registrationData);
+            const user = await this.userModel.createUser(registrationData);
 
             // Create default subscription
-            await createSubscription({
+            await SubscriptionModel.create({
                 id: crypto.randomUUID(),
                 userId: user.id,
                 planId: 'free_tier',
@@ -79,13 +74,13 @@ export class UserService {
      */
     public async authenticateUser(email: string, password: string): Promise<User | null> {
         // Authenticate user
-        const user = await authenticateUser(email, password);
+        const user = await this.userModel.authenticateUser(email, password);
         if (!user) {
             return null;
         }
 
         // Load active subscription
-        const subscription = await findByUserId(user.id);
+        const subscription = await SubscriptionModel.findByUserId(user.id);
         if (subscription) {
             user.subscriptionTier = subscription.planId as UserSubscriptionTier;
             user.subscriptionStatus = subscription.status;
@@ -103,7 +98,7 @@ export class UserService {
         await validateUserProfile(profileData);
 
         // Update user profile
-        return await updateUserProfile(userId, profileData);
+        return await this.userModel.updateUserProfile(userId, profileData);
     }
 
     /**
@@ -112,14 +107,14 @@ export class UserService {
      */
     public async getUserProgress(userId: string): Promise<UserProgress> {
         // Verify user exists
-        const user = await getUserById(userId);
+        const user = await this.userModel.getUserById(userId);
         if (!user) {
             throw new Error('User not found');
         }
 
         // Check subscription usage limits
-        const subscription = await findByUserId(userId);
-        if (!subscription || !(await checkUsage('progress_tracking'))) {
+        const subscription = await SubscriptionModel.findByUserId(userId);
+        if (!subscription || !(await subscription.checkUsage('progress_tracking'))) {
             throw new Error('Usage limit exceeded or invalid subscription');
         }
 
@@ -180,16 +175,19 @@ export class UserService {
     }): Promise<User> {
         return await withTransaction(async () => {
             // Update user subscription tier
-            const user = await updateSubscription(userId, subscriptionData);
+            const user = await this.userModel.updateSubscription(userId, subscriptionData);
 
             // Update subscription details
-            await updateSubscriptionDetails(userId, {
-                planId: subscriptionData.tier,
-                status: subscriptionData.status,
-                currentPeriodStart: new Date(),
-                currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-                cancelAtPeriodEnd: false
-            });
+            const subscription = await SubscriptionModel.findByUserId(userId);
+            if (subscription) {
+                await subscription.update({
+                    planId: subscriptionData.tier,
+                    status: subscriptionData.status,
+                    currentPeriodStart: new Date(),
+                    currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+                    cancelAtPeriodEnd: false
+                });
+            }
 
             return user;
         });

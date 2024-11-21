@@ -46,9 +46,17 @@ export class DrillEvaluatorFactory {
   private constructor() {
     this.evaluators = new Map();
     
-    // Register specialized evaluators
-    this.evaluators.set(DrillType.CALCULATION, new CalculationEvaluator().evaluate);
-    this.evaluators.set(DrillType.CASE_MATH, new CalculationEvaluator().evaluate);
+    // Register specialized evaluators with config
+    const calculatorConfig = {
+      tolerance: 0.01,
+      benchmarks: {
+        targetTime: 180,
+        targetAccuracy: 95
+      }
+    };
+    
+    this.evaluators.set(DrillType.CALCULATION, new CalculationEvaluator(calculatorConfig).evaluate);
+    this.evaluators.set(DrillType.CASE_MATH, new CalculationEvaluator(calculatorConfig).evaluate);
     
     // Default evaluator for other drill types
     this.evaluators.set(DrillType.CASE_PROMPT, evaluateDrillAttempt);
@@ -168,7 +176,7 @@ export async function getDrillMetrics(
 
   // Apply drill-specific metric calculations
   if (drillType === DrillType.CALCULATION || drillType === DrillType.CASE_MATH) {
-    const calculationMetrics = await calculateMetrics(response, timeSpent, {
+    const calculationMetrics = await calculateMetrics(timeSpent, 95, {
       targetTime: 180,  // 3 minutes target for calculations
       targetAccuracy: 95
     });

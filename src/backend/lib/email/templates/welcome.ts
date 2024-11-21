@@ -108,14 +108,14 @@ export async function sendWelcomeEmail(user: any): Promise<boolean> {
 
     // Send email using Resend client
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send(emailOptions);
+    const response = await resend.emails.send(emailOptions);
 
-    if (error) {
-      console.error('Failed to send welcome email:', error);
+    if (!response.id) {
+      console.error('Failed to send welcome email: No response ID received');
       return false;
     }
 
-    console.log('Welcome email sent successfully:', data?.id);
+    console.log('Welcome email sent successfully:', response.id);
     return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);

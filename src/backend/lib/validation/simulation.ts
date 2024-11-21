@@ -26,7 +26,14 @@ import {
  * @description Zod schema definitions for simulation components
  * Addresses requirement: Input Validation - JSON Schema validation for API endpoints
  */
-export const simulationSchemas = {
+type SimulationSchemas = {
+  speciesSchema: z.ZodObject<any>;
+  environmentSchema: z.ZodObject<any>;
+  interactionSchema: z.ZodObject<any>;
+  simulationStateSchema: z.ZodObject<any>;
+};
+
+export const simulationSchemas: SimulationSchemas = {
   speciesSchema: z.object({
     id: z.string().uuid(),
     name: z.string().min(1).max(100),
