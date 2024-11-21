@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react' // ^18.0.0
 import * as RadixTooltip from '@radix-ui/react-tooltip' // ^1.0.0
-import { cn } from 'class-variance-authority' // ^0.7.0
+import clsx from 'clsx'
 import { shadows, colors } from '../../config/theme'
 
 // Requirement: Accessibility Requirements - WCAG 2.1 AA compliant tooltip interface
@@ -58,7 +58,7 @@ const getTooltipPosition = (triggerRect: DOMRect, tooltipRect: DOMRect) => {
 
 // Requirement: Design System Specifications - Consistent styling from theme
 const tooltipStyles = {
-  content: cn(
+  content: clsx(
     'z-50 rounded-md px-4 py-2 text-sm',
     'bg-white dark:bg-gray-800',
     'text-gray-900 dark:text-gray-100',
@@ -66,7 +66,7 @@ const tooltipStyles = {
     'animate-fade-in duration-200',
     'outline-none focus:ring-2 focus:ring-primary-500'
   ),
-  arrow: cn(
+  arrow: clsx(
     'fill-white dark:fill-gray-800'
   )
 }
@@ -115,7 +115,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
           <RadixTooltip.Content
             side={position}
             sideOffset={5}
-            className={cn(tooltipStyles.content, className)}
+            className={clsx(tooltipStyles.content, className)}
             onMouseEnter={(e) => e.preventDefault()}
             ref={handleTooltipMount}
           >
