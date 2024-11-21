@@ -26,6 +26,7 @@ import {
     Subscription,
     SubscriptionUsage
 } from '../types/subscription';
+import { UserSubscriptionStatus } from '../types/user';
 
 /**
  * Service class for managing subscription operations and Stripe integration
@@ -99,7 +100,7 @@ export class SubscriptionService {
                 planId,
                 stripeSubscriptionId: stripeSubscription.id,
                 stripeCustomerId,
-                status: 'ACTIVE',
+                status: UserSubscriptionStatus.ACTIVE,
                 currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000),
                 currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000),
                 cancelAtPeriodEnd: false
@@ -143,7 +144,7 @@ export class SubscriptionService {
             }
 
             // Update local subscription record
-            const updatedSubscription = await updateSubscriptionModel(subscriptionId, updateData);
+            const updatedSubscription = await updateSubscriptionModel(subscription, updateData);
             return updatedSubscription;
         } catch (err: unknown) {
             const error = err as Error;
@@ -175,7 +176,7 @@ export class SubscriptionService {
             }
 
             // Update local subscription record
-            await cancelSubscriptionModel(subscriptionId, immediately);
+            await cancelSubscriptionModel(subscription, immediately);
         } catch (err: unknown) {
             const error = err as Error;
             throw new Error(`Failed to cancel subscription: ${error.message}`);
@@ -198,14 +199,16 @@ export class SubscriptionService {
                 throw new Error('Invalid subscription plan');
             }
 
-            // Get current usage metrics
-            const usage = await checkUsage(subscriptionId);
+            // Get current usage metrics for each feature type
+            const drillUsage = await checkUsage(subscription, 'drills');
+            const simulationUsage = await checkUsage(subscription, 'simulations');
+            const apiUsage = await checkUsage(subscription, 'evaluations');
 
             return {
                 subscriptionId,
-                drillAttempts: usage.drillAttempts,
-                simulationAttempts: usage.simulationAttempts,
-                apiRequests: usage.apiRequests,
+                drillAttempts: plan.limits.drillAttemptsPerDay,
+                simulationAttempts: plan.limits.simulationAttemptsPerDay,
+                apiRequests: plan.limits.apiRequestsPerHour,
                 period: new Date()
             };
         } catch (err: unknown) {
@@ -225,27 +228,34 @@ export class SubscriptionService {
                 case 'customer.subscription.updated': {
                     const subscription = event.data.object as Stripe.Subscription;
                     const customerId = subscription.customer as string;
-                    
-                    await updateSubscriptionModel(subscription.id, {
-                        status: subscription.status === 'active' ? 'ACTIVE' : 'PAST_DUE',
-                        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-                        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
-                        cancelAtPeriodEnd: subscription.cancel_at_period_end
-                    });
+                    const existingSubscription = await findById(subscription.id);
+                    if (existingSubscription) {
+                        await updateSubscriptionModel(existingSubscription, {
+                            status: subscription.status === 'active' ? UserSubscriptionStatus.ACTIVE : UserSubscriptionStatus.PAST_DUE,
+                            currentPeriodStart: new Date(subscription.current_period_start * 1000),
+                            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+                            cancelAtPeriodEnd: subscription.cancel_at_period_end
+                        });
+                    }
                     break;
                 }
                 case 'customer.subscription.deleted': {
                     const subscription = event.data.object as Stripe.Subscription;
-                    await cancelSubscriptionModel(subscription.id, true);
+                    const existingSubscription = await findById(subscription.id);
+                    if (existingSubscription) {
+                        await cancelSubscriptionModel(existingSubscription, true);
+                    }
                     break;
                 }
                 case 'invoice.payment_failed': {
                     const invoice = event.data.object as Stripe.Invoice;
                     const subscription = invoice.subscription as string;
-                    
-                    await updateSubscriptionModel(subscription, {
-                        status: 'PAST_DUE'
-                    });
+                    const existingSubscription = await findById(subscription);
+                    if (existingSubscription) {
+                        await updateSubscriptionModel(existingSubscription, {
+                            status: UserSubscriptionStatus.PAST_DUE
+                        });
+                    }
                     break;
                 }
             }
