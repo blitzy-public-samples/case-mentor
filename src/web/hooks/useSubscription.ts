@@ -12,6 +12,7 @@ import {
   SubscriptionState, 
   SubscriptionResponse 
 } from '../types/subscription';
+import { ErrorCode } from '../types/api';
 
 /**
  * Human Tasks:
@@ -122,7 +123,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'INTERNAL_ERROR',
+          code: ErrorCode.INTERNAL_ERROR,
           message: error.message,
           details: {}
         },
@@ -172,7 +173,7 @@ export function useSubscription() {
         success: false,
         data: null as any,
         error: {
-          code: 'INTERNAL_ERROR',
+          code: ErrorCode.INTERNAL_ERROR,
           message: error.message,
           details: {}
         },

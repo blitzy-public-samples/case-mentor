@@ -4,6 +4,7 @@
 import React, { useState, useCallback } from 'react';
 // @stripe/stripe-js v2.0.0
 import { loadStripe } from '@stripe/stripe-js';
+// Add missing dependency
 import { Elements } from '@stripe/react-stripe-js';
 
 // Internal imports
@@ -142,8 +143,8 @@ export default function SubscriptionPage() {
 
         {/* Requirement: Rate Limiting - Display subscription plans with tier-based features */}
         <PricingTable
-          plans={subscription?.availablePlans || []}
-          onPlanSelect={handlePlanSelect}
+          plans={subscription?.currentPlan?.features || []}
+          className="mb-8"
         />
 
         {/* Requirement: Subscription System - Payment processing section */}

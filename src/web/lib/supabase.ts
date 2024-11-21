@@ -44,21 +44,17 @@ const createSupabaseClient = () => {
       global: {
         headers: {
           'x-client-info': 'mckinsey-prep-web',
-        },
-        timeout: API_CONFIG.TIMEOUT
+        }
       },
       // Requirement: System Performance - Configure retry mechanism
       db: {
-        schema: 'public',
-        retryAttempts: API_CONFIG.RETRY_ATTEMPTS,
-        retryInterval: 1000 // Start with 1 second, increases exponentially
+        schema: 'public'
       },
       // Requirement: Database Layer - Configure real-time subscriptions
       realtime: {
         params: {
           eventsPerSecond: 10,
-          heartbeat: 30000, // 30 seconds
-          timeout: API_CONFIG.TIMEOUT
+          heartbeat: 30000 // 30 seconds
         }
       }
     }

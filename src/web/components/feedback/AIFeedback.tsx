@@ -1,7 +1,7 @@
 // react v18.0.0
 import React, { useState, useCallback } from 'react';
-// class-variance-authority v0.7.0
-import { clsx } from 'class-variance-authority';
+// clsx v2.0.0
+import clsx from 'clsx';
 
 // Internal imports
 import { 

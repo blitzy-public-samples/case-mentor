@@ -3,6 +3,7 @@
 // External dependencies
 import * as React from 'react'; // ^18.0.0
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // ^2.0.0
+import { loadStripe } from '@stripe/stripe-js';
 
 // Internal dependencies
 import { buttonVariants } from '../shared/Button';
@@ -45,6 +46,9 @@ const cardElementStyles = {
     },
   },
 };
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
 // Requirement: Subscription System - Payment form component with Stripe integration
 export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormProps) {
@@ -115,100 +119,102 @@ export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormPr
 
   // Requirement: Accessibility Requirements - Render WCAG compliant payment form
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full max-w-md space-y-6"
-      aria-label="Payment form"
-    >
-      {/* Plan summary */}
-      <div className="rounded-lg bg-gray-50 p-4">
-        <h2 className="text-lg font-semibold text-gray-900">
-          {selectedPlan.name}
-        </h2>
-        <p className="mt-1 text-sm text-gray-600">
-          ${selectedPlan.price / 100}/month
-        </p>
-      </div>
-
-      {/* Card input section */}
-      <div className="space-y-4">
-        <label
-          htmlFor="card-element"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Card details
-        </label>
-        <div
-          id="card-element"
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          role="group"
-          aria-label="Credit or debit card"
-        >
-          <CardElement
-            options={{
-              style: cardElementStyles,
-              aria: {
-                label: 'Credit or debit card input',
-              },
-            }}
-            onChange={handleCardChange}
-          />
+    <Elements stripe={stripePromise}>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md space-y-6"
+        aria-label="Payment form"
+      >
+        {/* Plan summary */}
+        <div className="rounded-lg bg-gray-50 p-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {selectedPlan.name}
+          </h2>
+          <p className="mt-1 text-sm text-gray-600">
+            ${selectedPlan.price / 100}/month
+          </p>
         </div>
-      </div>
 
-      {/* Error display */}
-      {error && (
-        <div
-          id="payment-error"
-          role="alert"
-          aria-live="polite"
-          className="rounded-md bg-red-50 p-4 text-sm text-red-700"
-          tabIndex={-1}
-        >
-          <p>{error}</p>
+        {/* Card input section */}
+        <div className="space-y-4">
+          <label
+            htmlFor="card-element"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Card details
+          </label>
+          <div
+            id="card-element"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            role="group"
+            aria-label="Credit or debit card"
+          >
+            <CardElement
+              options={{
+                style: cardElementStyles,
+                aria: {
+                  label: 'Credit or debit card input',
+                },
+              }}
+              onChange={handleCardChange}
+            />
+          </div>
         </div>
-      )}
 
-      {/* Form actions */}
-      <div className="flex items-center justify-end space-x-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className={buttonVariants({
-            variant: 'ghost',
-            size: 'lg',
-            className: 'min-w-[120px]',
-          })}
-          disabled={isProcessing}
-          aria-label="Cancel payment"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className={buttonVariants({
-            variant: 'primary',
-            size: 'lg',
-            className: 'min-w-[120px]',
-          })}
-          disabled={!cardComplete || isProcessing}
-          aria-label={isProcessing ? 'Processing payment' : 'Pay now'}
-        >
-          {isProcessing ? 'Processing...' : 'Pay now'}
-        </button>
-      </div>
+        {/* Error display */}
+        {error && (
+          <div
+            id="payment-error"
+            role="alert"
+            aria-live="polite"
+            className="rounded-md bg-red-50 p-4 text-sm text-red-700"
+            tabIndex={-1}
+          >
+            <p>{error}</p>
+          </div>
+        )}
 
-      {/* Processing indicator for screen readers */}
-      {isProcessing && (
-        <div
-          className="sr-only"
-          role="status"
-          aria-live="polite"
-        >
-          Processing your payment...
+        {/* Form actions */}
+        <div className="flex items-center justify-end space-x-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            className={buttonVariants({
+              variant: 'ghost',
+              size: 'lg',
+              className: 'min-w-[120px]',
+            })}
+            disabled={isProcessing}
+            aria-label="Cancel payment"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className={buttonVariants({
+              variant: 'primary',
+              size: 'lg',
+              className: 'min-w-[120px]',
+            })}
+            disabled={!cardComplete || isProcessing}
+            aria-label={isProcessing ? 'Processing payment' : 'Pay now'}
+          >
+            {isProcessing ? 'Processing...' : 'Pay now'}
+          </button>
         </div>
-      )}
-    </form>
+
+        {/* Processing indicator for screen readers */}
+        {isProcessing && (
+          <div
+            className="sr-only"
+            role="status"
+            aria-live="polite"
+          >
+            Processing your payment...
+          </div>
+        )}
+      </form>
+    </Elements>
   );
 }
 

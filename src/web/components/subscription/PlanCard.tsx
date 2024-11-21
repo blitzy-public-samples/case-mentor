@@ -26,45 +26,53 @@ interface PlanCardProps {
 }
 
 // Requirement: Design System Specifications - Plan card styling variants
-const planCardVariants = {
-  container: cva(
-    'relative flex flex-col p-6',
-    'transition-all duration-200',
-    'hover:shadow-md'
-  ),
-  header: cva(
-    'mb-4 space-y-2'
-  ),
-  title: cva(
-    'text-xl font-semibold tracking-tight',
-    'text-gray-900'
-  ),
-  price: cva(
-    'text-3xl font-bold',
-    'text-primary-600'
-  ),
-  description: cva(
-    'text-sm text-gray-500',
-    'mb-4'
-  ),
-  featureList: cva(
-    'space-y-3 mb-8'
-  ),
-  featureItem: cva(
-    'flex items-center text-sm',
-    'text-gray-600'
-  ),
-  checkIcon: cva(
-    'mr-3 h-4 w-4',
-    'text-green-500'
-  ),
-  selectedBadge: cva(
-    'absolute top-4 right-4',
-    'px-2 py-1 rounded-full',
-    'bg-green-100 text-green-800',
-    'text-xs font-medium'
-  )
-};
+const planCardVariants = cva('relative flex flex-col p-6', {
+  variants: {
+    container: {
+      default: ['transition-all duration-200', 'hover:shadow-md']
+    },
+    header: {
+      default: 'mb-4 space-y-2'
+    },
+    title: {
+      default: ['text-xl font-semibold tracking-tight', 'text-gray-900']
+    },
+    price: {
+      default: ['text-3xl font-bold', 'text-primary-600']
+    },
+    description: {
+      default: ['text-sm text-gray-500', 'mb-4']
+    },
+    featureList: {
+      default: 'space-y-3 mb-8'
+    },
+    featureItem: {
+      default: ['flex items-center text-sm', 'text-gray-600']
+    },
+    checkIcon: {
+      default: ['mr-3 h-4 w-4', 'text-green-500']
+    },
+    selectedBadge: {
+      default: [
+        'absolute top-4 right-4',
+        'px-2 py-1 rounded-full',
+        'bg-green-100 text-green-800',
+        'text-xs font-medium'
+      ]
+    }
+  },
+  defaultVariants: {
+    container: 'default',
+    header: 'default',
+    title: 'default',
+    price: 'default',
+    description: 'default',
+    featureList: 'default',
+    featureItem: 'default',
+    checkIcon: 'default',
+    selectedBadge: 'default'
+  }
+});
 
 // Requirement: Subscription System - Plan card component implementation
 export const PlanCard: React.FC<PlanCardProps> = ({
@@ -91,17 +99,17 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   // Requirement: Design System Specifications - Feature list rendering with accessibility
   const renderFeatures = () => (
     <ul 
-      className={planCardVariants.featureList()}
+      className={planCardVariants({ featureList: 'default' })}
       role="list"
       aria-label={`Features included in ${plan.name} plan`}
     >
       {plan.features.map((feature, index) => (
         <li 
           key={index}
-          className={planCardVariants.featureItem()}
+          className={planCardVariants({ featureItem: 'default' })}
         >
           <svg
-            className={planCardVariants.checkIcon()}
+            className={planCardVariants({ checkIcon: 'default' })}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -122,14 +130,14 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   return (
     // Requirement: Accessibility Requirements - WCAG 2.1 AA compliance
     <Card
-      className={planCardVariants.container()}
+      className={planCardVariants({ container: 'default' })}
       hoverable
       shadow={isSelected ? 'lg' : 'md'}
       aria-label={`${plan.name} subscription plan`}
     >
       {isSelected && (
         <span 
-          className={planCardVariants.selectedBadge()}
+          className={planCardVariants({ selectedBadge: 'default' })}
           role="status"
           aria-label="Current plan"
         >
@@ -137,15 +145,15 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         </span>
       )}
 
-      <div className={planCardVariants.header()}>
-        <h3 className={planCardVariants.title()}>{plan.name}</h3>
-        <div className={planCardVariants.price()}>
+      <div className={planCardVariants({ header: 'default' })}>
+        <h3 className={planCardVariants({ title: 'default' })}>{plan.name}</h3>
+        <div className={planCardVariants({ price: 'default' })}>
           ${plan.price}
           <span className="text-sm text-gray-500">/month</span>
         </div>
       </div>
 
-      <p className={planCardVariants.description()}>
+      <p className={planCardVariants({ description: 'default' })}>
         {plan.description}
       </p>
 
