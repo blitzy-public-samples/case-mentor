@@ -1,15 +1,15 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { clsx } from 'clsx';
 // lucide-react v0.284.0
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 // Internal imports
 import FeedbackCard from './FeedbackCard';
-import { FeedbackType, FeedbackCategory, FeedbackSeverity, AIFeedback, FeedbackHistory } from '../../types/feedback';
+import { FeedbackType, FeedbackCategory, FeedbackSeverity, AIFeedback, type FeedbackHistory } from '../../types/feedback';
 import { useFeedback } from '../../hooks/useFeedback';
-import Card from '../shared/Card';
+import { Card } from '../shared/Card';
 import Loading from '../shared/Loading';
 
 /**
@@ -57,7 +57,7 @@ const renderPerformanceTrend = (history: FeedbackHistory): JSX.Element => {
         role="region" 
         aria-label="Performance Trend"
       >
-        <div className={cn(
+        <div className={clsx(
           "flex items-center space-x-2 text-lg font-semibold",
           isPositive ? "text-green-600" : "text-red-600"
         )}>
@@ -138,14 +138,14 @@ const FeedbackHistory: React.FC<FeedbackHistoryProps> = ({
 
   if (!history) {
     return (
-      <Card className={cn("p-6 text-center text-gray-500", className)}>
+      <Card className={clsx("p-6 text-center text-gray-500", className)}>
         No feedback history available
       </Card>
     );
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={clsx("space-y-6", className)}>
       {/* Requirement: Progress Tracking - Performance trend section */}
       {renderPerformanceTrend(history)}
 
