@@ -1,11 +1,11 @@
 // react v18.0.0
 import React from 'react';
 // class-variance-authority v0.7.0
-import { cn } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 // Internal imports
-import Card from '../shared/Card';
-import Button from '../shared/Button';
+import { Card } from '../shared/Card';
+import { Button } from '../shared/Button';
 import { SubscriptionPlan } from '../../types/subscription';
 import { useSubscription } from '../../hooks/useSubscription';
 
@@ -27,38 +27,38 @@ interface PlanCardProps {
 
 // Requirement: Design System Specifications - Plan card styling variants
 const planCardVariants = {
-  container: cn(
+  container: cva(
     'relative flex flex-col p-6',
     'transition-all duration-200',
     'hover:shadow-md'
   ),
-  header: cn(
+  header: cva(
     'mb-4 space-y-2'
   ),
-  title: cn(
+  title: cva(
     'text-xl font-semibold tracking-tight',
     'text-gray-900'
   ),
-  price: cn(
+  price: cva(
     'text-3xl font-bold',
     'text-primary-600'
   ),
-  description: cn(
+  description: cva(
     'text-sm text-gray-500',
     'mb-4'
   ),
-  featureList: cn(
+  featureList: cva(
     'space-y-3 mb-8'
   ),
-  featureItem: cn(
+  featureItem: cva(
     'flex items-center text-sm',
     'text-gray-600'
   ),
-  checkIcon: cn(
+  checkIcon: cva(
     'mr-3 h-4 w-4',
     'text-green-500'
   ),
-  selectedBadge: cn(
+  selectedBadge: cva(
     'absolute top-4 right-4',
     'px-2 py-1 rounded-full',
     'bg-green-100 text-green-800',
@@ -91,17 +91,17 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   // Requirement: Design System Specifications - Feature list rendering with accessibility
   const renderFeatures = () => (
     <ul 
-      className={planCardVariants.featureList}
+      className={planCardVariants.featureList()}
       role="list"
       aria-label={`Features included in ${plan.name} plan`}
     >
       {plan.features.map((feature, index) => (
         <li 
           key={index}
-          className={planCardVariants.featureItem}
+          className={planCardVariants.featureItem()}
         >
           <svg
-            className={planCardVariants.checkIcon}
+            className={planCardVariants.checkIcon()}
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -122,14 +122,14 @@ export const PlanCard: React.FC<PlanCardProps> = ({
   return (
     // Requirement: Accessibility Requirements - WCAG 2.1 AA compliance
     <Card
-      className={planCardVariants.container}
+      className={planCardVariants.container()}
       hoverable
       shadow={isSelected ? 'lg' : 'md'}
       aria-label={`${plan.name} subscription plan`}
     >
       {isSelected && (
         <span 
-          className={planCardVariants.selectedBadge}
+          className={planCardVariants.selectedBadge()}
           role="status"
           aria-label="Current plan"
         >
@@ -137,15 +137,15 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         </span>
       )}
 
-      <div className={planCardVariants.header}>
-        <h3 className={planCardVariants.title}>{plan.name}</h3>
-        <div className={planCardVariants.price}>
+      <div className={planCardVariants.header()}>
+        <h3 className={planCardVariants.title()}>{plan.name}</h3>
+        <div className={planCardVariants.price()}>
           ${plan.price}
           <span className="text-sm text-gray-500">/month</span>
         </div>
       </div>
 
-      <p className={planCardVariants.description}>
+      <p className={planCardVariants.description()}>
         {plan.description}
       </p>
 
