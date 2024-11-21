@@ -2,7 +2,7 @@
 
 // External dependencies
 import * as React from 'react'; // ^18.0.0
-import { Elements, CardElement, useStripe } from '@stripe/stripe-react-components'; // ^2.0.0
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'; // ^2.0.0
 
 // Internal dependencies
 import { buttonVariants } from '../shared/Button';
@@ -50,6 +50,7 @@ const cardElementStyles = {
 export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormProps) {
   // Initialize Stripe hooks and state
   const stripe = useStripe();
+  const elements = useElements();
   const { updateSubscription } = useSubscription();
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -69,7 +70,7 @@ export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormPr
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !cardComplete) {
+    if (!stripe || !elements || !cardComplete) {
       return;
     }
 
@@ -80,7 +81,7 @@ export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormPr
       // Create payment method with Stripe
       const { paymentMethod, error: stripeError } = await stripe.createPaymentMethod({
         type: 'card',
-        card: CardElement,
+        card: elements.getElement(CardElement)!,
       });
 
       if (stripeError) {
@@ -90,7 +91,8 @@ export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormPr
       // Process subscription update with payment details
       const response = await updateSubscription({
         ...selectedPlan,
-        paymentMethodId: paymentMethod.id,
+        stripeProductId: selectedPlan.stripeProductId,
+        stripePriceId: selectedPlan.stripePriceId
       });
 
       if (!response.success) {
