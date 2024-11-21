@@ -11,6 +11,7 @@ import {
 } from './types';
 import { OpenAIService } from '../openai';
 import { SimulationAttempt } from '../../models/SimulationAttempt';
+import { Species, EnvironmentParameters as Environment, SimulationResult } from '../../types/simulation';
 
 /**
  * Human Tasks:
@@ -101,7 +102,6 @@ export async function validateSpeciesConfiguration(
  * Generates detailed AI-powered feedback on simulation performance
  * Addresses requirement: AI Evaluation - Core Services
  */
-@retryOnFailure({ maxRetries: 3, retryDelay: 1000 })
 export async function generateSimulationFeedback(
   metrics: SimulationMetrics,
   finalState: EcosystemState
@@ -156,8 +156,10 @@ export class SimulationEvaluator {
     attempt: SimulationAttempt,
     metrics: SimulationMetrics
   ): Promise<SimulationResult> {
+    // Get final ecosystem state
+    const finalState = await attempt.updateState({});
+
     // Validate final ecosystem state
-    const finalState = await attempt.getState();
     const validationError = await validateSpeciesConfiguration(
       finalState.species,
       finalState.environment
@@ -242,8 +244,8 @@ function calculateEnvironmentalScore(environment: Environment): number {
 
 function calculateEnvironmentalStress(species: Species[], environment: Environment): number {
   return species.reduce((stress, species) => {
-    const tempStress = Math.abs(environment.temperature - species.optimalTemp) / 40;
-    const depthStress = Math.abs(environment.depth - species.optimalDepth) / 1000;
+    const tempStress = Math.abs(environment.temperature - species.energyRequirement) / 40;
+    const depthStress = Math.abs(environment.depth - species.reproductionRate) / 1000;
     return stress + (tempStress + depthStress) / 2;
   }, 0) / species.length;
 }
