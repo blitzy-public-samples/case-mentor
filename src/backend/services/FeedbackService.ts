@@ -12,7 +12,7 @@
 import { z } from 'zod';
 import { Feedback } from '../models/Feedback';
 import { OpenAIService, evaluateDrillResponse, generateFeedback } from '../lib/openai';
-import { APIError } from '../types/api';
+import { APIError, APIErrorCode } from '../types/api';
 import { DrillType } from '../types/drills';
 
 // Requirement: AI Evaluation - Feedback request validation schema
@@ -65,7 +65,7 @@ export class FeedbackService {
      */
     public async generateFeedback(
         attemptId: string,
-        type: string,
+        type: 'DRILL' | 'SIMULATION',
         response: any
     ): Promise<any> {
         try {
@@ -109,11 +109,14 @@ export class FeedbackService {
 
             return feedback;
         } catch (error: any) {
-            throw {
-                code: 'FEEDBACK_GENERATION_ERROR',
+            const apiError: APIError = {
+                code: APIErrorCode.INTERNAL_ERROR,
                 message: 'Failed to generate feedback',
-                details: error.message
-            } as APIError;
+                details: error.message,
+                timestamp: new Date().toISOString(),
+                requestId: crypto.randomUUID()
+            };
+            throw apiError;
         }
     }
 
@@ -143,11 +146,14 @@ export class FeedbackService {
 
             return feedback;
         } catch (error: any) {
-            throw {
-                code: 'FEEDBACK_RETRIEVAL_ERROR',
+            const apiError: APIError = {
+                code: APIErrorCode.INTERNAL_ERROR,
                 message: 'Failed to retrieve feedback',
-                details: error.message
-            } as APIError;
+                details: error.message,
+                timestamp: new Date().toISOString(),
+                requestId: crypto.randomUUID()
+            };
+            throw apiError;
         }
     }
 
@@ -170,11 +176,14 @@ export class FeedbackService {
                 b.createdAt.getTime() - a.createdAt.getTime()
             );
         } catch (error: any) {
-            throw {
-                code: 'FEEDBACK_RETRIEVAL_ERROR',
+            const apiError: APIError = {
+                code: APIErrorCode.INTERNAL_ERROR,
                 message: 'Failed to retrieve attempt feedback',
-                details: error.message
-            } as APIError;
+                details: error.message,
+                timestamp: new Date().toISOString(),
+                requestId: crypto.randomUUID()
+            };
+            throw apiError;
         }
     }
 
@@ -199,11 +208,14 @@ export class FeedbackService {
             // Invalidate cache
             this.feedbackCache.delete(feedbackId);
         } catch (error: any) {
-            throw {
-                code: 'FEEDBACK_UPDATE_ERROR',
+            const apiError: APIError = {
+                code: APIErrorCode.INTERNAL_ERROR,
                 message: 'Failed to update feedback',
-                details: error.message
-            } as APIError;
+                details: error.message,
+                timestamp: new Date().toISOString(),
+                requestId: crypto.randomUUID()
+            };
+            throw apiError;
         }
     }
 }
