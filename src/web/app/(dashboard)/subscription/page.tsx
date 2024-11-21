@@ -2,12 +2,13 @@
 
 // react v18.0.0
 import React, { useState, useCallback } from 'react';
-// @stripe/stripe-react-components v2.0.0
-import { Elements } from '@stripe/stripe-react-components';
+// @stripe/stripe-js v2.0.0
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
 // Internal imports
 import PricingTable from '../../../components/subscription/PricingTable';
-import PaymentForm from '../../../components/subscription/PaymentForm';
+import { PaymentForm } from '../../../components/subscription/PaymentForm';
 import { useSubscription } from '../../../hooks/useSubscription';
 import type { SubscriptionPlan } from '../../../types/subscription';
 
@@ -44,16 +45,14 @@ export default function SubscriptionPage() {
   // Requirement: Subscription System - Handle plan selection
   const handlePlanSelect = useCallback(async (plan: SubscriptionPlan) => {
     // Don't process if already subscribed to this plan
-    if (subscription?.currentPlan.id === plan.id) {
+    if (subscription?.currentPlan?.id === plan.id) {
       return;
     }
 
     setSelectedPlan(plan);
 
     // Handle plan downgrades directly through API
-    if (
-      subscription?.currentPlan.price > plan.price
-    ) {
+    if (subscription?.currentPlan?.price && plan.price && subscription.currentPlan.price > plan.price) {
       try {
         const response = await updateSubscription(plan);
         if (!response.success) {
