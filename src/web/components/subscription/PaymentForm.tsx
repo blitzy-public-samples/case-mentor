@@ -147,10 +147,7 @@ export function PaymentForm({ selectedPlan, onSuccess, onCancel }: PaymentFormPr
           >
             <CardElement
               options={{
-                style: cardElementStyles,
-                aria: {
-                  label: 'Credit or debit card input',
-                },
+                style: cardElementStyles
               }}
               onChange={handleCardChange}
             />
