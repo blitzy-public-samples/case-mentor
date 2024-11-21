@@ -5,10 +5,10 @@ import React, { useEffect } from 'react'; // ^18.0.0
 import { useForm } from 'react-hook-form'; // ^7.0.0
 
 // Internal imports
-import { buttonVariants } from '../../components/shared/Button';
-import { Card } from '../../components/shared/Card';
-import { useAuth } from '../../hooks/useAuth';
-import { useToast, ToastType } from '../../hooks/useToast';
+import { buttonVariants } from '@/components/shared/Button';
+import { Card } from '@/components/shared/Card';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast, ToastType } from '@/hooks/useToast';
 
 // Requirement: User Management - Profile customization and user preferences management
 interface ProfileFormData {
