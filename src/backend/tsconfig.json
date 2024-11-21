@@ -37,7 +37,8 @@
     // NextJS and Edge Function specific options (REQ-2.0)
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "incremental": true
+    "incremental": true,
+    "noEmit": true
   },
   
   // File inclusion/exclusion patterns
@@ -51,6 +52,7 @@
     ".next",
     "coverage",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "tests"
   ]
 }

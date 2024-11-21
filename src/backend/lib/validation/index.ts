@@ -74,14 +74,3 @@ export const userValidation = {
 export type DrillValidation = typeof drillValidation;
 export type SimulationValidation = typeof simulationValidation;
 export type UserValidation = typeof userValidation;
-
-// Re-export commonly used validation types from zod
-export type {
-  z.ZodType,
-  z.ZodSchema,
-  z.ZodError,
-  z.ZodIssue
-};
-
-// Re-export zod itself
-export { z };
