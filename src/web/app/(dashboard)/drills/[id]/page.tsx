@@ -93,7 +93,7 @@ const DrillPage = () => {
       );
 
       if (!result.success) {
-        throw new Error(typeof result.error === 'string' ? result.error : result.error?.message || 'Failed to submit attempt');
+        throw new Error(result.error?.message || 'Failed to submit attempt');
       }
 
       if (!result.data) {
@@ -185,6 +185,7 @@ const DrillPage = () => {
               MAX_ATTEMPT_DURATION
             )}
             drillId={currentDrill.id}
+            drillType={currentDrill.type}
             onTimeUp={() => handleDrillComplete({
               promptId: currentDrill.id,
               response: '',
