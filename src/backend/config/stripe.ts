@@ -2,6 +2,7 @@
 import { Stripe } from 'stripe';
 import { SubscriptionPlan } from '../types/subscription';
 import { RATE_LIMITS } from './constants';
+import { UserSubscriptionTier } from '../types/user';
 
 /**
  * Human Tasks:
@@ -12,6 +13,10 @@ import { RATE_LIMITS } from './constants';
  * 5. Implement proper logging for payment events
  */
 
+// Requirement: Payment Processing - Stripe API version and webhook settings
+const STRIPE_API_VERSION = '2022-11-15' as const;
+const STRIPE_WEBHOOK_TOLERANCE = 300; // 5 minutes tolerance for webhook timestamps
+
 // Requirement: Payment Processing - Core Stripe configuration
 export const stripeConfig = {
     publicKey: process.env.NEXT_PUBLIC_STRIPE_KEY || '',
@@ -20,16 +25,12 @@ export const stripeConfig = {
     apiVersion: STRIPE_API_VERSION
 };
 
-// Requirement: Payment Processing - Stripe API version and webhook settings
-const STRIPE_API_VERSION = '2023-10-16' as const;
-const STRIPE_WEBHOOK_TOLERANCE = 300; // 5 minutes tolerance for webhook timestamps
-
 // Requirement: Subscription System - Product definitions with features and limits
 export const SUBSCRIPTION_PRODUCTS: Record<string, SubscriptionPlan> = {
     FREE: {
         id: 'free-tier',
         name: 'Free Tier',
-        tier: 'FREE',
+        tier: UserSubscriptionTier.FREE,
         stripeProductId: process.env.STRIPE_FREE_PRODUCT_ID || '',
         priceMonthly: 0,
         priceYearly: 0,
@@ -56,7 +57,7 @@ export const SUBSCRIPTION_PRODUCTS: Record<string, SubscriptionPlan> = {
     BASIC: {
         id: 'basic-tier',
         name: 'Basic Plan',
-        tier: 'BASIC',
+        tier: UserSubscriptionTier.BASIC,
         stripeProductId: process.env.STRIPE_BASIC_PRODUCT_ID || '',
         priceMonthly: 1999, // $19.99
         priceYearly: 19990, // $199.90
@@ -89,7 +90,7 @@ export const SUBSCRIPTION_PRODUCTS: Record<string, SubscriptionPlan> = {
     PREMIUM: {
         id: 'premium-tier',
         name: 'Premium Plan',
-        tier: 'PREMIUM',
+        tier: UserSubscriptionTier.PREMIUM,
         stripeProductId: process.env.STRIPE_PREMIUM_PRODUCT_ID || '',
         priceMonthly: 4999, // $49.99
         priceYearly: 49990, // $499.90
