@@ -341,11 +341,51 @@ export function useAuth() {
     }
   }, []);
 
+  /**
+   * Verifies user's email address
+   * Requirement: Security Controls - Email verification flow
+   */
+  const verifyEmail = useCallback(async (token: string): Promise<AuthResponse> => {
+    setState(prev => ({ ...prev, loading: true }));
+
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: 'email'
+      });
+
+      if (error) throw error;
+
+      setState(prev => ({ ...prev, loading: false }));
+      return {
+        success: true,
+        data: null,
+        error: null,
+        timestamp: new Date().toISOString(),
+        requestId: crypto.randomUUID()
+      };
+    } catch (error) {
+      setState(prev => ({ ...prev, loading: false }));
+      return {
+        success: false,
+        data: null,
+        error: {
+          code: ErrorCode.AUTHENTICATION_ERROR,
+          message: error instanceof Error ? error.message : 'Email verification failed',
+          details: { error }
+        },
+        timestamp: new Date().toISOString(),
+        requestId: crypto.randomUUID()
+      };
+    }
+  }, []);
+
   return {
     state,
     login,
     logout,
     register,
-    resetPassword
+    resetPassword,
+    verifyEmail
   };
 }
