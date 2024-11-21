@@ -42,7 +42,19 @@ const createJestConfig = (): Config.InitialOptions => ({
 
   // Configure SWC for fast TypeScript/JavaScript transformation
   transform: {
-    '^.+\\.(t|j)sx?$': ['@swc/jest']
+    '^.+\\.(t|j)sx?$': ['@swc/jest', {
+      jsc: {
+        parser: {
+          syntax: 'typescript',
+          tsx: true
+        },
+        transform: {
+          react: {
+            runtime: 'automatic'
+          }
+        }
+      }
+    }]
   },
 
   // Specify which files to include in coverage reports
