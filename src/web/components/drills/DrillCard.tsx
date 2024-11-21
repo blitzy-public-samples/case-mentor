@@ -1,11 +1,12 @@
 // Third-party imports
 import React from 'react'; // ^18.0.0
-import { cn } from 'class-variance-authority'; // ^0.7.0
+import { cva } from 'class-variance-authority'; // ^0.7.0
 import { Timer, Brain, Target } from 'lucide-react'; // ^0.284.0
+import { clsx } from 'clsx';
 
 // Internal imports
 import { DrillType, DrillPrompt, DrillProgress, DrillDifficulty } from '../../types/drills';
-import Card, { cardVariants } from '../shared/Card';
+import { Card, cardVariants } from '../shared/Card';
 import { useDrill } from '../../hooks/useDrill';
 
 /**
@@ -30,6 +31,9 @@ const difficultyStyles: Record<DrillDifficulty, string> = {
   [DrillDifficulty.INTERMEDIATE]: 'bg-yellow-100 text-yellow-800',
   [DrillDifficulty.ADVANCED]: 'bg-red-100 text-red-800'
 };
+
+// Utility function to combine class names
+const cn = (...inputs: (string | undefined)[]) => clsx(inputs);
 
 // Requirement: Practice Drills - Component for displaying individual drill information
 const DrillCard: React.FC<DrillCardProps> = ({
