@@ -7,7 +7,6 @@ import { Avatar } from '../../components/shared/Avatar';
 import { Card } from '../../components/shared/Card';
 import { useAuth } from '../../hooks/useAuth';
 import { theme } from '../../config/theme';
-import { PROFILE_SECTIONS, SKILL_CATEGORIES } from '../../config/constants';
 
 /**
  * Human Tasks:
@@ -62,11 +61,13 @@ const ProfilePage: React.FC = () => {
       role="banner"
       aria-label="Profile header"
     >
-      <Avatar
-        size="lg"
-        profile={profile}
-        className="border-2 border-secondary-base"
-      />
+      {profile && (
+        <Avatar
+          size="lg"
+          profile={profile}
+          className="border-2 border-secondary-base"
+        />
+      )}
       <div>
         <h1 className="text-2xl font-semibold text-primary-base">
           {profile?.firstName} {profile?.lastName}
