@@ -51,7 +51,13 @@ export function useDrill(drillType: DrillType) {
       throw new Error(response.error?.message || 'Failed to fetch drills');
     }
 
-    return response.data as DrillPrompt[];
+    // Cast the response data to array of DrillPrompt
+    const drillPrompts = response.data as unknown as DrillPrompt[];
+    if (!Array.isArray(drillPrompts)) {
+      throw new Error('Invalid response format for drills');
+    }
+
+    return drillPrompts;
   }, [drillType, userId]);
 
   /**
@@ -69,7 +75,13 @@ export function useDrill(drillType: DrillType) {
       throw new Error(response.error?.message || 'Failed to fetch progress');
     }
 
-    return response.data as DrillProgress;
+    // Cast the response data to DrillProgress
+    const progress = response.data as unknown as DrillProgress;
+    if (!progress.drillType) {
+      throw new Error('Invalid response format for progress');
+    }
+
+    return progress;
   }, [drillType, userId]);
 
   /**
