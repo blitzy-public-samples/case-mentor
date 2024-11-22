@@ -13,6 +13,7 @@ import { UserService } from '../../../services/UserService';
 import { withAuth } from '../../../lib/auth/middleware';
 import { APIError } from '../../../lib/errors/APIError';
 import { UserSubscriptionTier, UserSubscriptionStatus } from '../../../types/user';
+import { APIErrorCode } from '../../../types/api';
 
 /**
  * GET handler for retrieving user profile and progress data
@@ -29,7 +30,7 @@ export const GET = withAuth(async (
         // Verify requesting user has access to requested profile
         if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR' as const,
+                APIErrorCode.AUTHORIZATION_ERROR,
                 'Unauthorized access to user profile',
                 { requestedUserId: userId }
             );
@@ -48,12 +49,12 @@ export const GET = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), { 
-                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400 
+                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400 
             });
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR' as const,
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to retrieve user data',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -75,7 +76,7 @@ export const PATCH = withAuth(async (
         // Verify requesting user owns the profile
         if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR' as const,
+                APIErrorCode.AUTHORIZATION_ERROR,
                 'Unauthorized profile modification',
                 { requestedUserId: userId }
             );
@@ -85,7 +86,7 @@ export const PATCH = withAuth(async (
         const profileData = await request.json();
         if (!profileData) {
             throw new APIError(
-                'VALIDATION_ERROR' as const,
+                APIErrorCode.VALIDATION_ERROR,
                 'Profile data is required',
                 { received: profileData }
             );
@@ -104,12 +105,12 @@ export const PATCH = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), {
-                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400
+                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400
             });
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR' as const,
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to update user profile',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
@@ -131,7 +132,7 @@ export const DELETE = withAuth(async (
         // Verify requesting user owns the account
         if (context.user.id !== userId) {
             throw new APIError(
-                'AUTHORIZATION_ERROR' as const,
+                APIErrorCode.AUTHORIZATION_ERROR,
                 'Unauthorized account deletion',
                 { requestedUserId: userId }
             );
@@ -153,12 +154,12 @@ export const DELETE = withAuth(async (
     } catch (error) {
         if (error instanceof APIError) {
             return NextResponse.json(error.toJSON(), {
-                status: error.code === 'AUTHORIZATION_ERROR' ? 403 : 400
+                status: error.code === APIErrorCode.AUTHORIZATION_ERROR ? 403 : 400
             });
         }
 
         return NextResponse.json(new APIError(
-            'INTERNAL_ERROR' as const,
+            APIErrorCode.INTERNAL_ERROR,
             'Failed to deactivate account',
             { error: error instanceof Error ? error.message : 'Unknown error' }
         ).toJSON(), { status: 500 });
