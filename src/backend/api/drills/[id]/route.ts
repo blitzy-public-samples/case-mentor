@@ -141,8 +141,8 @@ const POST = withAuth(
   }
 );
 
-// Apply subscription tier validation to both endpoints
-const AuthenticatedGET = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null });
-const AuthenticatedPOST = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null });
+// Apply subscription tier validation
+const AuthenticatedGET = withAuth(requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET));
+const AuthenticatedPOST = withAuth(requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST));
 
 export { AuthenticatedGET as GET, AuthenticatedPOST as POST };
