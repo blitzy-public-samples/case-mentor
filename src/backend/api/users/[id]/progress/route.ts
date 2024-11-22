@@ -23,18 +23,21 @@ import { APIError, APIErrorCode } from '../../../../types/api';
  */
 async function GET(
   request: NextRequest,
-  context: { params: { id: string }; user: User }
+  { user }: { user: User }
 ): Promise<NextResponse> {
   try {
     // Start performance timer
     const startTime = performance.now();
 
+    // Extract user ID from URL
+    const userId = request.url.split('/users/')[1].split('/progress')[0];
+
     // Validate user ID format
-    if (!context.params.id || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(context.params.id)) {
+    if (!userId || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId)) {
       throw {
         code: APIErrorCode.VALIDATION_ERROR,
         message: 'Invalid user ID format',
-        details: { id: context.params.id },
+        details: { id: userId },
         timestamp: new Date().toISOString(),
         requestId: request.headers.get('x-request-id') || crypto.randomUUID()
       } as APIError;
@@ -42,7 +45,7 @@ async function GET(
 
     // Initialize service and retrieve progress data
     const userService = new UserService();
-    const progress: UserProgress = await userService.getUserProgress(context.params.id);
+    const progress: UserProgress = await userService.getUserProgress(userId);
 
     // Calculate response time
     const responseTime = performance.now() - startTime;

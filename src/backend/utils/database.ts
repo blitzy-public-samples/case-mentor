@@ -176,10 +176,10 @@ export async function withTransaction<T>(
  * Builds a type-safe database query
  * Requirement: Database Layer (5.2 Component Details) - Type-safe query building
  */
-export function buildQuery<T extends Record<string, unknown>>(
+export function buildQuery<T>(
     table: string,
     filters: QueryFilters = {}
-): PostgrestFilterBuilder<any, T, T> {
+): PostgrestFilterBuilder<T, T, unknown> {
     if (!supabaseInstance) {
         throw new DatabaseError(
             'Database connection not initialized',
@@ -210,5 +210,5 @@ export function buildQuery<T extends Record<string, unknown>>(
         );
     }
 
-    return query as PostgrestFilterBuilder<any, T, T>;
+    return query as PostgrestFilterBuilder<T, T, unknown>;
 }

@@ -5,6 +5,7 @@ import { withAuth, requireSubscription } from '../../../lib/auth/middleware';
 import { handleError } from '../../../lib/errors/handlers';
 import { SimulationService } from '../../../services/SimulationService';
 import { User, UserSubscriptionTier } from '../../../types/user';
+import { SpeciesType } from '../../../types/simulation';
 
 /**
  * Human Tasks:
@@ -21,7 +22,7 @@ const updateSchema = z.object({
     species: z.array(z.object({
       id: z.string(),
       name: z.string(),
-      type: z.enum(['PRODUCER', 'CONSUMER']),
+      type: z.nativeEnum(SpeciesType),
       energyRequirement: z.number(),
       reproductionRate: z.number()
     })).optional(),
@@ -43,10 +44,11 @@ const actionSchema = z.object({
  * Addresses requirement: McKinsey Simulation - Ecosystem game replication
  */
 export const GET = withAuth(
-  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, context: { user: User }) => {
     try {
+      const simulationId = request.url.split('/').pop() || '';
       const simulationService = new SimulationService();
-      const state = await simulationService.getSimulationState(params.id);
+      const state = await simulationService.getState(simulationId);
       
       return NextResponse.json({
         success: true,
@@ -68,8 +70,9 @@ export const GET = withAuth(
  * Addresses requirement: McKinsey Simulation - Complex data analysis
  */
 export const PUT = withAuth(
-  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, context: { user: User }) => {
     try {
+      const simulationId = request.url.split('/').pop() || '';
       const body = await request.json();
       const { type, data } = updateSchema.parse(body);
       
@@ -78,12 +81,12 @@ export const PUT = withAuth(
 
       if (type === 'species' && data.species) {
         updatedState = await simulationService.updateSpecies(
-          params.id,
+          simulationId,
           data.species
         );
       } else if (type === 'environment' && data.environment) {
         updatedState = await simulationService.updateEnvironment(
-          params.id,
+          simulationId,
           data.environment
         );
       } else {
@@ -110,8 +113,9 @@ export const PUT = withAuth(
  * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
  */
 export const POST = withAuth(
-  async (request: NextRequest, { user, params }: { user: User; params: { id: string } }) => {
+  async (request: NextRequest, context: { user: User }) => {
     try {
+      const simulationId = request.url.split('/').pop() || '';
       const body = await request.json();
       const { action } = actionSchema.parse(body);
       
@@ -119,9 +123,9 @@ export const POST = withAuth(
       let result;
 
       if (action === 'timeStep') {
-        result = await simulationService.executeTimeStep(params.id);
+        result = await simulationService.executeTimeStep(simulationId);
       } else if (action === 'complete') {
-        result = await simulationService.completeSimulation(params.id);
+        result = await simulationService.completeSimulation(simulationId);
       }
 
       return NextResponse.json({

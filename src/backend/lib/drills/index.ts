@@ -1,8 +1,8 @@
 // @package zod ^3.22.0
 import { z } from 'zod';
 
+import { DrillType } from '../../types/drills';
 import { 
-  DrillType, 
   DrillResponse, 
   DrillEvaluation, 
   DrillEvaluationCriteria, 

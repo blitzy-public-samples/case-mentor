@@ -10,12 +10,11 @@ import {
   Species,
   EnvironmentParameters,
   SimulationState,
-  SimulationResult,
-  SimulationStatus,
-  SpeciesType
+  SimulationResult
 } from '../lib/simulation/types';
 import { APIError } from '../lib/errors/APIError';
 import { APIErrorCode } from '../types/api';
+import { SimulationStatus, SpeciesType } from '../types/simulation';
 
 /**
  * Human Tasks:
@@ -56,21 +55,15 @@ export class SimulationService {
       );
     }
 
-    if (this.currentAttempt.id !== simulationId) {
+    const currentState = await this.currentAttempt.getState();
+    if (currentState.id !== simulationId) {
       throw new APIError(
         APIErrorCode.NOT_FOUND,
         'Simulation ID mismatch'
       );
     }
 
-    return {
-      id: this.currentAttempt.id,
-      userId: this.currentAttempt.userId,
-      species: this.currentAttempt.species,
-      environment: this.currentAttempt.environment,
-      timeRemaining: this.currentAttempt.timeRemaining,
-      status: this.currentAttempt.status
-    };
+    return currentState;
   }
 
   /**
@@ -138,18 +131,18 @@ export class SimulationService {
     })).parse(species);
 
     // Initialize ecosystem with species
-    const state = await this.simulation.initializeEcosystem(
+    const ecosystemState = await this.simulation.initializeEcosystem(
       validatedSpecies,
-      this.currentAttempt.environment
+      await this.currentAttempt.getEnvironment()
     );
 
     // Update attempt state
-    await this.currentAttempt.updateState({
+    const updatedState = await this.currentAttempt.updateState({
       species: validatedSpecies,
       status: SimulationStatus.RUNNING
     });
 
-    return state;
+    return updatedState;
   }
 
   /**
@@ -176,17 +169,17 @@ export class SimulationService {
     }).parse(environment);
 
     // Initialize ecosystem with new environment
-    const state = await this.simulation.initializeEcosystem(
-      this.currentAttempt.species,
+    const ecosystemState = await this.simulation.initializeEcosystem(
+      await this.currentAttempt.getSpecies(),
       validatedEnvironment
     );
 
     // Update attempt state
-    await this.currentAttempt.updateState({
+    const updatedState = await this.currentAttempt.updateState({
       environment: validatedEnvironment
     });
 
-    return state;
+    return updatedState;
   }
 
   /**
@@ -201,8 +194,10 @@ export class SimulationService {
       );
     }
 
+    const currentState = await this.currentAttempt.getState();
+
     // Validate simulation is active
-    if (this.currentAttempt.status !== SimulationStatus.RUNNING) {
+    if (currentState.status !== SimulationStatus.RUNNING) {
       throw new APIError(
         APIErrorCode.INTERNAL_ERROR,
         'Simulation is not in running state'
@@ -213,7 +208,7 @@ export class SimulationService {
     await this.simulation.simulateTimeStep();
 
     // Update time remaining
-    const timeRemaining = Math.max(0, this.currentAttempt.timeRemaining - 1000);
+    const timeRemaining = Math.max(0, currentState.timeRemaining - 1000);
 
     // Update attempt state
     const updatedState = await this.currentAttempt.updateState({
@@ -236,8 +231,10 @@ export class SimulationService {
       );
     }
 
+    const currentState = await this.currentAttempt.getState();
+
     // Validate simulation can be completed
-    if (this.currentAttempt.status === SimulationStatus.COMPLETED) {
+    if (currentState.status === SimulationStatus.COMPLETED) {
       throw new APIError(
         APIErrorCode.INTERNAL_ERROR,
         'Simulation is already completed'

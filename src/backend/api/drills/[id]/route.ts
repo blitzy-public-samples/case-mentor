@@ -25,7 +25,7 @@ declare global {
 const GET = withAuth(
   async (
     req: NextRequest,
-    context: { user: any }
+    context: { user: any; params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillPrompt>>> => {
     try {
       // Initialize drill service
@@ -62,7 +62,7 @@ const GET = withAuth(
 const POST = withAuth(
   async (
     req: NextRequest,
-    context: { user: any }
+    context: { user: any; params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillAttempt | DrillEvaluation>>> => {
     try {
       // Parse request body
@@ -137,8 +137,8 @@ const POST = withAuth(
 
 // Apply subscription tier validation to both endpoints
 export const { GET: AuthenticatedGET, POST: AuthenticatedPOST } = {
-  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET),
-  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST)
+  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null }),
+  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null })
 };
 
 export { AuthenticatedGET as GET, AuthenticatedPOST as POST };

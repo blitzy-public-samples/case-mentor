@@ -159,8 +159,8 @@ export class SimulationEvaluator {
     // Get final ecosystem state
     const state = await attempt.updateState({});
     const finalState: EcosystemState = {
-      species: state.getSpecies(),
-      environment: state.getEnvironment(),
+      species: state.species,
+      environment: state.environment,
       interactions: [],
       stabilityScore: 0,
       timestamp: Date.now()
@@ -185,7 +185,7 @@ export class SimulationEvaluator {
 
     // Compile evaluation results
     const result: SimulationResult = {
-      simulationId: state.getId(),
+      simulationId: this.context.userId,
       score,
       ecosystemStability: stabilityScore * 100,
       speciesBalance: calculateSpeciesBalance(finalState),

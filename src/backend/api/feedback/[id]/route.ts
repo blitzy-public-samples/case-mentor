@@ -40,9 +40,10 @@ const feedbackService = new FeedbackService(openAIService);
  */
 export const GET = withAuth(async (
     request: NextRequest,
-    { user, params }: { user: any, params: { id: string } }
+    context: { user: any }
 ): Promise<NextResponse> => {
     try {
+        const params = { id: request.url.split('/').pop() || '' };
         const feedback = await feedbackService.getFeedback(params.id);
 
         if (!feedback) {
@@ -84,9 +85,10 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
     request: NextRequest,
-    { user, params }: { user: any, params: { id: string } }
+    context: { user: any }
 ): Promise<NextResponse> => {
     try {
+        const params = { id: request.url.split('/').pop() || '' };
         const body = await request.json();
         
         // Validate update data
@@ -135,9 +137,11 @@ export const PATCH = withAuth(async (
  */
 export const DELETE = withAuth(async (
     request: NextRequest,
-    { user, params }: { user: any, params: { id: string } }
+    context: { user: any }
 ): Promise<NextResponse> => {
     try {
+        const params = { id: request.url.split('/').pop() || '' };
+        
         // Verify feedback exists
         const feedback = await feedbackService.getFeedback(params.id);
         
