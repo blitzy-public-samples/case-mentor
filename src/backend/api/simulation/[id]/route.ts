@@ -43,102 +43,93 @@ const actionSchema = z.object({
  * Retrieves the current state of a simulation attempt
  * Addresses requirement: McKinsey Simulation - Ecosystem game replication
  */
-export const GET = withAuth(
-  async (request: NextRequest, context: { user: User }) => {
-    try {
-      const simulationId = request.url.split('/').pop() || '';
-      const simulationService = new SimulationService();
-      const state = await simulationService.getState(simulationId);
-      
-      return NextResponse.json({
-        success: true,
-        data: state,
-        error: null,
-        metadata: {
-          requestId: crypto.randomUUID()
-        }
-      });
-    } catch (error) {
-      return handleError(error as Error, crypto.randomUUID());
-    }
-  },
-  requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])
-);
+export const GET = withAuth(async (request: NextRequest, context: { user: User }) => {
+  try {
+    const simulationId = request.url.split('/').pop() || '';
+    const simulationService = new SimulationService();
+    const state = await simulationService.getState(simulationId);
+    
+    return NextResponse.json({
+      success: true,
+      data: state,
+      error: null,
+      metadata: {
+        requestId: crypto.randomUUID()
+      }
+    });
+  } catch (error) {
+    return handleError(error as Error, crypto.randomUUID());
+  }
+}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
 
 /**
  * Updates species selection or environmental parameters for a simulation
  * Addresses requirement: McKinsey Simulation - Complex data analysis
  */
-export const PUT = withAuth(
-  async (request: NextRequest, context: { user: User }) => {
-    try {
-      const simulationId = request.url.split('/').pop() || '';
-      const body = await request.json();
-      const { type, data } = updateSchema.parse(body);
-      
-      const simulationService = new SimulationService();
-      let updatedState;
+export const PUT = withAuth(async (request: NextRequest, context: { user: User }) => {
+  try {
+    const simulationId = request.url.split('/').pop() || '';
+    const body = await request.json();
+    const { type, data } = updateSchema.parse(body);
+    
+    const simulationService = new SimulationService();
+    let updatedState;
 
-      if (type === 'species' && data.species) {
-        updatedState = await simulationService.updateSpecies(
-          simulationId,
-          data.species
-        );
-      } else if (type === 'environment' && data.environment) {
-        updatedState = await simulationService.updateEnvironment(
-          simulationId,
-          data.environment
-        );
-      } else {
-        throw new Error('Invalid update type or missing data');
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: updatedState,
-        error: null,
-        metadata: {
-          requestId: crypto.randomUUID()
-        }
-      });
-    } catch (error) {
-      return handleError(error as Error, crypto.randomUUID());
+    if (type === 'species' && data.species) {
+      updatedState = await simulationService.updateSpecies(
+        simulationId,
+        data.species
+      );
+    } else if (type === 'environment' && data.environment) {
+      updatedState = await simulationService.updateEnvironment(
+        simulationId,
+        data.environment
+      );
+    } else {
+      throw new Error('Invalid update type or missing data');
     }
-  },
-  requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])
-);
+
+    return NextResponse.json({
+      success: true,
+      data: updatedState,
+      error: null,
+      metadata: {
+        requestId: crypto.randomUUID()
+      }
+    });
+  } catch (error) {
+    return handleError(error as Error, crypto.randomUUID());
+  }
+}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
 
 /**
  * Executes a time step in the simulation or completes it
  * Addresses requirement: McKinsey Simulation - Time-pressured scenarios
  */
-export const POST = withAuth(
-  async (request: NextRequest, context: { user: User }) => {
-    try {
-      const simulationId = request.url.split('/').pop() || '';
-      const body = await request.json();
-      const { action } = actionSchema.parse(body);
-      
-      const simulationService = new SimulationService();
-      let result;
+export const POST = withAuth(async (request: NextRequest, context: { user: User }) => {
+  try {
+    const simulationId = request.url.split('/').pop() || '';
+    const body = await request.json();
+    const { action } = actionSchema.parse(body);
+    
+    const simulationService = new SimulationService();
+    let result;
 
-      if (action === 'timeStep') {
-        result = await simulationService.executeTimeStep(simulationId);
-      } else if (action === 'complete') {
-        result = await simulationService.completeSimulation(simulationId);
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: result,
-        error: null,
-        metadata: {
-          requestId: crypto.randomUUID()
-        }
-      });
-    } catch (error) {
-      return handleError(error as Error, crypto.randomUUID());
+    if (action === 'timeStep') {
+      result = await simulationService.executeTimeStep(simulationId);
+    } else if (action === 'complete') {
+      result = await simulationService.completeSimulation(simulationId);
     }
-  },
-  requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])
-);
+
+    return NextResponse.json({
+      success: true,
+      data: result,
+      error: null,
+      metadata: {
+        requestId: crypto.randomUUID()
+      }
+    });
+  } catch (error) {
+    return handleError(error as Error, crypto.randomUUID());
+  }
+}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
