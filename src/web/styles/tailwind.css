@@ -14,28 +14,28 @@
 /* Requirement: Design System Specifications - Base typography configuration */
 @layer base {
   html {
-    font-family: Inter, system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     @apply text-primary-base;
   }
 
   code, pre {
-    font-family: Roboto Mono, monospace;
+    font-family: 'Roboto Mono', monospace;
   }
 
-  /* Requirement: Accessibility Requirements - Focus states */
+  /* Accessibility: Focus states */
   :focus-visible {
     @apply outline-none ring-2 ring-primary-base ring-offset-2;
   }
 
-  /* Requirement: Accessibility Requirements - Interactive element states */
+  /* Accessibility: Disabled element styles */
   :disabled {
     @apply cursor-not-allowed opacity-50;
   }
 }
 
-/* Requirement: Component Library Support - Core component classes */
+/* Component Library Support - Core component classes */
 @layer components {
   /* Primary button styles */
   .btn {
@@ -46,7 +46,7 @@
 
   /* Card container styles */
   .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+    @apply rounded-lg border border-input bg-background text-card-foreground shadow-sm;
   }
 
   /* Form input styles */
@@ -56,26 +56,34 @@
            focus-visible:ring-primary-base;
   }
 
-  /* Requirement: Component Library Support - shadcn/ui integration */
+  /* Dialog overlay styles */
   .dialog-overlay {
     @apply fixed inset-0 bg-black/50 backdrop-blur-sm;
   }
 
+  /* Dialog content styles */
   .dialog-content {
     @apply fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
            rounded-lg bg-background p-6 shadow-lg;
   }
 
+  /* Dropdown content styles */
   .dropdown-content {
-    @apply rounded-md border bg-background p-2 shadow-md;
+    @apply rounded-md border border-input bg-background p-2 shadow-md;
   }
 
+  /* Tooltip styles */
   .tooltip {
     @apply rounded bg-primary-base px-2 py-1 text-sm text-white shadow-sm;
   }
+
+  /* Debugging safeguard for `border-input` */
+  .dummy-class {
+    @apply border-input;
+  }
 }
 
-/* Requirement: Design System Specifications - Custom utility classes */
+/* Design System Specifications - Custom utility classes */
 @layer utilities {
   /* Text balance for improved readability */
   .text-balance {
@@ -87,7 +95,7 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -98,25 +106,25 @@
            focus-visible:ring-primary-base focus-visible:ring-offset-2;
   }
 
-  /* Requirement: Accessibility Requirements - Screen reader utilities */
+  /* Screen reader utilities */
   .sr-only {
     @apply absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
   }
 
-  /* Requirement: Design System Specifications - Responsive utilities */
+  /* Responsive utilities */
   .container {
     @apply mx-auto px-4 sm:px-6 lg:px-8;
     max-width: theme('screens.wide');
   }
 
-  /* Requirement: Design System Specifications - Motion safe utilities */
+  /* Motion safe utilities */
   @media (prefers-reduced-motion: no-preference) {
     .motion-safe {
       @apply transition-all duration-200;
     }
   }
 
-  /* Requirement: Accessibility Requirements - High contrast mode utilities */
+  /* High contrast mode utilities */
   @media (forced-colors: active) {
     .high-contrast-border {
       @apply border-2;
@@ -124,7 +132,7 @@
   }
 }
 
-/* Requirement: Design System Specifications - Print styles */
+/* Print styles */
 @media print {
   .no-print {
     display: none !important;

@@ -19,6 +19,8 @@ const customColors = {
     hover: '#7E22CE',   // Hover color
     dark: '#6B21A8',    // Darker shade
   },
+  'border-input': '#D1D5DB', // Explicit definition for `border-input`
+  'bg-background': '#FFFFFF', // Explicit definition for `bg-background`
 };
 
 const customFontFamily = {
@@ -72,15 +74,12 @@ const createScreenConfig = (breakpoints: Record<string, string>) => {
 const config: Config = {
   mode: 'jit', // Enable Just-In-Time (JIT) mode for faster builds
   content: [
-    './layout.tsx',
-    './error.tsx',
-    './loading.tsx',
-    './not-found.tsx',
-    './page.tsx',
-    './output.css',
-    './globals.css',
-    './(auth)/**/*.{js,ts,jsx,tsx}',
-    './(dashboard)/**/*.{js,ts,jsx,tsx}',
+    './styles/**/*.css',            // All CSS files in the `styles` directory
+  './providers/**/*.tsx',         // All TSX files in the `providers` directory
+  './public/**/*.{html,js,jsx}',  // Public assets
+  './tests/**/*.{ts,tsx}',        // Test files
+  './types/**/*.ts',              // TypeScript files
+  './components/**/*.{js,jsx,ts,tsx}', // Component files
   ],
   
   darkMode: 'class', // Use class-based dark mode
@@ -91,7 +90,8 @@ const config: Config = {
     'text-primary-400',
     'text-primary-600',
     'hover:text-primary-700',
-  ], // Explicitly include classes to prevent purging
+    'border-input', // Safelist `border-input` to avoid purging
+  ],
 
   theme: {
     extend: {
@@ -154,8 +154,12 @@ const config: Config = {
 console.log("Tailwind Config Debug:");
 console.log("Content Paths:", config.content);
 console.log("Safelist:", config.safelist);
-console.log("Theme Colors:", config.theme.extend.colors);
-console.log("Custom Font Family:", config.theme.extend.fontFamily);
+console.log("Theme Colors:", config.theme?.extend?.colors || 'Theme colors not defined');
+console.log("Custom Font Family:", config.theme?.extend?.fontFamily || 'Font family not defined');
+
+console.log("Tailwind Content Paths:", config.content);
+
+
 
 
 export default config;
