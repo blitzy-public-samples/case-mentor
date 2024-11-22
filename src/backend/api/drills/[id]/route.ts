@@ -25,7 +25,7 @@ declare global {
 const GET = withAuth(
   async (
     req: NextRequest,
-    context: { user: any; params: { id: string } }
+    { user, params }: { user: any; params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillPrompt>>> => {
     try {
       // Initialize drill service
@@ -36,7 +36,7 @@ const GET = withAuth(
       );
 
       // Retrieve drill by ID
-      const drill = await drillService.getDrillById(context.params.id);
+      const drill = await drillService.getDrillById(params.id);
 
       // Return successful response
       return NextResponse.json({
@@ -62,7 +62,7 @@ const GET = withAuth(
 const POST = withAuth(
   async (
     req: NextRequest,
-    context: { user: any; params: { id: string } }
+    { user, params }: { user: any; params: { id: string } }
   ): Promise<NextResponse<DrillResponse<DrillAttempt | DrillEvaluation>>> => {
     try {
       // Parse request body
@@ -80,8 +80,8 @@ const POST = withAuth(
         case 'start': {
           // Requirement: User Engagement - Start new drill attempt
           const attempt = await drillService.startDrillAttempt(
-            context.user.id,
-            context.params.id
+            user.id,
+            params.id
           );
 
           return NextResponse.json({
@@ -136,9 +136,7 @@ const POST = withAuth(
 );
 
 // Apply subscription tier validation to both endpoints
-export const { GET: AuthenticatedGET, POST: AuthenticatedPOST } = {
-  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null }),
-  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null })
-};
+const AuthenticatedGET = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET);
+const AuthenticatedPOST = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST);
 
 export { AuthenticatedGET as GET, AuthenticatedPOST as POST };

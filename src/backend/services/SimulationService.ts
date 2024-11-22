@@ -55,7 +55,15 @@ export class SimulationService {
       );
     }
 
-    const currentState = await this.currentAttempt.getState();
+    const currentState = {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
+
     if (currentState.id !== simulationId) {
       throw new APIError(
         APIErrorCode.NOT_FOUND,
@@ -133,16 +141,23 @@ export class SimulationService {
     // Initialize ecosystem with species
     const ecosystemState = await this.simulation.initializeEcosystem(
       validatedSpecies,
-      await this.currentAttempt.getEnvironment()
+      this.currentAttempt.environment
     );
 
     // Update attempt state
-    const updatedState = await this.currentAttempt.updateState({
+    await this.currentAttempt.updateState({
       species: validatedSpecies,
       status: SimulationStatus.RUNNING
     });
 
-    return updatedState;
+    return {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
   }
 
   /**
@@ -170,16 +185,23 @@ export class SimulationService {
 
     // Initialize ecosystem with new environment
     const ecosystemState = await this.simulation.initializeEcosystem(
-      await this.currentAttempt.getSpecies(),
+      this.currentAttempt.species,
       validatedEnvironment
     );
 
     // Update attempt state
-    const updatedState = await this.currentAttempt.updateState({
+    await this.currentAttempt.updateState({
       environment: validatedEnvironment
     });
 
-    return updatedState;
+    return {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
   }
 
   /**
@@ -194,7 +216,14 @@ export class SimulationService {
       );
     }
 
-    const currentState = await this.currentAttempt.getState();
+    const currentState = {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
 
     // Validate simulation is active
     if (currentState.status !== SimulationStatus.RUNNING) {
@@ -211,12 +240,19 @@ export class SimulationService {
     const timeRemaining = Math.max(0, currentState.timeRemaining - 1000);
 
     // Update attempt state
-    const updatedState = await this.currentAttempt.updateState({
+    await this.currentAttempt.updateState({
       timeRemaining,
       status: timeRemaining > 0 ? SimulationStatus.RUNNING : SimulationStatus.COMPLETED
     });
 
-    return updatedState;
+    return {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
   }
 
   /**
@@ -231,7 +267,14 @@ export class SimulationService {
       );
     }
 
-    const currentState = await this.currentAttempt.getState();
+    const currentState = {
+      id: this.currentAttempt.id,
+      userId: this.currentAttempt.userId,
+      species: this.currentAttempt.species,
+      environment: this.currentAttempt.environment,
+      timeRemaining: this.currentAttempt.timeRemaining,
+      status: this.currentAttempt.status
+    };
 
     // Validate simulation can be completed
     if (currentState.status === SimulationStatus.COMPLETED) {

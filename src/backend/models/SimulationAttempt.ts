@@ -64,6 +64,48 @@ export class SimulationAttempt {
   }
 
   /**
+   * Gets the current species in the simulation
+   */
+  public getSpecies(): Species[] {
+    return this.species;
+  }
+
+  /**
+   * Gets the current environment parameters
+   */
+  public getEnvironment(): EnvironmentParameters {
+    return this.environment;
+  }
+
+  /**
+   * Gets the simulation ID
+   */
+  public getId(): string {
+    return this.id;
+  }
+
+  /**
+   * Gets the user ID
+   */
+  public getUserId(): string {
+    return this.userId;
+  }
+
+  /**
+   * Gets the remaining time
+   */
+  public getTimeRemaining(): number {
+    return this.timeRemaining;
+  }
+
+  /**
+   * Gets the current status
+   */
+  public getStatus(): SimulationStatus {
+    return this.status;
+  }
+
+  /**
    * Persists the simulation attempt to the database using transaction
    * Addresses requirement: Simulation Components - State management with database integration
    */

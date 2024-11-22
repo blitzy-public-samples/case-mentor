@@ -8,7 +8,7 @@
 // @supabase/supabase-js v2.38.0
 // @supabase/postgrest-js v1.8.0
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
+import { PostgrestFilterBuilder, GenericSchema } from '@supabase/postgrest-js';
 import { DatabaseConfig } from '../types/config';
 import { databaseConfig, validateDatabaseConfig } from '../config/database';
 
@@ -176,10 +176,10 @@ export async function withTransaction<T>(
  * Builds a type-safe database query
  * Requirement: Database Layer (5.2 Component Details) - Type-safe query building
  */
-export function buildQuery<T>(
+export function buildQuery<T extends GenericSchema>(
     table: string,
     filters: QueryFilters = {}
-): PostgrestFilterBuilder<T, T, unknown> {
+): PostgrestFilterBuilder<T> {
     if (!supabaseInstance) {
         throw new DatabaseError(
             'Database connection not initialized',
@@ -210,5 +210,5 @@ export function buildQuery<T>(
         );
     }
 
-    return query as PostgrestFilterBuilder<T, T, unknown>;
+    return query as PostgrestFilterBuilder<T>;
 }
