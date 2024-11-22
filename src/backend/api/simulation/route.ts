@@ -20,7 +20,7 @@ import {
 } from '../../types/simulation';
 import {
   SimulationExecutionContext,
-  Environment
+  EnvironmentParameters
 } from '../../lib/simulation/types';
 import { UserSubscriptionTier } from '../../types/user';
 
@@ -93,7 +93,7 @@ export const POST = withAuth(async (req: NextRequest, context: { user: any }) =>
         const { simulationId, environment } = UpdateEnvironmentSchema.parse(body);
         const result = await simulationService.updateEnvironment(
           simulationId,
-          environment as Environment
+          environment as EnvironmentParameters
         );
         return NextResponse.json(result);
       }
