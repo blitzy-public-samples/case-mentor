@@ -13,7 +13,8 @@ import { cn } from '../../lib/utils';
  */
 
 // Requirement: User Interface Design - Consistent typography, color palette, and spacing across form elements
-const defaultInputClasses = 'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50';
+const defaultInputClasses =
+  'w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50';
 
 // Requirement: User Interface Design - WCAG 2.1 AA compliant form inputs with full keyboard navigation and screen reader support
 const errorInputClasses = 'border-red-300 focus:ring-red-500 placeholder:text-red-300';
@@ -34,6 +35,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="w-full">
+        {/* Tailwind Utility Placeholder */}
+        <div className="border-input hidden"></div>
+
         {/* Requirement: User Interface Design - WCAG 2.1 AA compliant form inputs */}
         {label && (
           <label
@@ -43,7 +47,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {label}
           </label>
         )}
-        
+
         <div className="relative">
           <input
             ref={ref}

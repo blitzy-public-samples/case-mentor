@@ -12,15 +12,18 @@ const customColors = {
     dark: '#1E3A8A',    // Darker shade
     400: '#60A5FA',     // Light shade
     600: '#2563EB',     // Darker shade
+    light: '#93C5FD',   // Light variant
   },
   secondary: {
     DEFAULT: '#9333EA', // Default secondary color
     base: '#9333EA',    // Explicit base color
     hover: '#7E22CE',   // Hover color
     dark: '#6B21A8',    // Darker shade
+    light: '#C084FC',   // Light variant
   },
-  'border-input': '#D1D5DB', // Explicit definition for `border-input`
-  'bg-background': '#FFFFFF', // Explicit definition for `bg-background`
+  'bg-background': '#FFFFFF', // Background color
+  'text-card-foreground': '#374151', // Text color for cards
+  'border-input': '#D1D5DB', // Border input color
 };
 
 const customFontFamily = {
@@ -59,30 +62,14 @@ const customShadows = {
   lg: '0 10px 15px rgba(0, 0, 0, 0.1)',
 };
 
-// Helper function to create screen configurations
-const createScreenConfig = (breakpoints: Record<string, string>) => {
-  return Object.entries(breakpoints).reduce(
-    (acc, [key, value]) => ({
-      ...acc,
-      [key]: value,
-    }),
-    {}
-  );
-};
-
-// TailwindCSS configuration
 const config: Config = {
-  mode: 'jit', // Enable Just-In-Time (JIT) mode for faster builds
+  mode: 'jit', // Enable Just-In-Time (JIT) mode
   content: [
-    './styles/**/*.css',            // All CSS files in the `styles` directory
-  './providers/**/*.tsx',         // All TSX files in the `providers` directory
-  './public/**/*.{html,js,jsx}',  // Public assets
-  './tests/**/*.{ts,tsx}',        // Test files
-  './types/**/*.ts',              // TypeScript files
-  './components/**/*.{js,jsx,ts,tsx}', // Component files
+    './pages/**/*.{js,ts,jsx,tsx}', // Include all files in `pages`
+    './components/**/*.{js,ts,jsx,tsx}', // Include all files in `components`
+    './styles/**/*.css', // Include all styles
   ],
-  
-  darkMode: 'class', // Use class-based dark mode
+  darkMode: 'class', // Enable dark mode with class
 
   safelist: [
     'text-primary',
@@ -90,16 +77,23 @@ const config: Config = {
     'text-primary-400',
     'text-primary-600',
     'hover:text-primary-700',
-    'border-input', // Safelist `border-input` to avoid purging
+    'border-input', // Explicitly safelist `border-input`
+    'bg-background', // Safelist background color
+    'text-card-foreground', // Safelist card text color
+    'animate-fade-in', // Safelist animations
+    'focus:ring-primary-light', // Safelist focus styles
+    'focus:ring-secondary-light', // Safelist secondary focus
   ],
 
   theme: {
     extend: {
-      fontFamily: customFontFamily, // Apply custom fonts
-      colors: customColors, // Apply custom colors with all variants
-      spacing: customSpacing, // Assign custom spacing values
-      screens: createScreenConfig(customBreakpoints), // Configure custom breakpoints
-      boxShadow: customShadows, // Add custom shadows
+      colors: customColors, // Apply custom colors
+      fontFamily: customFontFamily, // Extend fonts
+      spacing: customSpacing, // Extend spacing
+      screens: {
+        ...customBreakpoints,
+      },
+      boxShadow: customShadows, // Add shadows
       typography: {
         DEFAULT: {
           css: {
@@ -141,25 +135,32 @@ const config: Config = {
           },
         },
       },
+      animation: {
+        'fade-in': 'fadeIn 0.5s ease-in-out',
+        'slide-in': 'slideIn 0.4s ease-in-out',
+        'scale-in': 'scaleIn 0.3s ease-in-out',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideIn: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
     },
   },
 
   plugins: [
-    typography(), // Tailwind Typography plugin for styled prose
-    forms({ strategy: 'class' }), // Tailwind Forms plugin for styled forms
+    typography(), // Tailwind Typography plugin
+    forms(), // Tailwind Forms plugin
   ],
 };
-
-// Debugging output
-console.log("Tailwind Config Debug:");
-console.log("Content Paths:", config.content);
-console.log("Safelist:", config.safelist);
-console.log("Theme Colors:", config.theme?.extend?.colors || 'Theme colors not defined');
-console.log("Custom Font Family:", config.theme?.extend?.fontFamily || 'Font family not defined');
-
-console.log("Tailwind Content Paths:", config.content);
-
-
-
 
 export default config;

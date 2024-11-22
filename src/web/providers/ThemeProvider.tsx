@@ -1,4 +1,6 @@
 // react v18.0.0
+
+"use client";
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useTheme } from '../hooks/useTheme';
 import { colors } from '../config/theme';

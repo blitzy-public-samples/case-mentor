@@ -6,12 +6,12 @@
  * 4. Ensure proper configuration of PostCSS and Tailwind plugins in build pipeline
  */
 
-/* Requirement: Design System Specifications - Core Tailwind directives */
+/* Core Tailwind directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Requirement: Design System Specifications - Base typography configuration */
+/* Base typography configuration */
 @layer base {
   html {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -35,9 +35,9 @@
   }
 }
 
-/* Component Library Support - Core component classes */
+/* Core component classes */
 @layer components {
-  /* Primary button styles */
+  /* Button styles */
   .btn {
     @apply rounded-md font-medium transition-colors 
            focus-visible:outline-none focus-visible:ring-2 
@@ -49,7 +49,7 @@
     @apply rounded-lg border border-input bg-background text-card-foreground shadow-sm;
   }
 
-  /* Form input styles */
+  /* Input field styles */
   .input {
     @apply rounded-md border border-input bg-background px-3 py-2 text-sm 
            focus-visible:outline-none focus-visible:ring-2 
@@ -67,7 +67,7 @@
            rounded-lg bg-background p-6 shadow-lg;
   }
 
-  /* Dropdown content styles */
+  /* Dropdown menu content */
   .dropdown-content {
     @apply rounded-md border border-input bg-background p-2 shadow-md;
   }
@@ -77,23 +77,36 @@
     @apply rounded bg-primary-base px-2 py-1 text-sm text-white shadow-sm;
   }
 
-  /* Debugging safeguard for `border-input` */
+  /* Placeholder for testing `border-input` */
   .dummy-class {
     @apply border-input;
   }
 }
 
-/* Design System Specifications - Custom utility classes */
+/* Custom utility classes */
 @layer utilities {
   /* Text balance for improved readability */
   .text-balance {
     text-wrap: balance;
   }
 
-  /* Hide scrollbars while maintaining functionality */
+  /* Hide scrollbars but keep functionality */
   .scrollbar-hide {
     scrollbar-width: none;
     -ms-overflow-style: none;
+  }
+
+  .bg-background {
+    @apply bg-white; /* Define `bg-background` with the appropriate Tailwind color */
+  }
+
+  .text-card-foreground {
+    @apply text-gray-700; /* Adjust to your design system */
+  }
+
+
+  .border-input {
+    @apply border-gray-300; /* Define border-input explicitly */
   }
 
   .scrollbar-hide::-webkit-scrollbar {
@@ -111,20 +124,20 @@
     @apply absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
   }
 
-  /* Responsive utilities */
+  /* Responsive container utility */
   .container {
     @apply mx-auto px-4 sm:px-6 lg:px-8;
     max-width: theme('screens.wide');
   }
 
-  /* Motion safe utilities */
+  /* Motion-safe utilities for animations */
   @media (prefers-reduced-motion: no-preference) {
     .motion-safe {
       @apply transition-all duration-200;
     }
   }
 
-  /* High contrast mode utilities */
+  /* High contrast mode support */
   @media (forced-colors: active) {
     .high-contrast-border {
       @apply border-2;
@@ -142,7 +155,7 @@
     display: block !important;
   }
 
-  /* Ensure proper contrast for printed content */
+  /* Ensure proper color adjustments for print */
   html {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;

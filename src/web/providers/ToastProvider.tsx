@@ -1,4 +1,6 @@
 // react v18.0.0
+
+"use client";
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import Toast from '../components/shared/Toast';
 import { ToastType, type ToastOptions } from '../hooks/useToast';
