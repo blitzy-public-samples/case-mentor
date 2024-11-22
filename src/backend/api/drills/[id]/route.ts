@@ -25,7 +25,7 @@ declare global {
 const GET = withAuth(
   async (
     req: NextRequest,
-    { user, params }: { user: any; params: { id: string } }
+    context: { user: any }
   ): Promise<NextResponse<DrillResponse<DrillPrompt>>> => {
     try {
       // Initialize drill service
@@ -34,6 +34,9 @@ const GET = withAuth(
         global.supabase,
         global.redis
       );
+
+      // Get drill ID from URL params
+      const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
 
       // Retrieve drill by ID
       const drill = await drillService.getDrillById(params.id);
@@ -62,12 +65,15 @@ const GET = withAuth(
 const POST = withAuth(
   async (
     req: NextRequest,
-    { user, params }: { user: any; params: { id: string } }
+    context: { user: any }
   ): Promise<NextResponse<DrillResponse<DrillAttempt | DrillEvaluation>>> => {
     try {
       // Parse request body
       const body = await req.json();
       const { action, response } = body;
+
+      // Get drill ID from URL params
+      const params = { id: req.nextUrl.pathname.split('/').pop() || '' };
 
       // Initialize drill service
       const drillService = new DrillService(
@@ -80,7 +86,7 @@ const POST = withAuth(
         case 'start': {
           // Requirement: User Engagement - Start new drill attempt
           const attempt = await drillService.startDrillAttempt(
-            user.id,
+            context.user.id,
             params.id
           );
 
@@ -136,7 +142,7 @@ const POST = withAuth(
 );
 
 // Apply subscription tier validation to both endpoints
-const AuthenticatedGET = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET);
-const AuthenticatedPOST = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST);
+const AuthenticatedGET = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null });
+const AuthenticatedPOST = requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null });
 
 export { AuthenticatedGET as GET, AuthenticatedPOST as POST };
