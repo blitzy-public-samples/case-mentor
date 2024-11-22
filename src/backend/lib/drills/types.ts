@@ -11,7 +11,7 @@ import { DrillType, DrillResponse, DrillEvaluation, DrillEvaluationSchema } from
  */
 
 // Re-export imported types
-export { DrillType, DrillResponse, DrillEvaluation };
+export type { DrillType, DrillResponse, DrillEvaluation };
 
 // Requirement: AI Evaluation - Standardized evaluation criteria structure
 export interface DrillEvaluationCriteria {

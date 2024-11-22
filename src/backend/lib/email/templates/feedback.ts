@@ -1,24 +1,3 @@
-// @package mjml ^4.14.0
-
-// Add type declaration for mjml module
-declare module 'mjml' {
-  interface MJMLParsingOptions {
-    fonts?: { [key: string]: string };
-    keepComments?: boolean;
-    beautify?: boolean;
-    minify?: boolean;
-    validationLevel?: 'strict' | 'soft' | 'skip';
-    filePath?: string;
-  }
-
-  interface MJMLParseResults {
-    html: string;
-    errors: any[];
-  }
-
-  function compile(mjml: string, options?: MJMLParsingOptions): MJMLParseResults;
-}
-
 import { APIResponse } from '../../../types/api';
 import { Feedback } from '../../../models/Feedback';
 import { formatScore, formatTimestamp } from '../../../utils/formatting';
@@ -130,7 +109,7 @@ export function generateDrillFeedbackEmail(
     </mjml>
   `;
 
-  const { html } = mjml.compile(mjmlTemplate, { minify: true });
+  const { html } = mjml(mjmlTemplate, { minify: true });
   return html;
 }
 
@@ -214,6 +193,6 @@ export function generateSimulationFeedbackEmail(
     </mjml>
   `;
 
-  const { html } = mjml.compile(mjmlTemplate, { minify: true });
+  const { html } = mjml(mjmlTemplate, { minify: true });
   return html;
 }

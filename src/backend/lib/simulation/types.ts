@@ -17,7 +17,7 @@ import {
  */
 
 // Re-export imported types
-export { Species, EnvironmentParameters, SimulationState, SpeciesType, SimulationStatus, SimulationResult };
+export type { Species, EnvironmentParameters, SimulationState, SpeciesType, SimulationStatus, SimulationResult };
 
 /**
  * @description Context for simulation execution including user and time constraints

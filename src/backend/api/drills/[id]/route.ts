@@ -22,10 +22,10 @@ declare global {
 }
 
 // Requirement: Practice Drills - GET endpoint for retrieving drill by ID
-export const GET = withAuth(
+const GET = withAuth(
   async (
-    request: NextRequest & { user: any },
-    context: { params: { id: string } }
+    req: NextRequest,
+    context: { user: any }
   ): Promise<NextResponse<DrillResponse<DrillPrompt>>> => {
     try {
       // Initialize drill service
@@ -55,20 +55,18 @@ export const GET = withAuth(
         status: error.code === APIErrorCode.NOT_FOUND ? 404 : 500
       });
     }
-  },
-  // Require authentication and subscription
-  { requireAuth: true }
+  }
 );
 
 // Requirement: Practice Drills - POST endpoint for drill attempts and submissions
-export const POST = withAuth(
+const POST = withAuth(
   async (
-    request: NextRequest & { user: any },
-    context: { params: { id: string } }
+    req: NextRequest,
+    context: { user: any }
   ): Promise<NextResponse<DrillResponse<DrillAttempt | DrillEvaluation>>> => {
     try {
       // Parse request body
-      const body = await request.json();
+      const body = await req.json();
       const { action, response } = body;
 
       // Initialize drill service
@@ -82,7 +80,7 @@ export const POST = withAuth(
         case 'start': {
           // Requirement: User Engagement - Start new drill attempt
           const attempt = await drillService.startDrillAttempt(
-            request.user.id,
+            context.user.id,
             context.params.id
           );
 
@@ -134,13 +132,13 @@ export const POST = withAuth(
         status: error.code === APIErrorCode.VALIDATION_ERROR ? 400 : 500
       });
     }
-  },
-  // Require authentication and subscription
-  { requireAuth: true }
+  }
 );
 
 // Apply subscription tier validation to both endpoints
 export const { GET: AuthenticatedGET, POST: AuthenticatedPOST } = {
-  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET, { user: null }),
-  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST, { user: null })
+  GET: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET),
+  POST: requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST)
 };
+
+export { AuthenticatedGET as GET, AuthenticatedPOST as POST };

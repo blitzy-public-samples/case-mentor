@@ -49,13 +49,11 @@ export {
   type SimulationValidationError
 };
 
-/**
- * Re-export core simulation functionality from EcosystemSimulation class instance methods
- * Addresses requirement: Simulation Engine - Handles ecosystem game logic and simulation state
- */
-export const {
+// Re-export standalone functions from ecosystem.ts
+export {
   initializeEcosystem,
   simulateTimeStep,
   calculateStabilityScore,
-  getSimulationResult
-} = EcosystemSimulation.prototype;
+  getSimulationResult,
+  initializeSimulation
+} from './ecosystem';

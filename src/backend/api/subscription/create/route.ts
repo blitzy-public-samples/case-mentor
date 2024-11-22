@@ -76,7 +76,7 @@ export const POST = withAuth(async (
 
         // Handle Stripe errors
         if (error instanceof Error && 'type' in error && typeof error.type === 'string' && error.type.startsWith('Stripe')) {
-            const stripeError = error as Stripe.StripeError;
+            const stripeError = error as Stripe.StripeRawError;
             return NextResponse.json({
                 success: false,
                 data: null,

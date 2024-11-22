@@ -12,7 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '../../../../services/UserService';
 import { withAuth } from '../../../../lib/auth/middleware';
-import { UserProgress } from '../../../../types/user';
+import { UserProgress, User } from '../../../../types/user';
 import { APIError, APIErrorCode } from '../../../../types/api';
 
 /**

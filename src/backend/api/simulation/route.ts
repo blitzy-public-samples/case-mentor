@@ -14,12 +14,14 @@ import { z } from 'zod';
 import { SimulationService } from '../../services/SimulationService';
 import { withAuth, requireSubscription } from '../../lib/auth/middleware';
 import {
-  SimulationExecutionContext,
   Species,
-  Environment,
   SimulationState,
   SimulationResult
 } from '../../types/simulation';
+import {
+  SimulationExecutionContext,
+  Environment
+} from '../../lib/simulation/types';
 import { UserSubscriptionTier } from '../../types/user';
 
 // Request validation schemas

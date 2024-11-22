@@ -1,8 +1,6 @@
 // @package ioredis ^5.3.0
-// @package ms ^2.1.3
 
 import { Redis } from 'ioredis';
-import ms from 'ms';
 import { CacheConfig } from '../../types/config';
 import { CACHE_TTL } from '../../config/constants';
 

@@ -10,7 +10,7 @@
  */
 
 import { UserModel } from '../models/User';
-import { SubscriptionModel } from '../models/Subscription';
+import { create as createSubscription, findByUserId } from '../models/Subscription';
 import { executeQuery, withTransaction } from '../utils/database';
 import { validateUserProfile } from '../utils/validation';
 import { 
@@ -52,7 +52,7 @@ export class UserService {
             const user = await this.userModel.createUser(registrationData);
 
             // Create default subscription
-            await SubscriptionModel.create({
+            await createSubscription({
                 id: crypto.randomUUID(),
                 userId: user.id,
                 planId: 'free_tier',
@@ -80,7 +80,7 @@ export class UserService {
         }
 
         // Load active subscription
-        const subscription = await SubscriptionModel.findByUserId(user.id);
+        const subscription = await findByUserId(user.id);
         if (subscription) {
             user.subscriptionTier = subscription.planId as UserSubscriptionTier;
             user.subscriptionStatus = subscription.status;
@@ -113,7 +113,7 @@ export class UserService {
         }
 
         // Check subscription usage limits
-        const subscription = await SubscriptionModel.findByUserId(userId);
+        const subscription = await findByUserId(userId);
         if (!subscription || !(await subscription.checkUsage('progress_tracking'))) {
             throw new Error('Usage limit exceeded or invalid subscription');
         }
@@ -178,7 +178,7 @@ export class UserService {
             const user = await this.userModel.updateSubscription(userId, subscriptionData);
 
             // Update subscription details
-            const subscription = await SubscriptionModel.findByUserId(userId);
+            const subscription = await findByUserId(userId);
             if (subscription) {
                 await subscription.update({
                     planId: subscriptionData.tier,

@@ -40,10 +40,10 @@ const feedbackService = new FeedbackService(openAIService);
  */
 export const GET = withAuth(async (
     request: NextRequest,
-    context: { user: any, params: { id: string } }
+    { user, params }: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
-        const feedback = await feedbackService.getFeedback(context.params.id);
+        const feedback = await feedbackService.getFeedback(params.id);
 
         if (!feedback) {
             return NextResponse.json({
@@ -51,7 +51,7 @@ export const GET = withAuth(async (
                 error: {
                     code: APIErrorCode.NOT_FOUND,
                     message: 'Feedback not found',
-                    details: { feedbackId: context.params.id }
+                    details: { feedbackId: params.id }
                 }
             }, { status: 404 });
         }
@@ -84,7 +84,7 @@ export const GET = withAuth(async (
  */
 export const PATCH = withAuth(async (
     request: NextRequest,
-    context: { user: any, params: { id: string } }
+    { user, params }: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
         const body = await request.json();
@@ -93,7 +93,7 @@ export const PATCH = withAuth(async (
         const validatedData = UpdateFeedbackSchema.parse(body);
 
         // Update feedback
-        await feedbackService.updateFeedback(context.params.id, validatedData);
+        await feedbackService.updateFeedback(params.id, validatedData);
 
         return NextResponse.json({
             success: true,
@@ -135,11 +135,11 @@ export const PATCH = withAuth(async (
  */
 export const DELETE = withAuth(async (
     request: NextRequest,
-    context: { user: any, params: { id: string } }
+    { user, params }: { user: any, params: { id: string } }
 ): Promise<NextResponse> => {
     try {
         // Verify feedback exists
-        const feedback = await feedbackService.getFeedback(context.params.id);
+        const feedback = await feedbackService.getFeedback(params.id);
         
         if (!feedback) {
             return NextResponse.json({
@@ -147,7 +147,7 @@ export const DELETE = withAuth(async (
                 error: {
                     code: APIErrorCode.NOT_FOUND,
                     message: 'Feedback not found',
-                    details: { feedbackId: context.params.id }
+                    details: { feedbackId: params.id }
                 }
             }, { status: 404 });
         }

@@ -1,6 +1,7 @@
 // @package @supabase/supabase-js ^2.38.0
 // @package zod ^3.22.0
 // @package uuid ^9.0.0
+// @package @types/uuid ^9.0.0
 
 /**
  * Human Tasks:

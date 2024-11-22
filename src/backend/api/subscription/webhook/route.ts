@@ -15,7 +15,7 @@ import { Stripe } from 'stripe';
 import { handleWebhook, validateWebhookSignature } from '../../../lib/stripe/webhooks';
 import { SubscriptionService } from '../../../services/SubscriptionService';
 import { handleError } from '../../../lib/errors/handlers';
-import { APIResponse } from '../../../types/api';
+import { APIResponse, APIErrorCode } from '../../../types/api';
 
 // Initialize subscription service
 const subscriptionService = new SubscriptionService();
@@ -81,7 +81,7 @@ export async function POST(
             success: false,
             data: { received: false },
             error: {
-                code: 'INTERNAL_ERROR',
+                code: APIErrorCode.INTERNAL_ERROR,
                 message: error instanceof Error ? error.message : 'Unknown error occurred',
                 details: {},
                 timestamp: new Date().toISOString(),

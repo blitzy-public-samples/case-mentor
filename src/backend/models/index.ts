@@ -45,10 +45,13 @@ export {
 // Type re-exports for convenience
 export type {
     DrillAttempt,
-    DrillEvaluation,
+    DrillEvaluation
+} from '../types/drills';
+
+export type {
     DrillResult,
     DrillMetrics
-} from '../types/drills';
+} from '../lib/drills/types';
 
 export type {
     SimulationState,
