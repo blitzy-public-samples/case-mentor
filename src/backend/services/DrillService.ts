@@ -174,7 +174,7 @@ export class DrillService {
 
     // Evaluate response
     const drill = await this.getDrillById(attempt.drillId);
-    const evaluation = await evaluateDrillAttempt(
+    const evaluationResult = await evaluateDrillAttempt(
       drill.type,
       response,
       drill.type,
@@ -196,6 +196,16 @@ export class DrillService {
         }
       }
     );
+
+    // Extract the evaluation from the result
+    const evaluation: DrillEvaluation = {
+      attemptId,
+      score: evaluationResult.evaluation.score,
+      feedback: evaluationResult.evaluation.feedback,
+      strengths: evaluationResult.evaluation.strengths,
+      improvements: evaluationResult.evaluation.improvements,
+      evaluatedAt: new Date()
+    };
 
     // Process evaluation results
     await this.processDrillEvaluation(attemptId, evaluation);
