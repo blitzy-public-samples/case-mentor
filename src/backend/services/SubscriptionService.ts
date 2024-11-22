@@ -96,6 +96,7 @@ export class SubscriptionService {
 
             // Create local subscription record
             const subscription = await createSubscription({
+                id: crypto.randomUUID(), // Add unique ID for the subscription
                 userId,
                 planId,
                 stripeSubscriptionId: stripeSubscription.id,
