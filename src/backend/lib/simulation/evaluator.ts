@@ -157,7 +157,7 @@ export class SimulationEvaluator {
     metrics: SimulationMetrics
   ): Promise<SimulationResult> {
     // Get final ecosystem state
-    const state = await attempt.updateState({});
+    const state = await attempt.getState();
     const finalState: EcosystemState = {
       species: state.species,
       environment: state.environment,
