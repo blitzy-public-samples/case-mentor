@@ -1,3 +1,5 @@
+'use client'; // Add this at the top of the file
+
 // Third-party imports
 import React from 'react'; // ^18.0.0
 import { redirect } from 'next/navigation'; // ^13.0.0

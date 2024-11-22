@@ -6,8 +6,12 @@
  * 4. Ensure proper configuration of PostCSS and Tailwind plugins in build pipeline
  */
 
-/* Import core styles and utilities */
-@import '../styles/tailwind.css';
+/* Add TailwindCSS core directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import additional styles */
 @import '../styles/components.css';
 @import '../styles/animations.css';
 
@@ -18,8 +22,8 @@
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'Roboto Mono', monospace;
-  --primary: #0F172A;
-  --secondary: #3B82F6;
+  --primary: #1D4ED8; /* Updated to match Tailwind's text-primary */
+  --secondary: #9333EA;
   --accent: #22C55E;
   --error: #EF4444;
   --warning: #F59E0B;
@@ -76,7 +80,7 @@ a {
 }
 
 a:hover {
-  color: color-mix(in srgb, var(--secondary) 80%, black);
+  color: var(--primary);
 }
 
 /* Requirement: Design System Specifications - Form Elements Reset */
@@ -155,5 +159,15 @@ svg {
     --accent: Highlight;
     --background: Canvas;
     --foreground: CanvasText;
+  }
+}
+
+/* Safelist required TailwindCSS classes */
+@layer utilities {
+  .text-primary {
+    @apply text-primary-base;
+  }
+  .hover\:text-primary:hover {
+    @apply text-primary-hover;
   }
 }

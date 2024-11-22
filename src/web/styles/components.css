@@ -1,18 +1,13 @@
-/* 
- * Human Tasks:
- * 1. Verify color contrast ratios meet WCAG 2.1 AA standards for all component states
- * 2. Test responsive behavior of components across all breakpoints
- * 3. Validate component animations with reduced motion preferences
- * 4. Ensure proper integration with shadcn/ui component library
- */
+/* Import Tailwind CSS base layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-/* Import base styles and animations */
-@import './tailwind.css';
+/* Import animations (if needed) */
 @import './animations.css';
 
-/* Requirement: Design System Specifications - Component-specific styles */
+/* Custom component styles */
 @layer components {
-  /* Navigation Components */
   .navbar {
     @apply h-16 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50;
   }
@@ -29,7 +24,6 @@
     @apply text-primary font-semibold;
   }
 
-  /* Form Components - WCAG 2.1 AA compliant */
   .form-group {
     @apply space-y-2 mb-4;
   }
@@ -39,18 +33,17 @@
   }
 
   .input-field {
-    @apply w-full rounded-md border-gray-300 focus:border-primary focus:ring-primary focus-ring;
+    @apply w-full rounded-md border-gray-300 focus:border-primary focus:ring-primary focus:ring;
   }
 
   .btn-primary {
-    @apply bg-primary text-white hover:bg-primary-dark focus:ring-primary-light focus-ring;
+    @apply bg-primary text-white hover:bg-primary-dark focus:ring-primary-light focus:ring;
   }
 
   .btn-secondary {
-    @apply bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary-light focus-ring;
+    @apply bg-secondary text-white hover:bg-secondary-dark focus:ring-secondary-light focus:ring;
   }
 
-  /* Feedback Components with Animations */
   .feedback-card {
     @apply bg-gray-50 p-4 rounded-lg border-l-4 border-primary animate-slide-in;
   }
@@ -67,7 +60,6 @@
     @apply h-2 rounded-full bg-primary;
   }
 
-  /* Content Components with Responsive Design */
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
@@ -80,7 +72,6 @@
     @apply p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow animate-scale-in;
   }
 
-  /* Interactive Components */
   .simulation-canvas {
     @apply w-full aspect-video rounded-lg border border-gray-200;
   }
@@ -90,7 +81,6 @@
   }
 }
 
-/* Requirement: Accessibility Requirements - Focus and Interactive States */
 @layer utilities {
   .focus-visible {
     @apply outline-none ring-2 ring-primary ring-offset-2;
@@ -101,7 +91,6 @@
   }
 }
 
-/* Requirement: Design System Specifications - Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .navbar {
     @apply bg-gray-900/80 border-gray-800;
@@ -124,7 +113,6 @@
   }
 }
 
-/* Requirement: Accessibility Requirements - Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .card-drill,
   .feedback-card,
@@ -133,7 +121,6 @@
   }
 }
 
-/* Requirement: Design System Specifications - Print Styles */
 @media print {
   .navbar,
   .sidebar,
