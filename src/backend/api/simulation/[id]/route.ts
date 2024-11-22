@@ -60,7 +60,7 @@ export const GET = withAuth(async (request: NextRequest, context: { user: User }
   } catch (error) {
     return handleError(error as Error, crypto.randomUUID());
   }
-}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
+}, { requireAuth: true });
 
 /**
  * Updates species selection or environmental parameters for a simulation
@@ -100,7 +100,7 @@ export const PUT = withAuth(async (request: NextRequest, context: { user: User }
   } catch (error) {
     return handleError(error as Error, crypto.randomUUID());
   }
-}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
+}, { requireAuth: true });
 
 /**
  * Executes a time step in the simulation or completes it
@@ -132,4 +132,4 @@ export const POST = withAuth(async (request: NextRequest, context: { user: User 
   } catch (error) {
     return handleError(error as Error, crypto.randomUUID());
   }
-}, { requireAuth: true, requiredTiers: [UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM] });
+}, { requireAuth: true });

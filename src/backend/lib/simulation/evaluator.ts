@@ -157,10 +157,11 @@ export class SimulationEvaluator {
     metrics: SimulationMetrics
   ): Promise<SimulationResult> {
     // Get final ecosystem state
-    const state = await attempt.getState();
+    const species = attempt.getSpecies();
+    const environment = attempt.getEnvironment();
     const finalState: EcosystemState = {
-      species: state.species,
-      environment: state.environment,
+      species,
+      environment,
       interactions: [],
       stabilityScore: 0,
       timestamp: Date.now()
