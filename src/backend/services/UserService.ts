@@ -10,7 +10,7 @@
  */
 
 import { UserModel } from '../models/User';
-import { create as createSubscription, findByUserId } from '../models/Subscription';
+import { create as createSubscription, findByUserId, update as updateSubscription, checkUsage } from '../models/Subscription';
 import { executeQuery, withTransaction } from '../utils/database';
 import { validateUserProfile } from '../utils/validation';
 import { 
@@ -114,7 +114,7 @@ export class UserService {
 
         // Check subscription usage limits
         const subscription = await findByUserId(userId);
-        if (!subscription || !(await subscription.checkUsage('progress_tracking'))) {
+        if (!subscription || !(await checkUsage(subscription, 'progress_tracking'))) {
             throw new Error('Usage limit exceeded or invalid subscription');
         }
 
@@ -180,7 +180,7 @@ export class UserService {
             // Update subscription details
             const subscription = await findByUserId(userId);
             if (subscription) {
-                await subscription.update({
+                await updateSubscription(subscription, {
                     planId: subscriptionData.tier,
                     status: subscriptionData.status,
                     currentPeriodStart: new Date(),
