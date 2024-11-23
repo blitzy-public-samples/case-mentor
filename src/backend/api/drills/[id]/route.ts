@@ -138,7 +138,14 @@ const POST = async (
 };
 
 // Apply subscription tier validation
-const AuthenticatedGET = withAuth(requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(GET));
-const AuthenticatedPOST = withAuth(requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(POST));
+const AuthenticatedGET = withAuth((req: NextRequest, context: { user: any }) => 
+  requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(req, context)
+    .then(result => result || GET(req, context))
+);
+
+const AuthenticatedPOST = withAuth((req: NextRequest, context: { user: any }) => 
+  requireSubscription([UserSubscriptionTier.BASIC, UserSubscriptionTier.PREMIUM])(req, context)
+    .then(result => result || POST(req, context))
+);
 
 export { AuthenticatedGET as GET, AuthenticatedPOST as POST };

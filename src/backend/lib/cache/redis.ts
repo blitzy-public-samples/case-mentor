@@ -173,3 +173,6 @@ export class RedisCache {
     }
   }
 }
+
+// Export the Redis client instance getter
+export const getRedisClient = (): Redis | null => redisClient;

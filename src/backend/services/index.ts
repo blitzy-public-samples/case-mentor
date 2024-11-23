@@ -14,7 +14,7 @@ import { SubscriptionService } from './SubscriptionService';
 import { UserService } from './UserService';
 import { OpenAIService } from '../lib/openai';
 import { supabaseClient } from '../config/database';
-import { Redis } from '../lib/cache/redis';
+import type { Redis } from '../lib/cache/redis';
 
 /**
  * Central service module that aggregates and exports all core business logic services
