@@ -30,7 +30,10 @@
     "resend": "^1.0.0",
     "stripe": "^12.0.0",
     "uuid": "^9.0.0",
-    "zod": "^3.22.0"
+    "zod": "^3.22.0",
+    "crypto": "node:crypto",
+    "markdown": "latest",
+    "next/server": "^13.0.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
@@ -58,7 +61,8 @@
     "node-mocks-http": "^1.12.0",
     "supertest": "^6.0.0",
     "ts-jest": "^29.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "stripe-mock": "^2.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
