@@ -1,5 +1,3 @@
-// @package next ^13.0.0
-
 import { NextRequest, NextResponse } from 'next/server';
 import { DrillService } from '../../../services/DrillService';
 import { withAuth, requireSubscription } from '../../../lib/auth/middleware';
