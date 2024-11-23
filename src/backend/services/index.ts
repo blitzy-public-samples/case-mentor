@@ -14,7 +14,7 @@ import { SubscriptionService } from './SubscriptionService';
 import { UserService } from './UserService';
 import { OpenAIService } from '../lib/openai';
 import { supabaseClient } from '../config/database';
-import type { Redis } from '../lib/cache/redis';
+import createClient from 'ioredis';
 
 /**
  * Central service module that aggregates and exports all core business logic services
@@ -41,7 +41,7 @@ export async function initializeServices(): Promise<{
 }> {
     try {
         // Initialize Redis client
-        const cache = await Redis.connect();
+        const cache = new createClient();
 
         // Initialize services in dependency order
         const subscriptionService = new SubscriptionService();
