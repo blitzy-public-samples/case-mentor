@@ -8,17 +8,18 @@ import { Card } from '@/components/shared/Card';
 
 /**
  * Human Tasks:
- * 1. Verify CORS settings for authentication endpoints
- * 2. Test keyboard navigation flow across login form
- * 3. Validate color contrast ratios with design system
- * 4. Test screen reader announcements for form states
- * 5. Verify SEO meta tags with marketing team
+ * 1. Verify CORS settings for authentication endpoints.
+ * 2. Test keyboard navigation flow across the login form.
+ * 3. Validate color contrast ratios with the design system.
+ * 4. Test screen reader announcements for form states.
+ * 5. Verify SEO meta tags with the marketing team.
  */
 
 // Requirement: Authentication Flow - SEO metadata configuration
 export const metadata: Metadata = {
   title: 'Login | McKinsey Prep',
-  description: 'Sign in to your McKinsey Prep account to access practice drills, simulations, and track your consulting interview preparation progress.',
+  description:
+    'Sign in to your McKinsey Prep account to access practice drills, simulations, and track your consulting interview preparation progress.',
   robots: {
     index: true,
     follow: true,
@@ -26,35 +27,35 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      noimageindex: true
-    }
-  }
+      noimageindex: true,
+    },
+  },
 };
 
 /**
  * Login page component that renders the authentication interface
  * with proper accessibility support and consistent styling.
  * 
- * Requirement: Authentication Flow - Implements secure user login flow
- * Requirement: User Interface Design - WCAG 2.1 AA compliant login page
+ * Requirement: Authentication Flow - Implements secure user login flow.
+ * Requirement: User Interface Design - WCAG 2.1 AA compliant login page.
  */
 export default function LoginPage() {
   return (
     // Main container with proper ARIA landmarks
-    <main 
-      className="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8"
+    <main
+      className="min-h-screen flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900"
       aria-labelledby="login-heading"
     >
       <div className="w-full max-w-md space-y-8">
         {/* Page heading with proper heading hierarchy */}
         <div className="text-center">
-          <h1 
+          <h1
             id="login-heading"
-            className="text-3xl font-bold tracking-tight text-gray-900"
+            className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100"
           >
             Sign in to your account
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Access your McKinsey Prep dashboard
           </p>
         </div>
@@ -63,7 +64,7 @@ export default function LoginPage() {
         <Card
           shadow="md"
           padding="lg"
-          className="bg-white"
+          className="bg-white dark:bg-gray-800"
           aria-label="Login form container"
         >
           {/* Login form with authentication logic */}

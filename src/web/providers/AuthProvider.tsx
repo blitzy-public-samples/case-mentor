@@ -1,3 +1,5 @@
+"use client"; // Add this at the top
+
 // Third-party imports
 import React, { createContext, useContext, useEffect, useState } from 'react'; // ^18.0.0
 

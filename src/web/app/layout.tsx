@@ -1,3 +1,6 @@
+// Remove 'use client' from this file
+
+
 // react v18.0.0
 import React from 'react';
 // next v13.4.0
@@ -31,7 +34,7 @@ const robotoMono = Roboto_Mono({
   variable: '--font-mono'
 });
 
-// Requirement: Design System Implementation - Metadata configuration
+// Metadata configuration moved to its own Server Component
 export const generateMetadata = (): Metadata => {
   return {
     title: 'McKinsey Case Interview Practice Platform',
@@ -66,21 +69,19 @@ export const generateMetadata = (): Metadata => {
   };
 };
 
-// Requirement: Design System Implementation - Root layout component
+// Root layout component
 export default function RootLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
   return (
-    // Requirement: Accessibility Requirements - HTML configuration
     <html 
       lang="en" 
       className={`${inter.variable} ${robotoMono.variable}`}
       suppressHydrationWarning
     >
       <head>
-        {/* Requirement: Accessibility Requirements - Meta tags */}
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="format-detection" content="telephone=no" />
@@ -89,19 +90,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        {/* Requirement: Authentication Flow - Global providers */}
         <AuthProvider>
           <ThemeProvider>
             <ToastProvider>
-              {/* Requirement: Accessibility Requirements - Skip link */}
               <a 
                 href="#main-content"
                 className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:p-4 focus:bg-white focus:text-primary"
               >
                 Skip to main content
               </a>
-
-              {/* Requirement: Design System Implementation - Main content */}
               <main id="main-content" className="min-h-screen bg-background text-foreground">
                 {children}
               </main>

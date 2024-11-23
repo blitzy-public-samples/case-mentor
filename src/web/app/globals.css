@@ -6,8 +6,12 @@
  * 4. Ensure proper configuration of PostCSS and Tailwind plugins in build pipeline
  */
 
-/* Import core styles and utilities */
-@import '../styles/tailwind.css';
+/* Add TailwindCSS core directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import additional styles */
 @import '../styles/components.css';
 @import '../styles/animations.css';
 
@@ -18,8 +22,8 @@
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'Roboto Mono', monospace;
-  --primary: #0F172A;
-  --secondary: #3B82F6;
+  --primary: #1D4ED8; /* Updated to match Tailwind's text-primary */
+  --secondary: #9333EA;
   --accent: #22C55E;
   --error: #EF4444;
   --warning: #F59E0B;
@@ -27,7 +31,7 @@
   --foreground: #0F172A;
 }
 
-/* Requirement: Design System Specifications - Base HTML Elements */
+/* Base HTML styles */
 html {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -35,7 +39,7 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Requirement: Design System Specifications - Body Styles */
+/* Body styles */
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -44,19 +48,19 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Requirement: Accessibility Requirements - Selection Styles */
+/* Selection styles for accessibility */
 ::selection {
   background-color: var(--secondary);
   color: white;
 }
 
-/* Requirement: Accessibility Requirements - Focus States */
+/* Focus-visible states for accessibility */
 :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* Requirement: Design System Specifications - Typography Reset */
+/* Typography reset */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-sans);
   font-weight: 600;
@@ -67,7 +71,7 @@ code, pre, kbd {
   font-family: var(--font-mono);
 }
 
-/* Requirement: Accessibility Requirements - Link States */
+/* Link styles */
 a {
   color: var(--secondary);
   text-decoration: underline;
@@ -76,22 +80,22 @@ a {
 }
 
 a:hover {
-  color: color-mix(in srgb, var(--secondary) 80%, black);
+  color: var(--primary);
 }
 
-/* Requirement: Design System Specifications - Form Elements Reset */
+/* Form element reset */
 input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;
 }
 
-/* Requirement: Accessibility Requirements - Disabled States */
+/* Disabled states for form elements */
 [disabled] {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-/* Requirement: Design System Specifications - List Reset */
+/* List reset */
 ul[role="list"],
 ol[role="list"] {
   list-style: none;
@@ -99,7 +103,7 @@ ol[role="list"] {
   padding: 0;
 }
 
-/* Requirement: Responsive Design - Image Handling */
+/* Image and media handling */
 img, 
 picture,
 video,
@@ -110,7 +114,7 @@ svg {
   height: auto;
 }
 
-/* Requirement: Design System Specifications - Print Styles */
+/* Print styles */
 @media print {
   body {
     background: white;
@@ -121,7 +125,7 @@ svg {
   }
 }
 
-/* Requirement: Accessibility Requirements - Dark Mode */
+/* Dark mode styles */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0F172A;
@@ -133,7 +137,7 @@ svg {
   }
 }
 
-/* Requirement: Accessibility Requirements - Reduced Motion */
+/* Reduced motion styles */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -147,7 +151,7 @@ svg {
   }
 }
 
-/* Requirement: Design System Specifications - High Contrast Mode */
+/* High contrast mode styles */
 @media (forced-colors: active) {
   :root {
     --primary: CanvasText;
@@ -155,5 +159,18 @@ svg {
     --accent: Highlight;
     --background: Canvas;
     --foreground: CanvasText;
+  }
+}
+
+/* Safelist required TailwindCSS classes */
+@layer utilities {
+  .text-primary {
+    @apply text-primary-base;
+  }
+  .hover\:text-primary:hover {
+    @apply text-primary-hover;
+  }
+  .border-input {
+    @apply border-gray-300;
   }
 }
