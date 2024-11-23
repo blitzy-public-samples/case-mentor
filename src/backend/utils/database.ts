@@ -179,7 +179,7 @@ export async function withTransaction<T>(
 export function buildQuery<T extends Record<string, unknown>>(
     table: string,
     filters: QueryFilters = {}
-): PostgrestFilterBuilder<T> {
+): PostgrestFilterBuilder<T, T, T, string, null> {
     if (!supabaseInstance) {
         throw new DatabaseError(
             'Database connection not initialized',
@@ -187,7 +187,7 @@ export function buildQuery<T extends Record<string, unknown>>(
         );
     }
 
-    let query = supabaseInstance.from(table).select('*') as PostgrestFilterBuilder<T>;
+    let query = supabaseInstance.from(table).select('*') as PostgrestFilterBuilder<T, T, T, string, null>;
 
     if (filters.where) {
         Object.entries(filters.where).forEach(([key, value]) => {
