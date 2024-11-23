@@ -173,3 +173,6 @@ export class RedisCache {
     }
   }
 }
+
+// Export Redis for external usage
+export { Redis };
