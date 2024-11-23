@@ -176,7 +176,7 @@ export async function withTransaction<T>(
  * Builds a type-safe database query
  * Requirement: Database Layer (5.2 Component Details) - Type-safe query building
  */
-export function buildQuery<T = any>(
+export function buildQuery<T extends Record<string, unknown>>(
     table: string,
     filters: QueryFilters = {}
 ): PostgrestFilterBuilder<any, T, T[]> {
@@ -187,7 +187,7 @@ export function buildQuery<T = any>(
         );
     }
 
-    let query = supabaseInstance.from(table).select('*');
+    let query = supabaseInstance.from(table).select('*') as PostgrestFilterBuilder<any, T, T[]>;
 
     if (filters.where) {
         Object.entries(filters.where).forEach(([key, value]) => {
