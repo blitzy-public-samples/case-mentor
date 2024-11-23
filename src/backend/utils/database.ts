@@ -1,12 +1,3 @@
-// Human Tasks:
-// 1. Configure Supabase connection pooling settings in production environment
-// 2. Set up monitoring and alerting for database connection failures
-// 3. Configure automated backup schedules in Supabase dashboard
-// 4. Review and adjust query timeout settings based on performance requirements
-// 5. Implement database health check monitoring in production
-
-// @supabase/supabase-js v2.38.0
-// @supabase/postgrest-js v1.8.0
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
 import { DatabaseConfig } from '../types/config';
@@ -176,7 +167,7 @@ export async function withTransaction<T>(
  * Builds a type-safe database query
  * Requirement: Database Layer (5.2 Component Details) - Type-safe query building
  */
-export function buildQuery<T = any>(
+export function buildQuery<T extends Record<string, unknown> = any>(
     table: string,
     filters: QueryFilters = {}
 ): PostgrestFilterBuilder<any, T, T[]> {
