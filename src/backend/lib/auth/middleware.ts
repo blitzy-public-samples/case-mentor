@@ -95,7 +95,7 @@ export const withAuth = (
 
 // Requirement: Security Controls - Role-based access control with subscription tier validation
 export const requireSubscription = (requiredTiers: UserSubscriptionTier[]) => {
-  return async (req: NextRequest, context: { user: User }): Promise<NextResponse | null> => {
+  return async (req: NextRequest, context: { user: User }): Promise<NextResponse> => {
     try {
       const { user } = context;
 
@@ -112,7 +112,8 @@ export const requireSubscription = (requiredTiers: UserSubscriptionTier[]) => {
         } as APIError;
       }
 
-      return null; // Allow request to proceed
+      // Return a success response to indicate the request can proceed
+      return NextResponse.next();
 
     } catch (error) {
       if ((error as APIError).code) {
