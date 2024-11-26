@@ -1,4 +1,5 @@
 // Third-party imports
+'use client'
 import React, { useState } from 'react'; // ^18.0.0
 import { useForm } from 'react-hook-form'; // ^7.0.0
 import { useRouter } from 'next/navigation'; // ^13.0.0

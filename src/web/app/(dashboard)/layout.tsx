@@ -1,4 +1,4 @@
-'use client'; // Add this at the top of the file
+'use client' // Add this at the top of the file
 
 // Third-party imports
 import React from 'react'; // ^18.0.0
