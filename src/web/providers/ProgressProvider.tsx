@@ -1,4 +1,5 @@
 // Third-party imports
+'use client'
 import React, { createContext, useContext, ReactNode, useEffect } from 'react'; // ^18.0.0
 
 // Internal imports

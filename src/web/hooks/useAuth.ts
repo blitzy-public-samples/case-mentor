@@ -1,4 +1,5 @@
 // Third-party imports
+'use client'
 import { useState, useEffect, useCallback } from 'react'; // ^18.0.0
 import { Session } from '@supabase/supabase-js'; // ^2.38.0
 

@@ -1,84 +1,71 @@
 // External dependencies
-import * as React from 'react' // ^18.0.0
-import { Slot } from '@radix-ui/react-slot' // ^1.0.0
-import { clsx } from 'clsx' // For className merging
+import * as React from 'react'; // ^18.0.0
+import { Slot } from '@radix-ui/react-slot'; // ^1.0.0
+import { clsx } from 'clsx'; // For className merging
 
 // Internal dependencies
-import { colors, shadows } from '../../config/theme'
+import { colors, shadows } from '../../config/theme';
 
 /**
- * Human Tasks:
- * 1. Verify color contrast ratios for all button variants using a color contrast checker
- * 2. Test keyboard navigation and focus states across different browsers
- * 3. Validate ARIA attributes with screen readers
- * 4. Ensure loading states are properly announced by assistive technologies
+ * Button properties
  */
-
 interface ButtonProps {
-  children: React.ReactNode
-  className?: string
-  variant?: 'default' | 'primary' | 'secondary' | 'ghost' | 'link'
-  size?: 'xs' | 'sm' | 'md' | 'lg'
-  asChild?: boolean
-  isLoading?: boolean
-  disabled?: boolean
-  onClick?: () => void
-  type?: 'button' | 'submit' | 'reset'
-  ariaLabel?: string
+  children: React.ReactNode;
+  className?: string;
+  variant?: 'default' | 'primary' | 'secondary' | 'ghost' | 'link';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
+  asChild?: boolean;
+  isLoading?: boolean;
+  disabled?: boolean;
+  onClick?: () => void;
+  type?: 'button' | 'submit' | 'reset';
+  ariaLabel?: string;
 }
 
-// Requirement: Design System Implementation - Core button styles using design system tokens
+// Define button variants
 export const buttonVariants = ({
   variant = 'default',
   size = 'md',
-  className = ''
+  className = '',
 }: Partial<ButtonProps>) => {
   return clsx(
-    // Base styles with focus and disabled states
-    'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+    'inline-flex items-center justify-center rounded-md font-medium transition-all duration-300',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
     'disabled:pointer-events-none disabled:opacity-50',
-    
-    // Variant-specific styles using theme tokens
     {
       // Default variant
-      'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100':
+      'bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:text-black active:bg-gray-100':
         variant === 'default',
-      
-      // Primary variant using theme colors
-      [`bg-[${colors.primary.base}] text-white hover:bg-[${colors.primary.hover}] active:bg-[${colors.primary.active}]`]:
+
+      // Primary variant with hover effects
+      'bg-green-600 text-white border-none hover:bg-red-600 hover:text-white active:bg-green-700':
         variant === 'primary',
-      
-      // Secondary variant using theme colors
-      [`bg-[${colors.secondary.base}] text-white hover:bg-[${colors.secondary.hover}] active:bg-[${colors.secondary.active}]`]:
+
+      // Secondary variant with hover effects
+      'bg-green-300 text-gray-800 border-none hover:bg-red-600 hover:text-white active:bg-green-400':
         variant === 'secondary',
-      
+
       // Ghost variant
-      'bg-transparent hover:bg-gray-100 active:bg-gray-200':
+      'bg-transparent hover:bg-gray-100 active:bg-gray-200 text-gray-800':
         variant === 'ghost',
-      
+
       // Link variant
-      'bg-transparent underline-offset-4 hover:underline':
+      'bg-transparent underline-offset-4 hover:underline text-blue-600':
         variant === 'link',
     },
-    
-    // Size-specific styles
     {
+      // Sizes
       'text-xs px-2.5 py-1.5 h-7': size === 'xs',
       'text-sm px-3 py-2 h-8': size === 'sm',
-      'text-base px-4 py-2 h-10': size === 'md',
-      'text-lg px-6 py-3 h-12': size === 'lg',
+      'text-base px-6 py-3 h-10': size === 'md',
+      'text-lg px-8 py-4 h-12': size === 'lg',
     },
-    
-    // Shadow styles from theme
     variant !== 'ghost' && variant !== 'link' ? shadows.sm : '',
-    
     className
-  )
-}
+  );
+};
 
-// Requirement: Component Library - Core button component implementation
-// Requirement: Accessibility Requirements - WCAG 2.1 AA compliance
+// Core Button component
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
@@ -96,8 +83,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : 'button'
-    
+    const Comp = asChild ? Slot : 'button';
+
     return (
       <Comp
         ref={ref}
@@ -142,10 +129,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           children
         )}
       </Comp>
-    )
+    );
   }
-)
+);
 
-Button.displayName = 'Button'
-
-export { type ButtonProps }
+Button.displayName = 'Button';
+export { type ButtonProps };
