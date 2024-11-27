@@ -1,7 +1,10 @@
+// Add this directive to mark this as a Client Component
+"use client";
+
 // Third-party imports
 import React from 'react'; // ^18.0.0
 import { usePathname } from 'next/navigation'; // ^13.0.0
-import { clsx } from 'clsx'; // For className merging
+import clsx from 'clsx'; // For className merging
 
 // Internal imports
 import { Header } from './Header';

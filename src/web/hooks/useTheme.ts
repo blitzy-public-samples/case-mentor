@@ -1,4 +1,5 @@
 // react v18.0.0
+'use client'
 import { useState, useEffect, useCallback } from 'react';
 import { colors } from '../config/theme';
 
